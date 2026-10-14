@@ -1,0 +1,9 @@
+---
+// Manual glossary tooltip. The rehype plugin applies the same markup automatically on first use in prose.
+import { getEntry } from 'astro:content';
+interface Props { term: string }
+const g = await getEntry('glossary', Astro.props.term);
+if (!g) throw new Error(`Unknown glossary term "${Astro.props.term}"`);
+const tipId = `gl-${g.id}-m`;
+---
+<span class="gl"><a class="gl-term" href={`/glossary/#${g.id}`} aria-describedby={tipId}>{g.data.term}</a><span id={tipId} role="tooltip" class="gl-tip"><strong>{g.data.expansion}.</strong> {g.data.definition}</span></span>

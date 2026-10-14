@@ -1,0 +1,129 @@
+# Institution relationships. Only edges with an opened source are kept (Stage 3).
+- id: rbi-owns-dicgc
+  from: rbi
+  to: dicgc
+  type: ownership
+  label: Wholly owned subsidiary
+  description: RBI owns all of DICGC.
+  source: dicgc-leaflet
+  status: verified
+- id: rbi-owns-brbnmpl
+  from: rbi
+  to: brbnmpl
+  type: ownership
+  label: Wholly owned subsidiary
+  description: RBI owns all of BRBNMPL.
+  source: brbnmpl-profile
+  status: verified
+- id: rbi-owns-rebit
+  from: rbi
+  to: rebit
+  type: ownership
+  label: Wholly owned subsidiary
+  description: RBI owns all of ReBIT.
+  source: rbi-rebit-ceo-2022
+  status: verified
+- id: rbi-owns-iftas
+  from: rbi
+  to: iftas
+  type: ownership
+  label: Wholly owned subsidiary
+  description: RBI owns all of IFTAS.
+  source: rbi-iftas-ceo-2022
+  status: verified
+- id: rbi-owns-rbih
+  from: rbi
+  to: rbih
+  type: ownership
+  label: Wholly owned subsidiary
+  description: RBI owns all of RBIH.
+  source: rbih-home
+  status: verified
+- id: rbi-founded-idrbt
+  from: rbi
+  to: idrbt
+  type: founding
+  label: Established IDRBT (1996)
+  description: RBI established IDRBT in March 1996 as a registered society.
+  source: idrbt-about
+  status: verified
+- id: rbi-founded-ccil
+  from: rbi
+  to: ccil
+  type: founding
+  label: Set up at RBI's behest (2001)
+  description: A core committee appointed at RBI's behest chose CCIL's promoter banks and institutions.
+  source: ccil-promoters
+  status: verified
+- id: idrbt-to-iftas
+  from: idrbt
+  to: iftas
+  type: operational
+  label: Handed over INFINET, SFMS, RTGS and NEFT systems (2015)
+  description: IDRBT transferred these systems to its subsidiary IFTAS in February 2015; IFTAS moved to RBI in 2019.
+  source: idrbt-about
+  status: verified
+- id: idrbt-to-npci
+  from: idrbt
+  to: npci
+  type: operational
+  label: Handed over the National Financial Switch (2009)
+  description: NPCI took over NFS operations from IDRBT with effect from 14 December 2009.
+  source: npci-nfs-takeover-2009
+  status: verified
+- id: iftas-carries-rbi
+  from: iftas
+  to: rbi
+  type: infrastructure
+  label: Network and messaging for RTGS and NEFT
+  description: SFMS and INFINET, run by IFTAS, carry the messages of RBI-operated RTGS and NEFT.
+  source: rbi-iftas-ceo-2022
+  status: verified
+- id: rbi-regulates-npci
+  from: rbi
+  to: npci
+  type: regulatory
+  label: Authorises NPCI's payment systems
+  description: RBI authorises NPCI to operate payment systems under the Payment and Settlement Systems Act, 2007.
+  source: npci-nfs-takeover-2009
+  status: verified
+- id: rbi-regulates-ccil
+  from: rbi
+  to: ccil
+  type: regulatory
+  label: Authorises CCIL as a central counterparty
+  description: CCIL is authorised by RBI under the Payment and Settlement Systems Act, 2007.
+  source: care-ccil-2025
+  status: verified
+- id: rbi-former-nabard
+  from: rbi
+  to: nabard
+  type: ownership
+  label: Former owner (stake sold by 2019)
+  description: RBI sold its last NABARD shares to the Government of India on 26 February 2019.
+  source: rbi-nabard-nhb-divest-2019
+  status: verified
+- id: rbi-former-nhb
+  from: rbi
+  to: nhb
+  type: ownership
+  label: Former owner (stake sold in 2019)
+  description: RBI sold its entire NHB stake to the Government of India on 19 March 2019.
+  source: rbi-nabard-nhb-divest-2019
+  status: verified
+- id: nhb-hfc-to-rbi
+  from: nhb
+  to: rbi
+  type: regulatory
+  label: Housing finance regulation moved to RBI (2019)
+  description: Regulation of housing finance companies moved from NHB to RBI from 9 August 2019; NHB still supervises them.
+  source: nhb-about
+  status: verified
+- id: rbi-points-to-cersai
+  from: rbi
+  to: cersai
+  type: regulatory
+  label: RBI circulars point lenders to CERSAI's registry
+  description: RBI informed securitisation and reconstruction companies and cooperative banks about registering security interests with CERSAI.
+  source: rbi-cersai-2011
+  status: verified

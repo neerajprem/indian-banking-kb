@@ -1,0 +1,15 @@
+---
+// Citation marker for a source, or for the source behind a fact. Links to the page's source list.
+import { requireFact } from '../lib/facts';
+import { fmtDate } from '../lib/site';
+interface Props { fact?: string; source?: string }
+const c = Astro.locals.citations;
+let sourceId = Astro.props.source;
+let asOf: Date | undefined;
+if (Astro.props.fact) { const f = requireFact(c, Astro.props.fact, Astro.locals.where ?? Astro.url.pathname); sourceId = f.data.source.id; asOf = f.data.asOf; }
+if (!sourceId) throw new Error('Cite needs a fact or a source');
+const n = c?.number.get(sourceId);
+if (!n) throw new Error(`Source "${sourceId}" is not cited by any fact declared on ${Astro.url.pathname}`);
+const s = c!.sources[n - 1];
+---
+<sup class="cite"><a href={`#src-${n}`} aria-label={`Source ${n}: ${s.data.publisher}`}>{n}</a><span class="cite-tip" role="tooltip">{s.data.publisher}. {s.data.title}.{asOf && ` As of ${fmtDate(asOf)}.`}</span></sup>

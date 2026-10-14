@@ -1,0 +1,8 @@
+# Netlify settings. Security and cache headers come from dist/_headers, generated on every build.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  SITE_URL = "https://ibs.neerajprem.in"

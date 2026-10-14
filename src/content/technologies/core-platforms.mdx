@@ -1,0 +1,75 @@
+---
+title: Core banking platforms
+topicId: core-platforms
+summary: "Bank ledgers run on established commercial platforms and newer cloud-native cores. They differ in architecture, deployment and database. Choosing one is a decade-long commitment."
+blurb: "The main commercial and cloud-native cores, how they are deployed, what they depend on, and how banks choose."
+domain: design
+depth: intro
+order: 1
+updated: 2026-09-29
+tags: [core, platforms, vendors, technology]
+related: [/architecture/cbs/, /architecture/modernisation/, databases]
+facts: [sbi-bancs, finacle-edgeverve, finacle-reach-2020, edb-finacle-2019, ibcc-cbs, rbi-md-it-outsourcing-2023]
+---
+
+## Why it matters
+
+The core platform is usually a bank's largest single technology decision. It sets the product catalogue the bank can offer, how quickly it can change, which skills it needs and which vendor it depends on for the next decade or more. [Core banking system architecture](/architecture/cbs/) explains what a core does; this page covers the products.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Core banking platforms" head={['Platform', 'Maker', 'Architecture', 'Indian users named in public sources']} rows={[
+  ['TCS BaNCS', 'Tata Consultancy Services', 'Established commercial suite; deposits, lending, payments and more', 'State Bank of India (see sources)'],
+  ['Finacle', 'EdgeVerve Systems, a wholly owned Infosys subsidiary', 'Established commercial suite, now offered in modular, componentised form', 'None confirmed yet on this site'],
+  ['Oracle FLEXCUBE', 'Oracle', 'Established commercial suite, closely tied to the Oracle database', 'None confirmed yet on this site'],
+  ['Temenos Transact', 'Temenos', 'Established commercial suite, widely used outside India', 'None confirmed yet on this site'],
+  ['Mambu', 'Mambu', 'Cloud-native, delivered as software as a service', 'None confirmed yet on this site'],
+  ['Thought Machine Vault', 'Thought Machine', 'Cloud-native core where products are defined as code', 'None confirmed yet on this site'],
+  ['Shared community platforms', 'Various', 'One hosted core serving many smaller banks', 'See the note on shared platforms below'],
+]} note="Product names are for reference only. The site does not recommend vendors. Customers are named only where a public source confirms them." facts={['sbi-bancs', 'finacle-edgeverve']} /></div>
+
+<p><Fact id="sbi-bancs" show="claim" /> <Fact id="finacle-edgeverve" show="claim" /> <Fact id="finacle-reach-2020" show="claim" /></p>
+
+### Deployment models
+
+A common pattern is for a large bank to run its core on-premises, in its own data centres, with a disaster-recovery site. Some platforms are also offered hosted by the vendor or a partner, or as software as a service. Smaller banks often share a platform. <Fact id="ibcc-cbs" show="claim" /> Any arrangement where a third party runs the core brings RBI's outsourcing rules into play: <Fact id="rbi-md-it-outsourcing-2023" show="claim" />
+
+### Database dependence
+
+Established cores were built on large commercial relational databases, and their performance, licensing and skills needs follow from that choice. Some vendors now support open-source databases for parts of the platform. <Fact id="edb-finacle-2019" show="claim" />
+
+## How to choose
+
+Banks usually weigh six things:
+
+- **Functional fit:** the products the bank sells today and expects to sell, including Indian requirements such as priority-sector tagging, regulatory returns and connections to Indian payment rails.
+- **Architecture:** whether the platform can run modules independently, expose APIs and cope with round-the-clock payments without long batch windows.
+- **Proven scale:** reference customers of a similar size, checked directly rather than taken from brochures.
+- **Total cost:** licences, hardware, database, implementation partner, upgrades and the in-house team, over ten years rather than one.
+- **Skills and partners:** how many people in the Indian market know the platform, and how many implementation partners support it.
+- **Exit:** how data would be extracted and moved if the relationship ended.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Platform choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Established commercial suite', 'Breadth of products, reference customers, local skills', 'Heavy customisation, long upgrade cycles, vendor dependence'],
+  ['Cloud-native core', 'Faster product change, modern APIs, elastic scale', 'Fewer large local references; cloud and outsourcing obligations'],
+  ['Shared community platform', 'Low cost and managed operations for a small bank', 'Little control over roadmap and change timing'],
+  ['Heavy customisation', 'An exact fit to current products', 'Every future upgrade becomes a project'],
+]} /></div>
+
+## Pitfalls
+
+- **Customising instead of configuring.** Code changes to the vendor's product make every later upgrade slower and riskier.
+- **Buying for the demo.** A platform chosen on user-interface screens rather than on batch performance, APIs and data model disappoints later.
+- **Underestimating data migration,** which is usually the longest and riskiest part of the programme.
+- **Ignoring the database bill.** Database licences and specialist skills can rival the platform's own cost.
+- **No exit plan,** leaving the bank unable to leave even when the relationship is failing.
+
+## Questions to ask a vendor
+
+- Which banks of our size run this version today, and can we speak to them without you present?
+- How long does end of day take at our projected volumes, and what runs during it?
+- Which functions are exposed as APIs, and which only through screens or files?
+- How is a new product launched: configuration, scripting or code change?
+- How do we extract all our data, in what format, if we leave?

@@ -1,0 +1,100 @@
+---
+title: Hybrid and multi-cloud deployment
+topicId: hybrid-cloud
+summary: "Banks split workloads between their own data centres and the cloud. Cloud use counts as outsourcing, with rules on data, security and exit. Multi-cloud adds resilience and cost."
+blurb: "Where each workload runs, data localisation, outsourcing and exit planning, connectivity, identity and cost control."
+domain: design
+depth: advanced
+order: 9
+updated: 2026-09-29
+tags: [cloud, infrastructure, outsourcing, architecture]
+related: [multi-dc, security, data]
+facts: [outsourcing-cloud-scope, outsourcing-cloud-lifecycle, outsourcing-cloud-shared, outsourcing-exit, data-localisation-2018, ibcc-cbs]
+---
+
+## Why it matters
+
+Cloud platforms offer capacity on demand, managed services and fast environments for development. Banks also carry obligations that do not move to the provider: data residency, security, resilience and the ability to leave. Most banks therefore run a **hybrid** estate, keeping some systems in their own data centres and putting others in the cloud. The architecture question is which workload goes where, and how the pieces connect safely.
+
+This page describes general patterns. It does not describe any organisation's actual estate.
+
+## The model explained
+
+### Three kinds of place
+
+**On-premises** means the bank's own data centres and hardware. **Private cloud** means cloud-style automation on infrastructure dedicated to the bank, in its own premises or a provider's. **Public cloud** means shared infrastructure from a provider, rented by the hour. A **community cloud** is shared among a defined group, such as banks of one type.
+
+### Placing workloads
+
+A useful first sort uses two questions: how sensitive is the workload, and how much does it benefit from elastic scale?
+
+<Figure title="A first cut at workload placement" caption="Illustrative. Real placement also weighs latency, cost, skills and regulatory approval.">
+  <Quadrant title="Workload placement" desc="Workloads placed by elasticity need and data sensitivity. The core ledger and payment interfaces are high sensitivity and low elasticity. Mobile backends and analytics need more elasticity with moderate sensitivity. Development and test and a marketing site are low sensitivity with high elasticity." x={['Steady load', 'Spiky load']} y={['Less sensitive', 'More sensitive']}
+    quadrants={['Own data centre or private cloud', 'Private or tightly controlled cloud', 'Either', 'Public cloud']}
+    items={[{ label: 'Core ledger', x: 0.12, y: 0.9 }, { label: 'Payment interfaces', x: 0.28, y: 0.75 }, { label: 'Mobile backend', x: 0.72, y: 0.62 }, { label: 'Analytics', x: 0.62, y: 0.4 }, { label: 'Dev and test', x: 0.8, y: 0.22 }, { label: 'Marketing site', x: 0.58, y: 0.08 }]} />
+</Figure>
+
+### Connectivity and identity
+
+Workloads in different places must talk to each other securely and predictably. Private, dedicated links between the bank's data centres and the cloud region carry traffic that should never cross the public internet, usually over two separate paths. **Identity federation** lets staff and services use one identity across both environments, so access is granted and removed in one place.
+
+<Figure title="Connecting a data centre to a cloud region" caption="Illustrative and generic.">
+  <BoxDiagram title="Hybrid connectivity" desc="The bank data centre holds core banking and the identity provider. A cloud region in India holds channel services and analytics. Core banking and channel services exchange API calls over private links, and the identity provider federates sign-in to the cloud services." width={440} height={250}
+    zones={[{ x: 5, y: 5, w: 200, h: 235, label: 'Bank data centre' }, { x: 235, y: 5, w: 200, h: 235, label: 'Cloud region in India' }]}
+    nodes={[
+      { id: 'core', x: 25, y: 50, w: 160, h: 48, label: 'Core banking', tone: 'core' },
+      { id: 'idp', x: 20, y: 160, w: 170, h: 48, label: 'Identity provider' },
+      { id: 'ch', x: 255, y: 50, w: 160, h: 48, label: 'Channel services' },
+      { id: 'an', x: 255, y: 160, w: 160, h: 48, label: 'Analytics' },
+    ]}
+    edges={[{ from: 'core', to: 'ch', both: true, label: 'private links' }, { from: 'idp', to: 'an', dashed: true, label: 'federated sign-in' }]} />
+</Figure>
+
+### Making the exit plan real
+
+An exit plan is only useful if it can be carried out. That means knowing, for each workload, which provider-specific services it depends on and what would replace them; keeping data in formats that can be exported; and holding enough skills in-house to run the workload elsewhere. Some banks rehearse exit by periodically restoring a workload's backups into another environment and running it there. The cost of exit is lowest when it is considered at design time, before the workload has grown around one provider's features.
+
+### Multi-cloud
+
+Using more than one cloud provider can reduce dependence on one supplier and give a way out if a relationship ends. It also multiplies skills, tooling, security configurations and network links. Many banks use multiple providers for different workloads rather than running the same workload across several.
+
+### Cost governance
+
+Cloud costs grow quietly: idle environments, oversized instances, data moving between regions. Tagging every resource to an owner, setting budgets with alerts and reviewing spend regularly keep the bill tied to value.
+
+## How it plays out in Indian banking
+
+For a regulated entity, cloud is a form of outsourcing. <Fact id="outsourcing-cloud-scope" show="claim" /> <Fact id="outsourcing-cloud-lifecycle" show="claim" /> <Fact id="outsourcing-cloud-shared" show="claim" />
+
+Where payment data may be stored limits where some workloads can run: <Fact id="data-localisation-2018" show="claim" /> And every arrangement needs a way out: <Fact id="outsourcing-exit" show="claim" />
+
+Shared platforms are not new in Indian banking. <Fact id="ibcc-cbs" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Deployment choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Keep a workload on-premises', 'Full control and simple residency', 'Slower capacity changes and hardware to own'],
+  ['Move it to public cloud', 'Elastic capacity and managed services', 'Outsourcing obligations and dependence on a provider'],
+  ['Single cloud provider', 'One set of skills and tools', 'Concentration risk and harder exit'],
+  ['Several providers', 'Less dependence on any one', 'More complexity, cost and security surface'],
+]} /></div>
+
+## Failure modes
+
+- **Accidental exposure** through a misconfigured storage bucket or network rule in the cloud.
+- **Data outside approved locations,** for example backups or logs replicated to another region.
+- **An exit plan that exists only on paper,** never tested and dependent on provider-specific services.
+- **Hidden coupling,** where an on-premises core cannot work without a cloud service, or the reverse, making both a single point of failure.
+- **Cost overruns** from resources nobody owns.
+
+## When to use it, and when to avoid it
+
+Use public cloud for workloads that benefit from elastic scale, such as channels, analytics and development environments, once the outsourcing, security and residency requirements are met. Keep the systems of record where the bank has the strongest control and the clearest exit path, unless a considered risk assessment says otherwise. Avoid moving a workload only because it is fashionable; move it because the gain is clear and the obligations are covered.
+
+## Questions for a design review
+
+- Why does this workload belong where it is placed, in one sentence a regulator would accept?
+- Where will its data, backups and logs physically reside?
+- Which controls are the bank's responsibility and which are the provider's?
+- How would the workload leave this provider, how long would it take, and has that been tested?
+- Who owns each cloud resource and its cost?

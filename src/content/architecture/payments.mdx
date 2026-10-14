@@ -1,0 +1,103 @@
+---
+title: Payment system architecture
+topicId: payments
+summary: "A payment system moves messages between banks, then settles money between them. Each payment is a state machine with exactly one outcome. Idempotency and reversals keep it that way."
+blurb: "Switches, participants and settlement accounts, and the state machine that stops a payment being lost or made twice."
+domain: design
+depth: intro
+order: 2
+updated: 2026-09-29
+tags: [payments, settlement, idempotency, architecture]
+related: [cbs, event-driven, multi-dc]
+facts: [rtgs-gross, neft-48-batches-2019, tat-upi-transfer, tat-upi-merchant, tat-2019, upi-daily-2026-08, cts-hourly-settlement]
+---
+
+## Why it matters
+
+Payments are where banking meets the outside world in real time. A customer who taps "pay" expects an answer in seconds, and a merchant expects the money to be there. Behind that answer, several independently run systems must agree on what happened, even when a network link drops halfway through. Getting that agreement right, every time, is the core problem of payment architecture.
+
+## The model explained
+
+### Participants, switch and settlement
+
+A payment system has **participants**, usually banks, and an **operator** that runs a central **switch**. The switch receives a payment message from the payer's bank, routes it to the payee's bank, collects the answer and passes it back. Smaller banks and non-bank firms often join through a **sponsor bank** that is a direct member and settles on their behalf.
+
+Moving the message is only half the job. **Settlement** moves the money between banks, in the accounts they hold at the central bank. Some systems settle each payment on its own; others settle the net amount each bank owes at intervals.
+
+<Figure title="From payment messages to settlement" caption="Illustrative. Gross systems skip the netting step and settle each payment directly.">
+  <BoxDiagram title="Payment messages and settlement" desc="Banks exchange payment messages through the switch. The switch works out each bank's net position for the cycle, and those net amounts are settled in the banks' accounts at RBI." width={440} height={300}
+    nodes={[
+      { id: 'a', x: 15, y: 20, w: 125, h: 44, label: 'Bank A' },
+      { id: 'b', x: 157, y: 20, w: 125, h: 44, label: 'Bank B' },
+      { id: 'c', x: 300, y: 20, w: 125, h: 44, label: 'Bank C' },
+      { id: 'sw', x: 60, y: 120, w: 320, h: 56, label: 'Switch: routes messages and\nworks out net positions', tone: 'accent' },
+      { id: 'rbi', x: 60, y: 230, w: 320, h: 48, label: "Banks' settlement accounts at RBI", tone: 'core' },
+    ]}
+    edges={[{ from: 'a', to: 'sw', both: true }, { from: 'b', to: 'sw', both: true, label: 'messages' }, { from: 'c', to: 'sw', both: true }, { from: 'sw', to: 'rbi', label: 'net amounts per cycle' }]} />
+</Figure>
+
+### Message standards
+
+Messages follow published formats so that every participant can read them. Card and ATM networks have long used ISO 8583, a compact format built for authorisations. ISO 20022 is a richer, structured format increasingly used for high-value and cross-border payments, because it carries more information about the payer, the payee and the purpose. UPI defines its own interface specifications, which banks and apps must implement and certify against.
+
+### Every payment is a state machine
+
+A payment moves through a small number of states and must end in exactly one final state. The difficult cases are the ones in the middle: the payer has been debited but no answer has come back from the payee's bank.
+
+<Figure title="States of a push payment" caption="Illustrative. Real systems use more states and different names, but the shape is the same.">
+  <BoxDiagram title="Payment state machine" desc="A payment is initiated. It is either declined, or the payer is debited. After the debit, the payee is credited and the payment completes, or no answer arrives and it becomes pending. A pending payment either completes when the credit is confirmed or is reversed back to the payer." width={440} height={380}
+    nodes={[
+      { id: 'init', x: 130, y: 20, w: 150, h: 44, label: 'Initiated' },
+      { id: 'dec', x: 305, y: 20, w: 120, h: 44, label: 'Declined', tone: 'muted' },
+      { id: 'deb', x: 130, y: 115, w: 150, h: 44, label: 'Payer debited' },
+      { id: 'cred', x: 20, y: 215, w: 150, h: 44, label: 'Payee credited' },
+      { id: 'pend', x: 260, y: 211, w: 160, h: 52, label: 'Pending\n(no answer yet)', tone: 'muted' },
+      { id: 'done', x: 20, y: 315, w: 150, h: 44, label: 'Completed', tone: 'core' },
+      { id: 'rev', x: 260, y: 315, w: 160, h: 44, label: 'Reversed', tone: 'core' },
+    ]}
+    edges={[{ from: 'init', to: 'dec', label: 'PIN or funds fail' }, { from: 'init', to: 'deb' }, { from: 'deb', to: 'cred' }, { from: 'deb', to: 'pend', label: 'time-out' }, { from: 'cred', to: 'done' }, { from: 'pend', to: 'done', dashed: true, label: 'credit confirmed' }, { from: 'pend', to: 'rev', label: 'no credit' }]} />
+</Figure>
+
+### Idempotency: the same request twice must do nothing new
+
+Networks fail, so senders retry. If a retry is processed as a new payment, the customer pays twice. Every payment therefore carries a unique reference created by the sender, and every system in the chain records references it has already handled. A repeat with a known reference returns the original answer instead of moving money again. The same reference lets any party ask later, "what happened to this payment?", and get one consistent answer.
+
+### Reversals, disputes and reconciliation
+
+A pending payment is resolved either by confirming the credit or by reversing the debit. At the end of each cycle, every bank compares its own records with the operator's settlement report. Any mismatch becomes an exception to investigate. Disputes, such as a customer saying goods never arrived, follow a separate, slower process with its own rules and deadlines.
+
+## How it plays out in Indian banking
+
+India runs both kinds of settlement side by side. <Fact id="rtgs-gross" show="claim" /> <Fact id="neft-48-batches-2019" show="claim" /> Cheques now settle on a fixed hourly rhythm: <Fact id="cts-hourly-settlement" show="claim" />
+
+Scale turns rare edge cases into daily events. At about <Fact id="upi-daily-2026-08" />, even a tiny share of time-outs means many stuck payments every day, so the rules for resolving them matter. <Fact id="tat-2019" show="claim" /> <Fact id="tat-upi-transfer" show="claim" /> <Fact id="tat-upi-merchant" show="claim" />
+
+These deadlines shape system design. A bank needs automated status checks, reversal jobs that run well inside the limit and records that prove when each step happened.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Payment design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Gross settlement', 'No settlement risk between banks', 'Banks need more money on hand in their settlement accounts'],
+  ['Net settlement', 'Far less money needs to move', 'Exposure between banks until the cycle settles'],
+  ['Credit the customer before settlement', 'An instant experience', 'The bank carries the risk until settlement completes'],
+  ['Strict time-outs', 'Fast answers for customers', 'More payments land in the pending state and need resolving'],
+]} /></div>
+
+## Failure modes
+
+- **Duplicate payments** when a retry is treated as new because references are missing or not checked.
+- **Stuck payments** that stay pending because no job asks for their status or reverses them in time.
+- **Reconciliation breaks** when a bank's records and the operator's report disagree and no one owns the difference.
+- **Sponsor-bank bottlenecks** when many smaller participants depend on one direct member's systems.
+
+## When to use it, and when to avoid it
+
+Use this model, a central switch with a state machine per payment, for any system where many independent parties must agree on money. Avoid building a private payment network where a public rail already does the job; joining the existing rail is usually cheaper and safer. Inside a bank, avoid letting each channel talk to each rail directly. A single payment hub that owns references, states and reconciliation is easier to control.
+
+## Questions for a design review
+
+- Where is the unique reference created, and does every retry reuse it?
+- Which component owns each payment's state, and can it answer a status query at any time?
+- How are pending payments found and resolved inside the regulator's time limits?
+- What does reconciliation compare, how often, and who owns each exception?
+- What happens to in-flight payments if the switch connection drops?

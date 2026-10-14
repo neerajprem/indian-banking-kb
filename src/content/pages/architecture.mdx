@@ -1,0 +1,42 @@
+---
+title: Architecture
+summary: "Nine models that shape how Indian banks build and run their systems, from the core ledger to cloud placement. Open any topic for the full explanation, diagrams and sources."
+domain: design
+order: 1
+kind: section
+updated: 2026-09-29
+tags: [architecture]
+---
+
+## How to read this section
+
+Topics are grouped by how much background they assume. If you are new to banking systems, start with core banking system architecture, then payment system architecture. The advanced topics assume you know both.
+
+Patterns described here are common across the industry. Where a page describes how a named organisation works, it cites a public source; everything else is labelled illustrative.
+
+## How the topics connect
+
+<Figure title="How the architecture topics relate" caption="Each box is a topic in this section. Arrows show which topic builds on which.">
+  <BoxDiagram title="Architecture topic map" desc="The core banking system is at the centre. Payment systems post to it, API-first design exposes it, and event-driven design and data architecture carry its changes outward. Modernisation replaces it in stages. Security architecture protects the whole estate. Multi-data-centre design keeps it running, and hybrid cloud decides where each part runs." width={440} height={440}
+    nodes={[
+      { id: 'api', x: 20, y: 20, w: 190, h: 48, label: 'API-first' },
+      { id: 'pay', x: 230, y: 20, w: 190, h: 48, label: 'Payments' },
+      { id: 'ev', x: 20, y: 110, w: 190, h: 48, label: 'Event-driven' },
+      { id: 'cbs', x: 230, y: 110, w: 190, h: 48, label: 'Core banking', tone: 'core' },
+      { id: 'data', x: 20, y: 200, w: 190, h: 48, label: 'Data' },
+      { id: 'mod', x: 230, y: 200, w: 190, h: 48, label: 'Modernisation' },
+      { id: 'sec', x: 20, y: 290, w: 190, h: 48, label: 'Security', tone: 'accent' },
+      { id: 'mdc', x: 230, y: 290, w: 190, h: 48, label: 'Multi-DC and DR' },
+      { id: 'hc', x: 125, y: 375, w: 190, h: 48, label: 'Hybrid cloud' },
+    ]}
+    edges={[
+      { from: 'pay', to: 'cbs', label: 'posts to' },
+      { from: 'api', to: 'ev' },
+      { from: 'cbs', to: 'ev', label: 'events' },
+      { from: 'ev', to: 'data' },
+      { from: 'mod', to: 'cbs', label: 'replaces' },
+      { from: 'mdc', to: 'mod', dashed: true },
+      { from: 'hc', to: 'mdc', label: 'where it runs' },
+      { from: 'sec', to: 'hc', dashed: true },
+    ]} />
+</Figure>

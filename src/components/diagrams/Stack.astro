@@ -1,0 +1,14 @@
+---
+// Layered architecture stack (HTML, so it reflows naturally and reads well without CSS).
+interface Layer { label: string; items: string[]; core?: boolean }
+interface Props { layers: Layer[]; label: string }
+const { layers, label } = Astro.props;
+---
+<ol class="stack" aria-label={label}>
+  {layers.map((l) => (
+    <li class:list={['stack-layer', { core: l.core }]}>
+      <span class="stack-name">{l.label}</span>
+      <ul class="stack-items">{l.items.map((i) => <li>{i}</li>)}</ul>
+    </li>
+  ))}
+</ol>

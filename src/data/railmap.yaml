@@ -1,0 +1,21 @@
+# Home-page rail map. Illustrative and simplified. Station descriptions are drafts until Stage 3 sources them.
+status: draft
+stations:
+  payer: { name: Payer, xy: [70, 230], lab: [0, 36], mlab: [26, 6], text: "The person or business paying. A UPI payment starts in an app; other rails start with an instruction to the payer's bank." }
+  corp: { name: Company, xy: [70, 110], lab: [0, -22], mlab: [0, -24], text: "Employers, lenders and billers send bulk files, such as salaries or loan instalments, through their sponsor bank to NACH." }
+  rbank: { name: "Payer's bank", xy: [220, 230], lab: [-14, -26], mlab: [-26, -10], text: "Holds the payer's account, checks funds and authentication, and debits the account." }
+  npci: { name: NPCI, xy: [500, 110], lab: [0, -28], mlab: [-32, 6], text: "The National Payments Corporation of India runs retail payment systems, including UPI and the National Financial Switch for ATMs.", page: npci }
+  atm: { name: ATM, xy: [600, 30], lab: [22, 6], mlab: [0, 36], text: "A withdrawal at another bank's ATM travels through the National Financial Switch to the bank that issued the card." }
+  bbank: { name: "Payee's bank", xy: [800, 230], lab: [-30, 6], mlab: [40, 30], text: "Credits the payee. For UPI and IMPS the customer is credited at once, and the banks settle among themselves later." }
+  payee: { name: Payee, xy: [940, 230], lab: [0, 36], mlab: [26, 6], text: "The person or shop receiving the money." }
+  iftas: { name: "IFTAS network (SFMS)", mname: "IFTAS (SFMS)", xy: [330, 370], lab: [0, 36], mlab: [-30, 6], text: "Indian Financial Technology and Allied Services, an RBI subsidiary, runs INFINET and SFMS, the network and messaging layer that carry RTGS and NEFT.", page: iftas }
+  rbi: { name: RBI, xy: [500, 370], lab: [0, 36], mlab: [-30, 6], text: "The Reserve Bank of India runs RTGS and NEFT, and holds the accounts in which banks settle with one another." }
+lines:
+  - { id: upi, name: UPI, full: Unified Payments Interface, o: -2, pts: [payer, rbank, [340, 110], npci, [800, 110], bbank, payee] }
+  - { id: imps, name: IMPS, full: Immediate Payment Service, o: -1, pts: [rbank, [340, 110], npci, [800, 110], bbank] }
+  - { id: cts, name: CTS, full: Cheque Truncation System, o: 0, pts: [rbank, [340, 110], npci, [800, 110], bbank] }
+  - { id: nach, name: NACH, full: National Automated Clearing House, o: 1, pts: [corp, [340, 110], npci, [800, 110], bbank] }
+  - { id: cards, name: Cards and ATMs, full: National Financial Switch, o: 2, pts: [atm, [600, 110], npci, [340, 110], rbank] }
+  - { id: rtgs, name: RTGS, full: Real Time Gross Settlement, o: -0.5, pts: [rbank, [220, 370], iftas, rbi, [800, 370], bbank] }
+  - { id: neft, name: NEFT, full: National Electronic Funds Transfer, o: 0.5, pts: [rbank, [220, 370], iftas, rbi, [800, 370], bbank] }
+settle: { from: npci, to: rbi, label: Net settlement }

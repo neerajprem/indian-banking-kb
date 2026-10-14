@@ -1,0 +1,25 @@
+---
+// Topic overview arranged like a book's contents, grouped by how much background each topic assumes.
+import TopicCard from './TopicCard.astro';
+import { readingMinutes } from '../lib/site';
+interface Entry { id: string; body?: string; data: { title: string; blurb: string; depth: string; order: number } }
+interface Props { base: string; entries: Entry[]; domain: string; collection?: string }
+const { base, entries, domain, collection } = Astro.props;
+const cols = [
+  { key: 'intro', label: 'Start here', extra: 'introductory', cls: 'first' },
+  { key: 'intermediate', label: 'Next', extra: 'intermediate', cls: 'two-up' },
+  { key: 'advanced', label: 'Deeper', extra: 'advanced', cls: '' },
+];
+const sorted = [...entries].sort((a, b) => a.data.order - b.data.order);
+---
+<div class="topic-index" data-domain={domain}>
+  {cols.map((c) => {
+    const list = sorted.filter((e) => e.data.depth === c.key);
+    return list.length > 0 && (
+      <section class:list={['depth-col', c.cls]} aria-labelledby={`dc-${c.key}`}>
+        <h3 id={`dc-${c.key}`}>{c.label} <span>{c.extra}</span></h3>
+        <ul>{list.map((e) => <li><TopicCard href={`${base}${e.id}/`} title={e.data.title} blurb={e.data.blurb} minutes={readingMinutes(e.body)} vt={collection ? `${collection}-${e.id}` : undefined} /></li>)}</ul>
+      </section>
+    );
+  })}
+</div>

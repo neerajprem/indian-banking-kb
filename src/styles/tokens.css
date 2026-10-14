@@ -1,0 +1,74 @@
+@layer tokens {
+  :root {
+    color-scheme: light;
+    /* Surfaces and ink */
+    --bg: #FFFFFF; --surface: #F4F5F8; --surface-2: #EBEDF2;
+    --ink: #141925; --ink-2: #4A5163; --ink-3: #687084;
+    --rule: #E1E4EA; --rule-strong: #858C9B;
+    --accent: #6A3EC2; --accent-ink: #5A30AE; --accent-tint: #F1ECFB; --on-accent: #FFFFFF; --focus: #6A3EC2;
+    --shadow-pop: 0 10px 30px rgb(20 25 37 / .14);
+    /* Payment rail lines (graphics only, 3:1 or better on --bg) */
+    --upi: #6A3EC2; --imps: #D4460E; --cts: #A86400; --nach: #2A8636; --cards: #C01E58; --rtgs: #0B6C7D; --neft: #1A62CC; --settle: #8A91A0;
+    /* Domains: line colour, text-safe ink, tint */
+    --d-foundation: #1A62CC; --d-foundation-ink: #1756B3; --d-foundation-tint: #EAF1FC;
+    --d-design: #6A3EC2; --d-design-ink: #5A30AE; --d-design-tint: #F1ECFB;
+    --d-decision: #A86400; --d-decision-ink: #8A5200; --d-decision-tint: #FBF1E1;
+    --d-governance: #0B6C7D; --d-governance-ink: #0A5E6D; --d-governance-tint: #E3F2F4;
+    --d-reference: #4A5163; --d-reference-ink: #3F4555; --d-reference-tint: #EEF0F3;
+    /* Callouts */
+    --c-note: #1A62CC; --c-note-ink: #1756B3; --c-note-tint: #EAF1FC;
+    --c-caution: #A86400; --c-caution-ink: #7F4B00; --c-caution-tint: #FBF1E1;
+    --c-risk: #B3261E; --c-risk-ink: #A1221B; --c-risk-tint: #FBEAEA;
+    --c-definition: #6A3EC2; --c-definition-ink: #5A30AE; --c-definition-tint: #F1ECFB;
+    /* Code */
+    --code-bg: #F6F7F9; --tk-comment: #5F6677; --tk-string: #1F7A3A; --tk-keyword: #9A2D8F; --tk-number: #B34700;
+    --tk-func: #1756B3; --tk-type: #0A5E6D; --tk-tag: #A1221B; --tk-attr: #7A4E00; --tk-variable: #3F4555;
+
+    /* Type */
+    --font-head: "Schibsted Grotesk", "Schibsted Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-body: "Literata", "Literata Fallback", Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --step--1: 0.875rem;
+    --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+    --step-1: 1.25rem;
+    --step-2: 1.5625rem;
+    --step-3: clamp(1.6rem, 1.35rem + 0.9vw, 1.95rem);
+    --step-4: clamp(1.95rem, 1.55rem + 1.6vw, 2.44rem);
+    --step-5: clamp(2.44rem, 1.7rem + 3.2vw, 4rem);
+    /* Space (4 px base) */
+    --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+    /* Shape */
+    --r-sm: 8px; --r-md: 14px;
+    /* Layout */
+    --container: 1240px; --gutter: clamp(16px, 4vw, 24px); --measure: 68ch; --margin-col: 16rem; --toc-col: 13.5rem;
+    --header-h: 64px;
+    /* Motion */
+    --dur-fast: 150ms; --ease: cubic-bezier(.2, 0, 0, 1);
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0F1522; --surface: #18213A; --surface-2: #202A46;
+    --ink: #E8EBF3; --ink-2: #AAB2C6; --ink-3: #8A93AA;
+    --rule: #27314A; --rule-strong: #606D90;
+    --accent: #A68CF2; --accent-ink: #B9A4F7; --accent-tint: #231C3D; --on-accent: #0F1522; --focus: #B9A4F7;
+    --shadow-pop: 0 10px 30px rgb(0 0 0 / .55);
+    --upi: #A68CF2; --imps: #FF8A4F; --cts: #F0B24B; --nach: #63CF70; --cards: #FF6FA1; --rtgs: #3FC6D8; --neft: #62A5FF; --settle: #76809A;
+    --d-foundation: #62A5FF; --d-foundation-ink: #7DB5FF; --d-foundation-tint: #16233F;
+    --d-design: #A68CF2; --d-design-ink: #B9A4F7; --d-design-tint: #231C3D;
+    --d-decision: #F0B24B; --d-decision-ink: #F3C06A; --d-decision-tint: #2E2414;
+    --d-governance: #3FC6D8; --d-governance-ink: #5CD2E1; --d-governance-tint: #102B31;
+    --d-reference: #AAB2C6; --d-reference-ink: #BCC3D4; --d-reference-tint: #1C2233;
+    --c-note: #62A5FF; --c-note-ink: #7DB5FF; --c-note-tint: #16233F;
+    --c-caution: #F0B24B; --c-caution-ink: #F3C06A; --c-caution-tint: #2E2414;
+    --c-risk: #FF8A80; --c-risk-ink: #FF9C93; --c-risk-tint: #3A1C1E;
+    --c-definition: #A68CF2; --c-definition-ink: #B9A4F7; --c-definition-tint: #231C3D;
+    --code-bg: #141B2E; --tk-comment: #939BB0; --tk-string: #7FD493; --tk-keyword: #E39BDB; --tk-number: #FFB07A;
+    --tk-func: #7DB5FF; --tk-type: #5CD2E1; --tk-tag: #FF9C93; --tk-attr: #F3C06A; --tk-variable: #C9CFDD;
+  }
+
+  @media (prefers-contrast: more) {
+    :root { --ink-2: #2F3544; --ink-3: #3F4555; --rule: #A3AAB8; --rule-strong: #5F6677; }
+    [data-theme="dark"] { --ink-2: #D2D7E3; --ink-3: #BCC3D4; --rule: #4A5677; --rule-strong: #8A93AA; }
+  }
+}

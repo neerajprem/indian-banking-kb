@@ -1,0 +1,35 @@
+---
+title: Technologies
+summary: "Twelve families of technology found in Indian banking, what each is for, how to choose between the options, and the pitfalls to avoid."
+domain: design
+order: 2
+kind: section
+updated: 2026-09-29
+tags: [technology]
+---
+
+## How to read this section
+
+Each topic starts with a landscape table of the main options and what they are good at, then explains how to choose, the trade-offs and the common pitfalls, and ends with questions for a design review. Product names appear as plain text for reference only; the site does not recommend vendors. Indian users of a product are named only where a public source confirms it.
+
+## How the topics fit together
+
+<Figure title="Where each technology sits" caption="Each box is a topic in this section, placed by the layer it mostly serves. Languages and security run through every layer.">
+  <BoxDiagram title="Technology topic map" desc="Mobile apps call integration and messaging, which reach payment technology and machine learning services, which run on core platforms and databases. Containers and cloud host most layers. Security technologies, observability and programming languages apply across all of them." width={440} height={470}
+    zones={[{ x: 5, y: 5, w: 430, h: 70, label: 'Channels' }, { x: 5, y: 85, w: 430, h: 70, label: 'Integration' }, { x: 5, y: 165, w: 430, h: 70, label: 'Specialised services' }, { x: 5, y: 245, w: 430, h: 70, label: 'Systems of record' }, { x: 5, y: 325, w: 430, h: 70, label: 'Platform' }]}
+    nodes={[
+      { id: 'mob', x: 130, y: 30, w: 180, h: 38, label: 'Mobile' },
+      { id: 'int', x: 30, y: 110, w: 180, h: 38, label: 'Integration' },
+      { id: 'msg', x: 230, y: 110, w: 180, h: 38, label: 'Messaging' },
+      { id: 'pay', x: 30, y: 190, w: 180, h: 38, label: 'Payment technology' },
+      { id: 'ml', x: 230, y: 190, w: 180, h: 38, label: 'Machine learning' },
+      { id: 'core', x: 30, y: 270, w: 180, h: 38, label: 'Core platforms', tone: 'core' },
+      { id: 'db', x: 230, y: 270, w: 180, h: 38, label: 'Databases', tone: 'core' },
+      { id: 'con', x: 30, y: 350, w: 180, h: 38, label: 'Containers' },
+      { id: 'cld', x: 230, y: 350, w: 180, h: 38, label: 'Cloud' },
+      { id: 'sec', x: 15, y: 415, w: 130, h: 44, label: 'Security', tone: 'accent' },
+      { id: 'obs', x: 155, y: 415, w: 130, h: 44, label: 'Observability', tone: 'accent' },
+      { id: 'lang', x: 295, y: 415, w: 130, h: 44, label: 'Languages', tone: 'accent' },
+    ]}
+    edges={[{ from: 'mob', to: 'int' }, { from: 'mob', to: 'msg' }, { from: 'int', to: 'pay' }, { from: 'msg', to: 'ml' }, { from: 'pay', to: 'core' }, { from: 'ml', to: 'db' }]} />
+</Figure>

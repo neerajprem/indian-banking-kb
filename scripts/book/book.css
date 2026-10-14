@@ -1,0 +1,156 @@
+/* Book edition: 6 x 9 inch pages, printed by Chromium on top of the site's own stylesheet. */
+@page { size: 6in 9in; margin: 0.78in 0.62in 0.8in 0.62in;
+  @bottom-center { content: counter(page); font: 8.5pt "Schibsted Grotesk", sans-serif; color: #4A5163; }
+  @top-left { content: "Indian Banking Ecosystem"; font: 7.5pt "Schibsted Grotesk", sans-serif; color: #687084; } }
+@page cover { @bottom-center { content: ""; } @top-left { content: ""; } }
+@page frontp { @top-left { content: ""; } }
+@page tocp { @top-left { content: ""; } }
+.contents-page { page: tocp; }
+@page parts { @top-left { content: ""; } }
+@page back { @top-left { content: "Indian Banking Ecosystem"; font: 7.5pt "Schibsted Grotesk", sans-serif; color: #687084; } }
+
+html { font-size: 9.2pt !important; }
+body.book { display: block; background: #fff; color: #141925; font-family: "Literata", Georgia, serif; line-height: 1.5; }
+.book a { color: #5A30AE; text-decoration: none; }
+.book a[href^="http"]::after { content: none !important; }
+.book .notes a[href^="http"]::after, .book .profile-notes a[href^="http"]::after { content: " " attr(href) !important; color: #687084; font-size: 0.85em; word-break: break-all; }
+
+/* Cover and front matter */
+.cover { page: cover; break-after: page; break-inside: avoid; padding-top: 1.1in; }
+.cover-kicker { font: 600 9pt "Schibsted Grotesk", sans-serif; color: #4A5163; }
+.cover-title { font: 800 30pt/1.02 "Schibsted Grotesk", sans-serif; letter-spacing: -0.02em; margin-top: 8pt; }
+.cover-sub { font: 400 13pt/1.35 "Literata", serif; color: #4A5163; margin-top: 10pt; max-width: 3.8in; }
+.cover-lines { display: grid; gap: 7pt; width: 4.2in; margin-top: 0.55in; }
+.stripe { display: block; height: 4.5pt; border-radius: 3pt; }
+.stripe-upi { background: #6A3EC2; } .stripe-imps { background: #D4460E; } .stripe-cts { background: #A86400; } .stripe-nach { background: #2A8636; }
+.stripe-cards { background: #C01E58; } .stripe-rtgs { background: #0B6C7D; } .stripe-neft { background: #1A62CC; }
+.cover-pub { font: 600 10pt "Schibsted Grotesk", sans-serif; margin-top: 0.7in; }
+.front { page: frontp; break-before: page; }
+.imprint { font-size: 0.92em; padding-top: 2.4in; }
+.imprint h2 { font-size: 10pt; margin-top: 12pt; }
+.imprint p { margin-top: 6pt; }
+.front-title, .chapter-title, .part-title { font-family: "Schibsted Grotesk", sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+.front-title { font-size: 20pt; margin-bottom: 14pt; }
+.front p + p { margin-top: 8pt; }
+
+/* Contents */
+.toc-list { list-style: none; padding: 0; font-family: "Schibsted Grotesk", sans-serif; font-size: 9pt; }
+.toc-list li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 0 6pt; padding: 2.4pt 0; align-items: baseline; }
+.toc-part { margin-top: 8pt; font-weight: 800; grid-template-columns: 3.6em 1fr auto !important; }
+.toc-back { margin-top: 2pt; }
+.toc-list li:first-of-type { margin-top: 0; }
+.toc-pg { font-variant-numeric: tabular-nums; min-width: 2.2em; text-align: right; }
+
+/* Parts and chapters */
+.part { break-before: page; }
+.part-head { page: parts; padding-top: 1.4in; }
+.part-opener { page: auto; }
+.part-num { font: 700 11pt "Schibsted Grotesk", sans-serif; color: #6A3EC2; }
+.part-title { font-size: 26pt; margin-top: 4pt; }
+.part-intro { font-size: 10.5pt; margin-top: 14pt; color: #2F3544; }
+.part-opener { margin-top: 18pt; }
+.part-opener h2 { font-size: 12pt; margin-top: 12pt; }
+.chapter, .appendix { break-before: page; }
+.appendix { page: back; }
+.chapter-num { font: 700 9.5pt "Schibsted Grotesk", sans-serif; color: #6A3EC2; margin-top: 0.35in; }
+.chapter-title { font-size: 21pt; line-height: 1.08; margin-top: 3pt; }
+.chapter-summary { font-size: 10.8pt; line-height: 1.45; color: #2F3544; margin-top: 9pt; }
+.chapter-lede { font: italic 9.6pt/1.5 "Literata", serif; color: #4A5163; margin-top: 9pt; padding-left: 8pt; border-left: 2pt solid #E1E4EA; }
+
+/* Body copy: undo the screen layout (sidebars, margin column, wide bleeds) */
+.book .prose { max-inline-size: none !important; padding: 0 !important; font-size: 1em; line-height: 1.5; margin-top: 12pt; }
+.book .prose .wide, .book .wide { margin: 0 !important; }
+.book .prose > * + * { margin-block-start: 0.8em; }
+.book .prose h2 { font-size: 13pt; margin-block-start: 1.4em; break-after: avoid; }
+.book .prose h3 { font-size: 11pt; margin-block-start: 1.2em; break-after: avoid; }
+.book .prose h4 { font-size: 10pt; margin-block-start: 1em; break-after: avoid; }
+.book .prose h5 { font-size: 9.5pt; margin-block-start: 0.9em; }
+.book .prose p, .book .prose li { orphans: 3; widows: 3; }
+.book .note, .book .note.open { display: block !important; float: none !important; inline-size: auto !important; margin: 4pt 0 6pt !important; padding: 2pt 0 2pt 8pt !important; border-left: 2pt solid #A68CF2 !important; font: 8pt/1.4 "Schibsted Grotesk", sans-serif !important; color: #4A5163 !important; background: none !important; }
+.book .note-num { display: none; }
+.book .cite { font-size: 0.66em; }
+
+/* Figures and diagrams */
+.book .figure { break-inside: avoid; border-block: 0.6pt solid #E1E4EA; padding-block: 8pt; margin-block: 10pt; }
+.book .figure-title { font-size: 9.5pt; margin-bottom: 6pt; }
+.book .figure figcaption { font-size: 7.8pt; }
+.book .dg-svg { max-inline-size: 100% !important; inline-size: auto; margin-inline: auto !important; }
+.book .dg-svg.bx { inline-size: auto !important; }
+.book .map-d { display: block !important; inline-size: 100% !important; }
+.book .railmap { break-inside: avoid; padding: 8pt; border-radius: 6pt; }
+.book .railmap-foot { font-size: 7.5pt; }
+.book .explainer { display: block; }
+.book .explainer-fig { position: static !important; border: 0 !important; }
+.book .explainer .steps .step-body { display: block !important; font-size: 0.95em; }
+.book .step-btn { padding: 4pt 0; font-size: 9.5pt; }
+.book .rgraph .dg-svg { inline-size: 3.6in !important; }
+.book .stack-layer { grid-template-columns: 1.2in 1fr !important; }
+.book .flow { grid-auto-flow: row !important; }
+
+/* Tables */
+.book .table-wrap { overflow: visible !important; border: 0.6pt solid #E1E4EA; border-radius: 4pt; background: none !important; margin-block: 8pt; }
+.book .table-wrap table { min-inline-size: 0 !important; font-size: 7.6pt; line-height: 1.35; }
+.book .table-wrap caption { font-size: 8.8pt; padding: 5pt 6pt 3pt; }
+.book .table-wrap th, .book .table-wrap td { padding: 3.5pt 5pt; }
+.book .table-wrap thead th { font-size: 7pt; }
+.book .table-wrap tr { break-inside: avoid; }
+.book .table-note { font-size: 7.4pt; }
+.book .rails-table tbody tr { display: table-row !important; border: 0 !important; padding: 0 !important; margin: 0 !important; }
+.book .rails-table thead { position: static !important; inline-size: auto !important; block-size: auto !important; clip-path: none !important; }
+.book .rails-table tbody th, .book .rails-table tbody td { display: table-cell !important; border-block-start: 0.6pt solid #E1E4EA !important; padding: 3.5pt 5pt !important; }
+.book .rails-table tbody td::before { content: none !important; }
+.book .compare .col-off { display: table-cell !important; }
+.ws-boxes { white-space: nowrap; font-size: 8.5pt; }
+.book .callout { break-inside: avoid; font-size: 0.95em; }
+
+/* Institution profiles in chapter 29 */
+.profile { break-before: page; }
+.profile > h2 { font-size: 15pt !important; }
+.book .inst-card { break-inside: avoid; padding: 8pt; }
+.book .inst-card dl { font-size: 8pt; }
+.profile-notes { margin-top: 10pt; font-size: 7.6pt; color: #4A5163; }
+.notes-h { font: 700 8.5pt "Schibsted Grotesk", sans-serif; color: #141925; }
+
+/* Chapter notes */
+.notes { margin-top: 16pt; border-top: 0.8pt solid #A3AAB8; padding-top: 6pt; font-size: 7.6pt; color: #2F3544; break-before: avoid; }
+.notes-title { font: 700 10pt "Schibsted Grotesk", sans-serif; margin-bottom: 4pt; }
+.notes ol, .profile-notes ol { padding-left: 1.8em; display: grid; gap: 3pt; }
+.book .sources-list li::before, .book .notes li::before, .book .profile-notes li::before { content: none; }
+.book .notes ol, .book .profile-notes ol { list-style: decimal; counter-reset: none; }
+
+/* Appendices */
+.gloss { column-count: 2; column-gap: 14pt; font-size: 7.8pt; line-height: 1.38; margin-top: 10pt; }
+.gloss-entry { break-inside: avoid; margin-bottom: 5pt; }
+.gloss dt { font: 800 8.4pt "Schibsted Grotesk", sans-serif; }
+.gloss dd { margin: 0; }
+.register { font-size: 7pt !important; }
+.register td { vertical-align: top; }
+.nowrap { white-space: nowrap; }
+.biblio { font-size: 7.6pt; line-height: 1.4; padding-left: 1.8em; display: grid; gap: 4pt; margin-top: 10pt; }
+.b-pub { font-weight: 700; }
+.b-url { display: block; color: #687084; word-break: break-all; font-size: 0.92em; }
+.index-body { column-count: 2; column-gap: 14pt; font: 7.8pt/1.45 "Schibsted Grotesk", sans-serif; margin-top: 10pt; }
+.index-body p { break-inside: avoid; margin: 0 0 2pt; }
+.index-body .ix-letter { font-weight: 800; font-size: 9.5pt; margin-top: 7pt; }
+.draft-tag { font-size: 6.6pt !important; padding: 0 4px !important; }
+.book .fact--draft { text-decoration: none; }
+
+/* Long tables break between rows; the site's print rule keeps every table whole, which strands blank pages. */
+.book table { break-inside: auto !important; }
+.book .table-wrap { break-inside: auto !important; }
+.book thead { display: table-header-group; }
+.book tr, .book .gloss-entry { break-inside: avoid; }
+.book .rgraph .dg-svg { break-inside: avoid; }
+
+.book .table-caption { font: 700 8.8pt 'Schibsted Grotesk', sans-serif; margin: 10pt 0 3pt !important; break-after: avoid; }
+/* Keep a figure's title with its diagram, and cap tall diagrams so they fit comfortably on a page. */
+.book .figure-title { break-after: avoid; }
+.book .figure > svg, .book .figure .dg-svg { max-block-size: 4.3in; }
+.book .figure { break-inside: avoid-page; }
+.book .part-opener h2 { break-after: avoid; }
+/* Part openers: the topic map starts a fresh page together with its heading. */
+
+/* SVG diagrams are inline-block: as block elements inside named pages, Chromium pushed them onto the next page, away from their titles. */
+.book .figure > svg.dg-svg { display: inline-block !important; vertical-align: top; }
+.book .figure { text-align: center; }
+.book .figure .figure-title, .book .figure figcaption { text-align: left; }

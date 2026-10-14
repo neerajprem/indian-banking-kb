@@ -1,0 +1,99 @@
+---
+title: Data architecture
+topicId: data
+summary: "Banks keep transaction and analytical systems apart. Data flows between them through batch and streaming pipelines. Regulatory reporting depends on that flow being complete and traceable."
+blurb: "Transaction and analytical stores, warehouses and lakes, streaming, and the lineage that regulatory reporting depends on."
+domain: design
+depth: intermediate
+order: 5
+updated: 2026-09-29
+tags: [data, reporting, analytics, architecture]
+related: [event-driven, hybrid-cloud, security]
+facts: [data-localisation-2018, itgrc-backup-restore, outsourcing-cloud-lifecycle]
+---
+
+## Why it matters
+
+Every balance, payment and loan in a bank is data, and so is every report to the regulator. A bank that cannot trace a figure in a regulatory return back to the transactions behind it cannot prove the figure is right. Good data architecture makes that tracing routine. It also lets risk models, fraud systems and management reports use the same trusted numbers instead of each building its own.
+
+## The model explained
+
+**Transaction systems** (OLTP) record individual events quickly and safely: a core ledger, a payment switch, a card system. They are optimised for many small writes. **Analytical systems** (OLAP) answer questions across millions of records: how many loans are overdue, which merchants are growing. They are optimised for large reads. Running heavy analysis on a transaction system slows it down for customers, so data is copied from one to the other.
+
+<Figure title="How data flows from transactions to reports" caption="Illustrative. Many banks run several of each store.">
+  <BoxDiagram title="Data flow" desc="Core banking, payments, and cards and loans feed an ingestion layer that runs batch and streaming pipelines. Data lands raw in a lake or lakehouse, then is cleaned and conformed into a warehouse, which feeds regulatory returns, risk models and dashboards." width={440} height={390}
+    nodes={[
+      { id: 's1', x: 10, y: 20, w: 130, h: 44, label: 'Core banking', tone: 'core' },
+      { id: 's2', x: 155, y: 20, w: 130, h: 44, label: 'Payments' },
+      { id: 's3', x: 300, y: 14, w: 130, h: 56, label: 'Cards and\nloans' },
+      { id: 'in', x: 60, y: 110, w: 320, h: 48, label: 'Ingestion: batch and streaming', tone: 'accent' },
+      { id: 'lake', x: 10, y: 205, w: 190, h: 56, label: 'Lake or lakehouse\n(raw history)' },
+      { id: 'dw', x: 240, y: 205, w: 190, h: 56, label: 'Warehouse\n(curated)', tone: 'core' },
+      { id: 'o1', x: 10, y: 315, w: 130, h: 56, label: 'Regulatory\nreturns' },
+      { id: 'o2', x: 155, y: 315, w: 130, h: 56, label: 'Risk and\nfraud models' },
+      { id: 'o3', x: 300, y: 315, w: 130, h: 56, label: 'Dashboards' },
+    ]}
+    edges={[{ from: 's1', to: 'in' }, { from: 's2', to: 'in' }, { from: 's3', to: 'in' }, { from: 'in', to: 'lake' }, { from: 'lake', to: 'dw', label: 'clean' }, { from: 'dw', to: 'o1' }, { from: 'dw', to: 'o2' }, { from: 'dw', to: 'o3' }]} />
+</Figure>
+
+### Warehouses, lakes and lakehouses
+
+A **data warehouse** holds cleaned, structured data with agreed definitions: one meaning of "active customer", one meaning of "overdue". A **data lake** holds raw data of every kind, cheaply, before anyone has decided how to use it. A **lakehouse** combines the two, adding warehouse-style tables and controls on top of lake storage. Most banks end up with some of each.
+
+### Batch and streaming
+
+Batch pipelines move data in bulk, often overnight after end of day, and suit reports that need a complete, balanced day. Streaming pipelines move each change within seconds and suit fraud detection, alerts and live dashboards. The two often feed the same stores.
+
+### Feature stores for models
+
+Risk and fraud models need the same inputs, called features, at training time and at the moment of a decision: "number of payments in the last hour", "average balance over 90 days". A **feature store** calculates these once and serves them consistently to both, so a model is not trained on one definition and run on another.
+
+### Lineage and quality
+
+**Lineage** records where each figure came from and every step that changed it. **Data quality controls** check completeness, validity and consistency at each step: did every branch's data arrive, do debits equal credits, do totals match the source. For regulatory reporting, these are not extras. They are how a bank shows that a return is right.
+
+<Figure title="A regulatory reporting pipeline" caption="Illustrative. Each step records lineage and quality results.">
+  <Flow label="Steps from source data to a submitted return" steps={[
+    { label: 'Extract', note: 'From source systems, after end of day' },
+    { label: 'Validate', note: 'Completeness and balancing checks' },
+    { label: 'Transform', note: 'Apply the return’s definitions' },
+    { label: 'Review', note: 'Business sign-off on exceptions' },
+    { label: 'Submit', note: 'With lineage kept for audit' },
+  ]} />
+</Figure>
+
+### Retention and deletion
+
+Keeping data forever is neither cheap nor safe. Each class of data needs a retention period, set by legal and regulatory requirements and by business need, and a process that deletes or anonymises it when that period ends. Deletion must reach every copy, including backups, analytics stores and test environments, and be recorded so it can be proved. Personal data protection law adds purpose limits: data collected for one use should not quietly be reused for another.
+
+## How it plays out in Indian banking
+
+Where data may live is a design constraint, not only a policy. <Fact id="data-localisation-2018" show="claim" /> Any pipeline, copy or backup of payment data must respect that, including test and analytics copies. When data moves to a cloud platform, RBI expects the whole lifecycle to be governed: <Fact id="outsourcing-cloud-lifecycle" show="claim" /> Backups count only if they work: <Fact id="itgrc-backup-restore" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Data design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['One central warehouse', 'One agreed definition of every figure', 'A central team that can become a bottleneck'],
+  ['Raw data in a lake', 'Cheap storage and freedom to explore', 'Risk of a swamp of undocumented, untrusted data'],
+  ['Streaming pipelines', 'Fresh data for fraud and alerts', 'More moving parts and harder reconciliation'],
+  ['Strict lineage', 'Figures that can be proved', 'Engineering effort on every pipeline'],
+]} /></div>
+
+## Failure modes
+
+- **Two versions of the truth,** when different teams define the same measure differently.
+- **Silent gaps,** when one source's feed fails and the report runs anyway on partial data.
+- **Copies nobody governs,** such as test databases full of real customer data.
+- **Lineage that stops at the warehouse,** so a figure can be traced back to a table but not to the transactions behind it.
+
+## When to use it, and when to avoid it
+
+Invest in a governed warehouse, lineage and quality checks for anything that feeds a regulator, a board or a model that decides credit. For exploratory work, a lake with light controls is fine, as long as nothing leaves it for a decision or a report without passing through the governed path. Avoid copying production data into lower environments at all, unless it is masked.
+
+## Questions for a design review
+
+- Can every figure in a regulatory return be traced to the transactions behind it?
+- Which quality checks stop a report running on partial data?
+- Is there one agreed definition of each key measure, and who owns it?
+- Where do copies of payment data live, including backups, logs and test environments?
+- When is data deleted, and how is deletion proved?

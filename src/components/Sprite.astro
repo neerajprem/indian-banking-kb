@@ -1,0 +1,13 @@
+---
+// One inline SVG sprite per page, built from a Lucide subset (ISC licence). No icon font, no requests.
+import fs from 'node:fs';
+import path from 'node:path';
+import { ICONS } from '../lib/icons';
+const dir = path.join(process.cwd(), 'node_modules/lucide-static/icons');
+const symbols = ICONS.map((name) => {
+  const svg = fs.readFileSync(path.join(dir, `${name}.svg`), 'utf8');
+  const inner = svg.slice(svg.indexOf('>', svg.indexOf('<svg')) + 1, svg.lastIndexOf('</svg>')).trim();
+  return `<symbol id="i-${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</symbol>`;
+}).join('');
+---
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true" focusable="false" class="visually-hidden"><Fragment set:html={symbols} /></svg>

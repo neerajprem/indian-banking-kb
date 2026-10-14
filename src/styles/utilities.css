@@ -1,0 +1,7 @@
+@layer utilities {
+  .visually-hidden { position: absolute !important; inline-size: 1px; block-size: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .no-js .js-only { display: none !important; }
+  .js .no-js-only { display: none !important; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  .no-wrap { white-space: nowrap; }
+}

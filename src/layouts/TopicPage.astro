@@ -1,0 +1,18 @@
+---
+import { getEntry, render, type CollectionEntry } from 'astro:content';
+import TopicLayout from './TopicLayout.astro';
+import { mdxComponents } from '../components/mdx';
+import { citationsFor } from '../lib/facts';
+import { readingMinutes } from '../lib/site';
+interface Props { slug: 'architecture' | 'technologies'; entry: CollectionEntry<'architecture'> | CollectionEntry<'technologies'> }
+const { slug, entry } = Astro.props;
+if (entry.data.topicId !== entry.id) throw new Error(`topicId "${entry.data.topicId}" must match the file name "${entry.id}"`);
+const section = await getEntry('pages', slug);
+const { Content, headings } = await render(entry);
+Astro.locals.citations = await citationsFor(entry.data.facts);
+Astro.locals.where = `/${slug}/${entry.id}/`;
+---
+<TopicLayout vt={`${slug}-${entry.id}`} section={{ slug, title: section?.data.title ?? slug }} title={entry.data.title} summary={entry.data.summary} domain={entry.data.domain}
+  updated={entry.data.updated} minutes={readingMinutes(entry.body)} depth={entry.data.depth} headings={headings} tags={entry.data.tags} related={entry.data.related}>
+  <Content components={mdxComponents} />
+</TopicLayout>

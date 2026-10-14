@@ -1,0 +1,39 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import RelationGraph from '../../components/diagrams/RelationGraph.astro';
+import DataTable from '../../components/DataTable.astro';
+import { mdxComponents } from '../../components/mdx';
+import { citationsFor } from '../../lib/facts';
+import { GROUPS, institutionsWithRelations } from '../../lib/institutions';
+import { fmtDate } from '../../lib/site';
+
+const section = (await getEntry('pages', 'rbi-ecosystem'))!;
+const { Content, headings } = await render(section);
+const { records, relations, src } = await institutionsWithRelations();
+const pages = new Set((await getCollection('institutions')).map((e) => e.id));
+const extra = [...new Set([...records.flatMap((r) => r.data.sources.map((s) => s.id)), ...relations.map((r) => r.data.source.id)])];
+Astro.locals.citations = await citationsFor(section.data.facts, extra);
+Astro.locals.where = '/rbi-ecosystem/';
+const order = ['central-bank', 'rbi-subsidiary', 'rbi-established', 'government'];
+const sorted = [...records].sort((a, b) => order.indexOf(a.data.group) - order.indexOf(b.data.group) || a.data.short.localeCompare(b.data.short));
+const nodes = sorted.map((r) => ({ id: r.id, label: r.data.short, full: r.data.full, domain: GROUPS[r.data.group].domain, href: pages.has(r.id) ? `/rbi-ecosystem/${r.id}/` : undefined, hub: r.data.group === 'central-bank' }));
+const edges = relations.map((r) => ({ from: r.data.from.id, to: r.data.to.id, type: r.data.type, label: r.data.label }));
+const rows = sorted.filter((r) => r.data.group !== 'central-bank').map((r) => [
+  pages.has(r.id) ? { t: r.data.short, href: `/rbi-ecosystem/${r.id}/` } : r.data.short,
+  GROUPS[r.data.group].label,
+  r.data.headquarters ?? 'Not confirmed',
+  r.data.established ? String(r.data.established) : 'Not confirmed',
+  r.data.employees ? `${r.data.employees.value.toLocaleString('en-IN')} (as of ${fmtDate(r.data.employees.asOf)}, ${src[r.data.employees.source.id].data.publisher})` : 'No official figure found',
+]);
+---
+<PageLayout title={section.data.title} summary={section.data.summary} domain="governance" updated={section.data.updated}
+  headings={[...headings, { depth: 2, slug: 'map', text: 'Relationship map' }, { depth: 2, slug: 'compare', text: 'The institutions compared' }]} tags={section.data.tags}>
+  <Content components={mdxComponents} />
+  <h2 id="map">Relationship map</h2>
+  <p>Select an institution to see only its connections. The table under the map lists every connection and is generated from the same data. Colours show the kind of relationship with RBI.</p>
+  <ul class="rgraph-legend" aria-label="Groups">{order.slice(1).map((g) => <li data-domain={GROUPS[g].domain}><span class="cat-tag">{GROUPS[g].label}</span></li>)}</ul>
+  <div class="wide"><RelationGraph title="RBI ecosystem relationships" nodes={nodes} edges={edges} caption="Every sourced relationship between the institutions" /></div>
+  <h2 id="compare">The institutions compared</h2>
+  <div class="wide"><DataTable caption="Institutions in the RBI ecosystem" head={['Institution', 'Relationship with RBI', 'Headquarters', 'Established', 'Employees']} rows={rows} note="Each institution's page lists the sources for its record. 'Not confirmed' means no official source was found yet." /></div>
+</PageLayout>

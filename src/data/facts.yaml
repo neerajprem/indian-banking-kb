@@ -1,0 +1,913 @@
+# The unit of trust. Built in Stage 3, extended in Stages 4a to 5; every source was opened.
+- id: cts-phase1-live
+  claim: RBI moved the Cheque Truncation System from batch processing to continuous clearing with settlement on realisation; Phase 1 took effect on 4 October 2025.
+  value: 4 October 2025
+  asOf: '2025-12-24'
+  source: rbi-cts-phase2-2025
+  volatility: annual
+  confidence: official
+  status: verified
+- id: cts-hourly-settlement
+  claim: Under continuous clearing, CTS settles every hour from 11:00, based on positive confirmations and deemed approvals from drawee banks.
+  value: every hour
+  asOf: '2025-08-13'
+  source: rbi-cts-circular-2025
+  volatility: annual
+  confidence: official
+  status: verified
+- id: cts-phase2-postponed
+  claim: RBI postponed Phase 2 of continuous cheque clearing, which had been planned for 3 January 2026, until further notice.
+  asOf: '2025-12-24'
+  source: rbi-cts-phase2-2025
+  volatility: annual
+  confidence: official
+  status: verified
+  note: No revised date found in searches up to 29 September 2026; recheck before publishing.
+- id: cts-session-hours
+  claim: RBI set the CTS presentation session at 09:00 to 15:00 and the confirmation session at 09:00 to 19:00.
+  value: 09:00 to 15:00
+  asOf: '2025-12-24'
+  source: rbi-cts-phase2-2025
+  volatility: annual
+  confidence: official
+  status: verified
+- id: upi-volume-2026-08
+  claim: UPI processed 24.51 billion transactions worth ₹29.82 trillion in August 2026, its highest monthly volume to date.
+  value: 24.51
+  unit: billion transactions
+  asOf: '2026-08-31'
+  source: bs-upi-aug-2026
+  volatility: monthly
+  confidence: reported
+  status: verified
+- id: upi-volume-2026-07
+  claim: UPI processed 23.66 billion transactions worth ₹29.88 trillion in July 2026.
+  value: 23.66
+  unit: billion transactions
+  asOf: '2026-07-31'
+  source: bs-upi-aug-2026
+  volatility: monthly
+  confidence: reported
+  status: verified
+- id: upi-daily-2026-08
+  claim: UPI averaged 791 million transactions a day in August 2026.
+  value: 791
+  unit: million a day
+  asOf: '2026-08-31'
+  source: bs-upi-aug-2026
+  volatility: monthly
+  confidence: reported
+  status: verified
+- id: upi-value-high-2026-05
+  claim: UPI's highest monthly value so far was ₹29.9 trillion, in May 2026, across 23.2 billion transactions.
+  value: ₹29.9 trillion
+  asOf: '2026-08-31'
+  source: bs-upi-aug-2026
+  volatility: monthly
+  confidence: reported
+  status: verified
+- id: imps-volume-2026-08
+  claim: IMPS processed 360 million transactions worth ₹7.04 trillion in August 2026.
+  value: 360
+  unit: million transactions
+  asOf: '2026-08-31'
+  source: bs-upi-aug-2026
+  volatility: monthly
+  confidence: reported
+  status: verified
+- id: payment-volumes-live
+  claim: RBI publishes monthly Payment System Indicators with volumes and values for every payment system; the latest edition found covers July 2026.
+  asOf: '2026-09-29'
+  source: rbi-payment-indicators
+  volatility: live
+  confidence: official
+  status: verified
+- id: upi-p2m-limits-2025
+  claim: From 15 September 2025, NPCI raised UPI limits for verified merchants in capital markets and insurance to ₹5 lakh per transaction and ₹10 lakh a day.
+  value: ₹5 lakh per transaction
+  asOf: '2025-09-15'
+  source: ddnews-upi-limits-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: upi-gem-limit-2025
+  claim: From 15 September 2025, UPI payments on the Government e-Marketplace, including taxes and earnest money deposits, can be up to ₹5 lakh per transaction.
+  value: ₹5 lakh
+  asOf: '2025-09-15'
+  source: ddnews-upi-limits-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: upi-card-bill-limit-2025
+  claim: From 15 September 2025, credit card bills can be paid by UPI up to ₹5 lakh per transaction and ₹6 lakh a day.
+  value: ₹5 lakh per transaction
+  asOf: '2025-09-15'
+  source: air-upi-limits-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: upi-p2p-limit-2025
+  claim: The UPI limit for person-to-person transfers stayed at ₹1 lakh a day.
+  value: ₹1 lakh
+  asOf: '2025-09-15'
+  source: air-upi-limits-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: neft-24x7-2019
+  claim: NEFT has been available 24x7, on all days of the year including holidays, since 16 December 2019.
+  value: 16 December 2019
+  asOf: '2019-12-06'
+  source: rbi-neft-24x7-2019
+  volatility: static
+  confidence: official
+  status: verified
+- id: neft-48-batches-2019
+  claim: When NEFT moved to 24x7 in December 2019, RBI set 48 half-hourly settlement batches a day.
+  value: 48
+  unit: half-hourly batches a day
+  asOf: '2019-12-06'
+  source: rbi-neft-24x7-2019
+  volatility: annual
+  confidence: official
+  status: verified
+  note: RBI now lists this circular as withdrawn (consolidated). Confirm against current NEFT procedural guidelines before stating as current.
+- id: neft-return-2h
+  claim: A beneficiary bank must credit or return an NEFT transaction within 2 hours of the batch settling.
+  value: 2 hours
+  asOf: '2019-12-06'
+  source: rbi-neft-24x7-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: rtgs-launch-2004
+  claim: RTGS was launched on 26 March 2004.
+  value: 26 March 2004
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: neft-launch-2005
+  claim: NEFT was launched in November 2005.
+  value: November 2005
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: rtgs-24x7-2020
+  claim: RTGS has run 24x7 since December 2020, and NEFT since December 2019.
+  value: December 2020
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: rtgs-gross
+  claim: RTGS settles each transaction in real time on a one-to-one gross basis.
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: infinet-1999
+  claim: IDRBT launched INFINET, a closed user group network for banks, in June 1999; it now runs on MPLS.
+  value: June 1999
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: sfms-2001
+  claim: SFMS, a secure financial messaging platform, was launched on 14 December 2001 and is used by NEFT, RTGS and delivery-versus-payment settlement of government securities.
+  value: 14 December 2001
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: nfs-atms-2024
+  claim: The National Financial Switch connected 2.61 lakh ATMs of 1,317 member banks as of 31 July 2024.
+  value: 2.61 lakh
+  unit: ATMs
+  asOf: '2024-07-31'
+  source: idrbt-about
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: nfs-npci-2009
+  claim: NPCI took over operation of the National Financial Switch from IDRBT with effect from 14 December 2009, under an RBI authorisation.
+  value: 14 December 2009
+  asOf: '2009-12-18'
+  source: npci-nfs-takeover-2009
+  volatility: static
+  confidence: official
+  status: verified
+  note: IDRBT's own page says October 2009; NPCI's operational notice is preferred.
+- id: iftas-hiveoff-2015
+  claim: IDRBT transferred INFINET, SFMS, the RTGS and NEFT systems and its banking community cloud to its subsidiary IFTAS in February 2015; IFTAS was transferred to RBI in 2019.
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: idrbt-society-1996
+  claim: IDRBT was established by RBI in March 1996 as a society under the Societies Registration Act.
+  value: 1996
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: idrbt-hyderabad
+  claim: IDRBT has worked from its premises at Castle Hills, Masab Tank, Hyderabad since 1 July 1996.
+  asOf: '2025-01-01'
+  source: idrbt-milestones
+  volatility: static
+  confidence: official
+  status: verified
+- id: idrbt-ca
+  claim: IDRBT is the certifying authority for digital certificates in the Indian banking and financial sector under the IT Act, 2000.
+  asOf: '2025-01-01'
+  source: idrbt-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: iftas-wos
+  claim: IFTAS is a wholly owned subsidiary of RBI, registered under the Companies Act, 2013; it runs INFINET, SFMS, the Indian Banking Community Cloud and GIFT.
+  asOf: '2022-09-20'
+  source: rbi-iftas-ceo-2022
+  volatility: annual
+  confidence: official
+  status: verified
+- id: rebit-wos
+  claim: ReBIT is a wholly owned subsidiary of RBI set up to serve RBI's IT and cyber security needs and improve the cyber resilience of Indian banking.
+  asOf: '2022-09-20'
+  source: rbi-rebit-ceo-2022
+  volatility: annual
+  confidence: official
+  status: verified
+- id: rbih-2022
+  claim: RBI set up the Reserve Bank Innovation Hub as a Section 8 company with ₹100 crore of initial capital; it was inaugurated in Bengaluru on 24 March 2022.
+  value: 24 March 2022
+  asOf: '2022-03-24'
+  source: rbi-rbih-2022
+  volatility: static
+  confidence: official
+  status: verified
+- id: rbih-wos
+  claim: The Reserve Bank Innovation Hub describes itself as a wholly owned subsidiary of RBI; its work includes the Unified Lending Interface and MuleHunter.ai.
+  asOf: '2026-09-29'
+  source: rbih-home
+  volatility: annual
+  confidence: official
+  status: verified
+- id: brbnmpl-1995
+  claim: BRBNMPL was established by RBI as a wholly owned subsidiary on 3 February 1995, with its registered and corporate office in Bengaluru.
+  value: 3 February 1995
+  asOf: '2026-09-29'
+  source: brbnmpl-profile
+  volatility: static
+  confidence: official
+  status: verified
+- id: brbnmpl-capacity
+  claim: BRBNMPL's two presses, at Mysuru and Salboni, can print 16 billion notes a year on a two-shift basis.
+  value: 16
+  unit: billion notes a year
+  asOf: '2026-09-29'
+  source: brbnmpl-profile
+  volatility: annual
+  confidence: official
+  status: verified
+- id: dicgc-limit
+  claim: DICGC insures deposits up to ₹5 lakh per depositor per bank, covering principal and interest.
+  value: ₹5 lakh
+  asOf: '2026-09-29'
+  source: dicgc-guide
+  volatility: annual
+  confidence: official
+  status: verified
+  note: A proposal to raise cover to ₹7.5 lakh was reported in June 2026 as awaiting approval; not in force as far as found.
+- id: dicgc-wos
+  claim: DICGC is a wholly owned subsidiary of RBI, governed by the DICGC Act, 1961.
+  asOf: '2026-09-29'
+  source: dicgc-leaflet
+  volatility: static
+  confidence: official
+  status: verified
+- id: dicgc-mumbai
+  claim: DICGC's head office is in Mumbai; deposit insurance in India began on 1 January 1962.
+  asOf: '2026-09-29'
+  source: dicgc-history
+  volatility: static
+  confidence: official
+  status: verified
+- id: dicgc-rbp-2026
+  claim: DICGC's risk-based premium framework, released on 6 February 2026, replaces the flat premium of 12 paise per ₹100 of assessable deposits.
+  asOf: '2026-02-19'
+  source: icra-dicgc-rbp-2026
+  volatility: annual
+  confidence: reported
+  status: verified
+  note: Effective 1 April 2026 per press and analyst reports; DICGC circular itself not opened.
+- id: nabard-nhb-divest-2019
+  claim: RBI sold its remaining stakes in NABARD (26 February 2019) and NHB (19 March 2019); the Government of India now owns 100% of both.
+  value: '2019'
+  asOf: '2019-04-24'
+  source: rbi-nabard-nhb-divest-2019
+  volatility: static
+  confidence: official
+  status: verified
+- id: nabard-staff-2024
+  claim: NABARD had 3,134 staff members as of 31 March 2024.
+  value: 3134
+  unit: staff
+  asOf: '2024-03-31'
+  source: nabard-ar-2024-people
+  volatility: annual
+  confidence: official
+  status: verified
+  note: NABARD's Citizen's Charter gives 2,232 professionals and 921 other staff (3,153) for the same date; the annual report figure is used. A 2024-25 report exists; refresh.
+- id: nabard-mumbai
+  claim: NABARD's head office is at Bandra-Kurla Complex, Mumbai.
+  asOf: '2025-06-30'
+  source: nabard-results-2025
+  volatility: static
+  confidence: official
+  status: verified
+- id: nhb-1988
+  claim: NHB was set up on 9 July 1988 under the National Housing Bank Act, 1987; its head office is in New Delhi.
+  value: 9 July 1988
+  asOf: '2026-09-29'
+  source: nhb-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: nhb-hfc-reg-2019
+  claim: Regulation of housing finance companies moved from NHB to RBI with effect from 9 August 2019.
+  value: 9 August 2019
+  asOf: '2026-09-29'
+  source: nhb-about
+  volatility: static
+  confidence: official
+  status: verified
+- id: npci-2008
+  claim: NPCI was incorporated in December 2008 as a not-for-profit company, an initiative of RBI and the Indian Banks' Association under the Payment and Settlement Systems Act, 2007.
+  value: December 2008
+  asOf: '2025-06-30'
+  source: icra-npci-2025
+  volatility: static
+  confidence: reported
+  status: verified
+- id: npci-shareholding-2025
+  claim: NPCI was promoted by 10 banks, and its shareholding was spread across 65 entities as of 31 May 2025.
+  value: 65
+  unit: shareholding entities
+  asOf: '2025-05-31'
+  source: icra-npci-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: npci-swips-2020
+  claim: RBI classified NPCI as a system-wide important payment system in June 2020.
+  value: June 2020
+  asOf: '2025-06-30'
+  source: icra-npci-2025
+  volatility: static
+  confidence: reported
+  status: verified
+- id: ccil-2001
+  claim: CCIL was set up in April 2001; a core committee appointed at RBI's behest chose SBI, IDBI Bank, ICICI Bank, LIC, Bank of Baroda and HDFC Bank as its core promoters.
+  value: April 2001
+  asOf: '2026-09-29'
+  source: ccil-promoters
+  volatility: static
+  confidence: official
+  status: verified
+- id: ccil-shareholders
+  claim: CCIL's largest shareholders include SBI (16.8%), LIC (10%), STCI Finance (10%), ICICI Bank (9.9%) and HDFC Bank (9%).
+  asOf: '2025-03-12'
+  source: care-ccil-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: ccil-authorised
+  claim: CCIL is a central counterparty authorised by RBI under the Payment and Settlement Systems Act, 2007.
+  asOf: '2025-03-12'
+  source: care-ccil-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: cersai-govt-2011
+  claim: CERSAI is a Government company, licensed under section 25 of the Companies Act, 1956, set up to run the central registry under the SARFAESI Act; the registry became operational on 31 March 2011.
+  value: 31 March 2011
+  asOf: '2011-05-25'
+  source: rbi-cersai-2011
+  volatility: static
+  confidence: official
+  status: verified
+- id: data-localisation-2018
+  claim: RBI's circular of 6 April 2018 requires payment system providers to store the entire data relating to their payment systems only in India; data on the foreign leg of a transaction may also be stored
+    abroad.
+  asOf: '2018-04-06'
+  source: rbi-storage-2018
+  volatility: static
+  confidence: official
+  status: verified
+- id: mastercard-restriction-2021
+  claim: RBI barred Mastercard from onboarding new domestic card customers from 22 July 2021 for not complying with the payment data storage directions.
+  value: 22 July 2021
+  asOf: '2021-07-14'
+  source: bs-mastercard-2021
+  volatility: static
+  confidence: reported
+  status: verified
+- id: amex-diners-2021
+  claim: RBI had earlier restricted American Express and Diners Club from onboarding new domestic customers from 1 May 2021 on the same grounds.
+  value: 1 May 2021
+  asOf: '2021-07-14'
+  source: tribune-mastercard-2021
+  volatility: static
+  confidence: reported
+  status: verified
+- id: mastercard-lifted-2022
+  claim: RBI lifted the restriction on Mastercard in June 2022 after satisfactory compliance with the data storage directions.
+  value: June 2022
+  asOf: '2022-06-16'
+  source: rbi-mastercard-lifted-2022
+  volatility: static
+  confidence: official
+  status: verified
+- id: sbi-bancs
+  claim: SBI's core banking has run on TCS BaNCS since an implementation that began in 2001; in October 2021 TCS said the partnership was extended for five years.
+  asOf: '2021-10-06'
+  source: tcs-sbi-2021
+  volatility: annual
+  confidence: vendor-claim
+  status: verified
+  note: The five-year extension ends around 2026; confirm current status before publishing.
+- id: nabard-1982
+  claim: NABARD was established on 12 July 1982 by an Act of Parliament and is wholly owned by the Government of India.
+  value: 12 July 1982
+  asOf: '2024-03-31'
+  source: nabard-charter
+  volatility: static
+  confidence: official
+  status: verified
+- id: finacle-edgeverve
+  claim: Finacle is developed by EdgeVerve Systems, a wholly owned subsidiary of Infosys, and marketed as Infosys Finacle.
+  asOf: '2020-08-31'
+  source: edgeverve-finacle-2020
+  volatility: annual
+  confidence: vendor-claim
+  status: verified
+- id: finacle-reach-2020
+  claim: The vendor states that banks in over 100 countries use Finacle to serve more than a billion consumers and 1.3 billion accounts.
+  asOf: '2020-08-31'
+  source: edgeverve-finacle-2020
+  volatility: annual
+  confidence: vendor-claim
+  status: verified
+  note: Vendor claim from 2020; check for a newer figure before use.
+- id: rbi-md-itgrc-2023
+  claim: RBI issued the Master Direction on Information Technology Governance, Risk, Controls and Assurance Practices on 7 November 2023 (RBI/2023-24/107).
+  value: 7 November 2023
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-2023
+  volatility: annual
+  confidence: official
+  status: verified
+  note: Check whether RBI's later consolidation of directions re-issued it under a new title.
+- id: rbi-md-it-outsourcing-2023
+  claim: RBI issued the Master Direction on Outsourcing of Information Technology Services on 10 April 2023 (RBI/2023-24/102), effective 1 October 2023.
+  value: 10 April 2023
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+  note: Same consolidation check as above.
+- id: certin-6h-2022
+  claim: CERT-In's directions of 28 April 2022 under section 70B(6) of the IT Act require reportable cyber incidents to be reported to CERT-In within 6 hours of noticing them; they took effect 60 days after
+    issue.
+  value: 6 hours
+  asOf: '2022-04-28'
+  source: certin-directions-2022
+  volatility: annual
+  confidence: official
+  status: verified
+- id: positive-pay-2020
+  claim: Since 1 January 2021, banks must offer Positive Pay for cheques of ₹50,000 and above; using it is the account holder's choice, and banks may make it mandatory from ₹5 lakh.
+  value: ₹50,000
+  asOf: '2020-09-25'
+  source: rbi-positive-pay-2020
+  volatility: annual
+  confidence: official
+  status: verified
+- id: npci-cts-role
+  claim: RBI asked NPCI to build the Positive Pay facility into CTS and make it available to participant banks, and refers to the CTS grids that NPCI runs.
+  asOf: '2020-09-25'
+  source: rbi-positive-pay-2020
+  volatility: static
+  confidence: official
+  status: verified
+- id: ckycr-cersai
+  claim: The Government of India authorised CERSAI to act as the Central KYC Records Registry by notification S.O. 3183(E) of 26 November 2015; the registry went live on 15 July 2016.
+  value: 15 July 2016
+  asOf: '2016-07-08'
+  source: rbi-ckycr-2016
+  volatility: static
+  confidence: official
+  status: verified
+- id: tat-2019
+  claim: RBI's framework for failed transactions, in force since 15 October 2019, sets outer time limits for reversal and requires compensation to be paid automatically, without a complaint.
+  value: 15 October 2019
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: tat-failed-definition
+  claim: A failed transaction is one not fully completed for a reason not attributable to the customer, such as a link failure, an ATM without cash or a session time-out.
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: static
+  confidence: official
+  status: verified
+- id: tat-upi-transfer
+  claim: If a UPI transfer debits the payer but does not credit the beneficiary, the beneficiary bank must reverse it by T+1 day; after that, ₹100 a day is payable.
+  value: T+1 day
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: tat-upi-merchant
+  claim: If a UPI payment to a merchant debits the payer but the merchant gets no confirmation, it must be reversed within T+5 days; after that, ₹100 a day is payable.
+  value: T+5 days
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: tat-imps
+  claim: If an IMPS transfer debits the payer but does not credit the beneficiary, it must be reversed by T+1 day; after that, ₹100 a day is payable.
+  value: T+1 day
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: tat-atm
+  claim: If an ATM debits the account but does not dispense cash, the bank must reverse it within T+5 days; after that, ₹100 a day is payable.
+  value: T+5 days
+  asOf: '2019-09-20'
+  source: rbi-tat-2019
+  volatility: annual
+  confidence: official
+  status: verified
+- id: cof-2022
+  claim: Since 1 October 2022, no entity in the card payment chain other than card issuers and card networks may store actual card data; merchants use tokens instead.
+  value: 1 October 2022
+  asOf: '2022-07-28'
+  source: rbi-cof-2022
+  volatility: static
+  confidence: official
+  status: verified
+- id: rtgs-min
+  claim: 'RTGS is meant mainly for large-value transfers: the minimum is ₹2 lakh, with no upper ceiling.'
+  value: ₹2 lakh
+  asOf: '2026-09-29'
+  source: rbi-rtgs-faq
+  volatility: annual
+  confidence: official
+  status: verified
+- id: rtgs-24x7-2020-12-14
+  claim: RTGS has been available 24x7x365 since 14 December 2020.
+  value: 14 December 2020
+  asOf: '2026-09-29'
+  source: rbi-rtgs-faq
+  volatility: static
+  confidence: official
+  status: verified
+- id: neft-vs-rtgs
+  claim: NEFT processes transactions received up to a set time in batches, while RTGS processes them continuously, one at a time.
+  asOf: '2026-09-29'
+  source: rbi-rtgs-faq
+  volatility: static
+  confidence: official
+  status: verified
+- id: aa-md-2016
+  claim: RBI issued its Master Direction for Account Aggregators on 2 September 2016; an Account Aggregator must be a non-bank financial company registered with RBI.
+  value: 2 September 2016
+  asOf: '2024-09-06'
+  source: rbi-aa-md-2016
+  volatility: annual
+  confidence: official
+  status: verified
+- id: aa-consent
+  claim: No financial information is retrieved, shared or transferred through an Account Aggregator without the customer's explicit consent, and joining is voluntary.
+  asOf: '2026-09-29'
+  source: dfs-aa
+  volatility: annual
+  confidence: official
+  status: verified
+- id: aa-data-blind
+  claim: Customer data passing through an Account Aggregator is not visible to, and does not reside with, the aggregator.
+  asOf: '2023-08-01'
+  source: sebi-aa-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: rebit-aa-specs
+  claim: Financial information users in the Account Aggregator framework adopt technical specifications published by ReBIT.
+  asOf: '2023-08-01'
+  source: sebi-aa-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: upi-credit-lines-2023
+  claim: Since RBI's circular of 4 September 2023, pre-sanctioned credit lines at scheduled commercial banks can fund UPI payments, with the customer's prior consent.
+  value: 4 September 2023
+  asOf: '2023-09-04'
+  source: khaitan-upi-credit-2023
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: rupay-cc-upi-2022
+  claim: RBI announced on 8 June 2022 that credit cards, starting with RuPay, could be linked to UPI.
+  value: 8 June 2022
+  asOf: '2022-06-08'
+  source: bt-rupay-upi-2022
+  volatility: static
+  confidence: reported
+  status: verified
+- id: ibcc-cbs
+  claim: IFTAS's Indian Banking Community Cloud provides core banking and other applications, such as SFMS and mobile banking, as web services.
+  asOf: '2022-09-20'
+  source: rbi-iftas-ceo-2022
+  volatility: annual
+  confidence: official
+  status: verified
+- id: itgrc-rpo-rto-define
+  claim: RBI requires regulated entities to define recovery metrics, including a recovery point objective (RPO) and recovery time objective (RTO), for all critical information systems.
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+  note: The Direction sets no fixed RPO or RTO values.
+- id: itgrc-near-zero-rpo
+  claim: For critical information systems, regulated entities should prioritise a minimal RTO, approved by their IT Strategy Committee, and a near-zero RPO; with a non-zero RPO they need a documented method
+    for reconciling data when resuming from the alternate site.
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: itgrc-dr-drills
+  claim: DR drills for critical information systems must be held at least every six months, and major issues found in a drill must be fixed and tested again before the next cycle.
+  value: half-yearly
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: itgrc-dr-switchover
+  claim: A DR test must switch over to the DR or alternate site and run it as the primary site long enough to cover at least a full working day, from beginning of day to end of day.
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: itgrc-dc-dr-identical
+  claim: Configurations and security patches must be identical at the primary data centre and the DR site.
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: itgrc-backup-restore
+  claim: Regulated entities must back up data and periodically restore it to check that it is usable.
+  asOf: '2023-11-07'
+  source: rbi-md-itgrc-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-cloud-scope
+  claim: RBI's IT outsourcing Direction counts cloud computing services as outsourced IT services and adds specific requirements for storing, computing and moving data in the cloud.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-cloud-lifecycle
+  claim: When using cloud services, a regulated entity's outsourcing policy must cover the whole lifecycle of data, from creation and entry into the cloud until it is permanently deleted.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-cloud-shared
+  claim: RBI's Direction describes cloud security as a shared responsibility between the regulated entity and the cloud service provider.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-exit
+  claim: A regulated entity's outsourcing policy must include termination processes and exit strategies, including business continuity if a service provider leaves the arrangement.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-6h
+  claim: A service provider must report cyber incidents to the regulated entity without undue delay, so that the entity can report them to RBI within 6 hours of the provider detecting them.
+  value: 6 hours
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-2023
+  volatility: annual
+  confidence: official
+  status: verified
+- id: freeai-2025
+  claim: An RBI committee's report on responsible AI in finance (FREE-AI), placed on RBI's website on 13 August 2025, sets out 7 guiding principles and 26 recommendations under six pillars.
+  value: 13 August 2025
+  asOf: '2025-08-13'
+  source: rbi-freeai-pr-2025
+  volatility: annual
+  confidence: official
+  status: verified
+  note: 'A committee report: its recommendations are advisory until RBI issues instruments.'
+- id: mrm-draft-2024
+  claim: RBI's draft circular of 5 August 2024 on model risk in credit proposed a board-approved model risk policy, independent validation before deployment, and outcomes that are unbiased, explainable
+    and verifiable.
+  asOf: '2024-08-05'
+  source: lexology-mrm-2024
+  volatility: annual
+  confidence: reported
+  status: verified
+  note: Draft; not final as far as found.
+- id: mrm-draft-2026
+  claim: On 24 June 2026 RBI released draft guidance on model risk management across the model lifecycle, including models that use AI and machine learning, for public comment.
+  value: 24 June 2026
+  asOf: '2026-06-25'
+  source: bs-mrm-2026
+  volatility: annual
+  confidence: reported
+  status: verified
+  note: Draft for comment; check for the final version before relying on it.
+- id: auth-2025
+  claim: RBI's Authentication Mechanisms for Digital Payment Transactions Directions, 2025, issued on 25 September 2025, require at least two factors of authentication for domestic digital payments, with
+    compliance from 1 April 2026.
+  value: 1 April 2026
+  asOf: '2025-09-25'
+  source: tribune-auth-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: auth-sms-otp
+  claim: The 2025 authentication framework encourages new authentication factors but does not require banks to stop using SMS-based OTP.
+  asOf: '2025-09-25'
+  source: bs-auth-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: auth-dynamic-factor
+  claim: For digital payments other than card-present transactions, at least one authentication factor must be dynamic, that is, unique to the transaction.
+  asOf: '2025-12-01'
+  source: kpmg-auth-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: auth-crossborder-2026
+  claim: Card issuers must be able to validate an additional authentication factor for non-recurring cross-border card-not-present transactions, when the overseas merchant asks, by 1 October 2026.
+  value: 1 October 2026
+  asOf: '2025-09-25'
+  source: tribune-auth-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: cloud-regions-india
+  claim: As of 2026, AWS runs cloud regions in Mumbai and Hyderabad, Microsoft Azure in Pune, Chennai and Mumbai, Google Cloud in Mumbai and Delhi NCR, and Oracle Cloud in Mumbai and Hyderabad.
+  asOf: '2026-09-29'
+  source: cim-cloud-regions
+  volatility: annual
+  confidence: reported
+  status: verified
+  note: Third-party map; confirm on each provider's region page before relying on it.
+- id: edb-finacle-2019
+  claim: EDB stated in 2019 that multiple Finacle modules had been migrated to EDB Postgres and implemented at financial institutions in Asia.
+  asOf: '2019-04-11'
+  source: edb-finacle-2019
+  volatility: static
+  confidence: vendor-claim
+  status: verified
+- id: kotak-2024
+  claim: On 24 April 2024 RBI directed Kotak Mahindra Bank to stop onboarding new customers through online and mobile channels and to stop issuing new credit cards, citing concerns from its IT examinations
+    of the bank for 2022 and 2023.
+  value: 24 April 2024
+  asOf: '2024-04-24'
+  source: air-kotak-2024
+  volatility: static
+  confidence: reported
+  status: verified
+- id: kotak-deficiencies
+  claim: RBI said it had found serious deficiencies in areas including IT inventory management, patch and change management, user access management, vendor risk management, data security and leak prevention,
+    and business continuity and DR drills.
+  asOf: '2024-04-24'
+  source: federal-kotak-2024
+  volatility: static
+  confidence: reported
+  status: verified
+- id: kotak-outages
+  claim: RBI said the bank's core banking system and online channels had suffered frequent and significant outages over the previous two years, and that rapid growth in digital transactions was adding load
+    on its IT systems.
+  asOf: '2024-04-24'
+  source: inc42-kotak-2024
+  volatility: static
+  confidence: reported
+  status: verified
+- id: kotak-lifted-2025
+  claim: RBI lifted the restrictions on Kotak Mahindra Bank in February 2025, after an external audit and remedial measures.
+  value: February 2025
+  asOf: '2025-02-12'
+  source: air-kotak-lifted-2025
+  volatility: static
+  confidence: reported
+  status: verified
+- id: hdfc-2020
+  claim: In 2020 RBI placed similar restrictions on HDFC Bank, barring new digital business-generating launches and new credit card sourcing; they were lifted in 2022.
+  asOf: '2024-04-24'
+  source: inc42-kotak-2024
+  volatility: static
+  confidence: reported
+  status: verified
+- id: outsourcing-accountability
+  claim: Outsourcing does not reduce a regulated entity's obligations; its board and senior management remain ultimately responsible for the outsourced activity.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-grievance
+  claim: Responsibility for resolving customers' grievances about outsourced services stays with the regulated entity, and outsourcing cannot reduce customers' rights against it.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-concentration
+  claim: Regulated entities must consider the risk of concentrating their outsourcing with a single provider or a few providers.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: outsourcing-due-diligence
+  claim: Due diligence on an IT service provider must cover its experience and competence to deliver over the contract period and its financial soundness.
+  asOf: '2023-04-10'
+  source: rbi-md-it-outsourcing-text
+  volatility: annual
+  confidence: official
+  status: verified
+- id: certin-logs-180
+  claim: The same CERT-In directions require logs of all ICT systems to be kept securely for a rolling 180 days, within Indian jurisdiction.
+  value: 180 days
+  asOf: '2022-04-28'
+  source: certin-directions-2022
+  volatility: annual
+  confidence: official
+  status: verified
+- id: storage-audit-2018
+  claim: Payment system providers had to comply within six months and submit a system audit report by a CERT-In-empanelled auditor; the circular was issued under the Payment and Settlement Systems Act,
+    2007.
+  asOf: '2018-04-06'
+  source: rbi-storage-2018
+  volatility: static
+  confidence: official
+  status: verified
+- id: dpdp-rules-2025
+  claim: MeitY notified the Digital Personal Data Protection Rules on 13 November 2025. Provisions on the Data Protection Board applied at once, consent-manager rules apply from 13 November 2026, and most
+    obligations on organisations apply from 13 May 2027.
+  value: 13 May 2027
+  asOf: '2025-11-14'
+  source: ssrana-dpdp-2025
+  volatility: annual
+  confidence: reported
+  status: verified
+- id: auth-drafts
+  claim: Before issuing its 2025 authentication Directions, RBI published draft directions for comment on 31 July 2024 and 7 February 2025.
+  asOf: '2025-09-25'
+  source: bs-auth-2025
+  volatility: static
+  confidence: reported
+  status: verified
+- id: rbi-operated-systems
+  claim: RBI's Payment System Indicators list RTGS and NEFT under RBI-operated payment systems.
+  asOf: '2026-09-29'
+  source: rbi-payment-indicators
+  volatility: static
+  confidence: official
+  status: verified

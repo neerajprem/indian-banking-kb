@@ -1,0 +1,77 @@
+---
+title: Payment-specific technology
+topicId: payment-tech
+summary: "Payments need specialised technology: message standards, secure networks, hardware for keys and PINs, tokens instead of card numbers, and strong authentication. Networks and regulators set much of it."
+blurb: "ISO 8583 and ISO 20022, SFMS and INFINET, UPI integration, HSMs and PINs, tokenisation, QR codes and card authentication."
+domain: design
+depth: advanced
+order: 12
+updated: 2026-09-29
+tags: [payments, security, standards, technology]
+related: [/architecture/payments/, security-tech, mobile]
+facts: [sfms-2001, infinet-1999, iftas-wos, cof-2022, auth-2025, auth-dynamic-factor, auth-crossborder-2026, auth-sms-otp, upi-daily-2026-08]
+---
+
+## Why it matters
+
+Payments are where precision and security matter most, and where much of the technology is not the bank's choice. Networks and regulators set message formats, security rules and authentication requirements, and every participant must implement them exactly. [Payment system architecture](/architecture/payments/) explains the model; this page covers the technology that implements it.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Payment technologies" head={['Technology', 'Role', 'Where it is used', 'Notes']} rows={[
+  ['ISO 8583', 'Compact message format for card and ATM authorisations', 'Card networks, ATM switches, card processing', 'Each network adds its own field conventions'],
+  ['ISO 20022', 'Rich, structured XML or JSON payment messages', 'High-value and cross-border payments worldwide', 'Carries more data about payer, payee and purpose'],
+  ['SFMS', 'Secure messaging for RTGS, NEFT and related systems', 'Banks connecting to RBI-run payment systems', 'Launched 2001; run by IFTAS'],
+  ['INFINET', 'The banking sector\u2019s closed network', 'Connectivity for RBI-run payment systems', 'Launched 1999; run by IFTAS'],
+  ['UPI interfaces', 'Specifications, libraries and certification for UPI participants', 'Banks and apps joining UPI', 'Published and certified by the operator'],
+  ['Hardware security modules', 'Key storage, PIN verification and message signing', 'Card issuing, acquiring and payment switches', 'Payment HSMs are a specialised class'],
+  ['Tokenisation services', 'Replace card numbers with merchant-specific tokens', 'Online card payments and wallets', 'Required for stored cards'],
+  ['Interoperable QR codes', 'Carry payee details for scan-to-pay', 'Shops and merchants', 'One code accepted by many apps'],
+  ['3-D Secure and additional authentication', 'Authenticate the cardholder for card-not-present payments', 'Online card payments', 'Now governed by the 2025 authentication Directions'],
+]} note="Families and standards, not recommendations. Network-specific details are in each operator's own documentation." facts={['sfms-2001', 'infinet-1999', 'iftas-wos']} /></div>
+
+## Message standards
+
+**ISO 8583** is the long-standing format for card authorisations: compact, fast and built around numbered fields such as amount, merchant type and response code. **ISO 20022** is a richer standard with structured data about the parties and the purpose of a payment. That structure helps screening, reconciliation and fraud detection. Payment engineers spend much of their time translating between formats and validating every field.
+
+## Networks and messaging in India
+
+Banks reach RBI-run payment systems over a dedicated network and messaging layer. <Fact id="infinet-1999" show="claim" /> <Fact id="sfms-2001" show="claim" /> <Fact id="iftas-wos" show="claim" />
+
+## Keys, PINs and HSMs
+
+Payment security rests on keys. PINs are encrypted at the point of entry and verified inside hardware security modules, so no application ever sees a clear PIN. Keys are organised in hierarchies: a small number of master keys protect the keys that protect data. They are changed on schedules, and handling them needs several people present, so no one person can misuse them.
+
+## Tokens instead of card numbers
+
+<Fact id="cof-2022" show="claim" /> A token works only for the merchant or device it was issued for, so a breach at one merchant does not expose usable card numbers. Tokenisation services, run by card networks and issuers, create tokens, map them back to cards for authorisation and manage their lifecycle when cards expire or are replaced.
+
+## Authentication
+
+<Fact id="auth-2025" show="claim" /> <Fact id="auth-dynamic-factor" show="claim" /> <Fact id="auth-sms-otp" show="claim" /> For cards used abroad online, <Fact id="auth-crossborder-2026" show="claim" />
+
+In practice, banks are adding device-bound keys, biometrics and in-app approvals alongside OTPs. They are also using risk-based checks that ask for more when a payment looks unusual.
+
+## Scale and timing
+
+Payment technology must work at national scale: UPI alone averages <Fact id="upi-daily-2026-08" />. Every component in the path, such as message parsing, fraud scoring, HSM operations and the core posting, has a share of a tight time budget. A slow HSM or an overloaded fraud engine shows up to customers as failed payments.
+
+## How to choose
+
+Most choices here are about implementation quality rather than technology selection: follow each network's specification exactly, certify early, size HSMs and tokenisation services for peak rather than average load, and keep payment components separate from the rest of the estate to limit what falls under card-security rules.
+
+## Pitfalls
+
+- **Loose message validation,** letting malformed fields through to downstream systems.
+- **HSM capacity sized for average load,** failing on festival or salary days.
+- **Card numbers surviving in logs,** test data or analytics copies.
+- **Authentication added as an afterthought,** creating extra steps that customers abandon.
+- **Specification drift,** when a network updates its rules and one component is not upgraded.
+
+## Questions for a design review
+
+- Which message standards does this system parse, and how strictly is each field validated?
+- Where are keys and PINs handled, and does any system see them in clear?
+- Could a card number appear in any log, file or database outside the tokenisation service?
+- Which authentication factors does each journey use, and which is dynamic?
+- What is the time budget for each step in the payment path, and what happens when one is exceeded?

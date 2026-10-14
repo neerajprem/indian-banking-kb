@@ -1,0 +1,22 @@
+---
+// Overview for a topic section: every topic card first, then the section's own notes.
+import { getCollection, getEntry, render } from 'astro:content';
+import PageLayout from './PageLayout.astro';
+import TopicGrid from '../components/TopicGrid.astro';
+import { mdxComponents } from '../components/mdx';
+import { citationsFor } from '../lib/facts';
+interface Props { slug: 'architecture' | 'technologies' }
+const { slug } = Astro.props;
+const section = await getEntry('pages', slug);
+if (!section) throw new Error(`Missing src/content/pages/${slug}.mdx (kind: section)`);
+const topics = await getCollection(slug);
+const { Content, headings } = await render(section);
+Astro.locals.citations = await citationsFor(section.data.facts);
+Astro.locals.where = `/${slug}/`;
+---
+<PageLayout vtCss title={section.data.title} summary={section.data.summary} domain={section.data.domain} updated={section.data.updated}
+  headings={[{ depth: 2, slug: 'topics', text: 'All topics' }, ...headings]} tags={section.data.tags}>
+  <h2 id="topics" class="visually-hidden">All topics</h2>
+  <div class="wide"><TopicGrid base={`/${slug}/`} entries={topics} domain={section.data.domain} collection={slug} /></div>
+  <Content components={mdxComponents} />
+</PageLayout>

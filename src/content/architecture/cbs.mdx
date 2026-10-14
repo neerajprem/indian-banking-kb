@@ -1,0 +1,91 @@
+---
+title: Core banking system architecture
+topicId: cbs
+summary: "A core banking system keeps a bank's accounts and general ledger. It mixes online posting with a nightly batch cycle. Its modules and that cycle explain most constraints elsewhere in a bank."
+blurb: "The system of record for accounts, deposits and loans, and why its end-of-day cycle shapes everything around it."
+domain: design
+depth: intro
+order: 1
+updated: 2026-09-29
+tags: [core, ledger, batch, architecture]
+related: [payments, modernisation, multi-dc]
+facts: [sbi-bancs, upi-daily-2026-08, ibcc-cbs, itgrc-dr-switchover]
+---
+
+## Why it matters
+
+Every other system in a bank either reads from the core or posts to it. When a payment rail credits a customer, a mobile app shows a balance or a regulator asks for a return, the answer ultimately comes from the core. Its design decides how fast a bank can launch products, how it copes with round-the-clock payments and how risky it is to change anything.
+
+## The model explained
+
+A core is a set of modules around one ledger. The customer module holds who the bank's customers are. The product module holds the rules: interest rates, fees, limits and statement cycles, set up as parameters rather than code, so a new savings product is usually configuration, not a software release. Accounts are instances of those products. Deposits and loans hold the balances and schedules. Every change of money ends as balanced debits and credits in the general ledger.
+
+<Figure title="The modules of a core banking system" caption="Illustrative. Platforms name and split these modules differently.">
+  <BoxDiagram title="Core banking modules" desc="Customer information and product rules feed accounts. Accounts divide into deposits, loans, and charges and interest, all of which post to the general ledger." width={440} height={370}
+    nodes={[
+      { id: 'cif', x: 20, y: 20, w: 190, h: 56, label: 'Customer\ninformation' },
+      { id: 'prod', x: 230, y: 20, w: 190, h: 56, label: 'Products and\npricing rules' },
+      { id: 'acct', x: 120, y: 120, w: 200, h: 48, label: 'Accounts', tone: 'core' },
+      { id: 'dep', x: 20, y: 210, w: 120, h: 48, label: 'Deposits' },
+      { id: 'loan', x: 160, y: 210, w: 120, h: 48, label: 'Loans' },
+      { id: 'chg', x: 300, y: 206, w: 120, h: 56, label: 'Charges and\ninterest' },
+      { id: 'gl', x: 120, y: 305, w: 200, h: 48, label: 'General ledger', tone: 'core' },
+    ]}
+    edges={[{ from: 'cif', to: 'acct' }, { from: 'prod', to: 'acct' }, { from: 'acct', to: 'dep' }, { from: 'acct', to: 'loan' }, { from: 'acct', to: 'chg' }, { from: 'dep', to: 'gl' }, { from: 'loan', to: 'gl' }, { from: 'chg', to: 'gl' }]} />
+</Figure>
+
+### Online and batch
+
+Online processing posts each transaction as it happens and must be fast and correct. Batch processing handles work done for every account at once: accruing interest, applying charges, ageing loans, producing statements and regulatory extracts. The run that closes the business day is end of day (EOD); the run that opens the next is beginning of day (BOD).
+
+<Figure title="End-of-day and beginning-of-day stages" caption="Illustrative. Stage names and order vary by platform and bank.">
+  <Timeline label="End-of-day stages" events={[
+    { when: 'Cut-off', label: 'Freeze the business date for posting', note: 'New transactions go to a stand-in layer or the next date' },
+    { when: 'Accrual', label: 'Accrue interest and apply charges' },
+    { when: 'Ledger', label: 'Post to the general ledger and reconcile' },
+    { when: 'Extracts', label: 'Produce statements and regulatory extracts' },
+    { when: 'BOD', label: 'Open the next business date and release held postings' },
+  ]} />
+</Figure>
+
+### Why a core is hard to scale out
+
+Money needs strong consistency: two withdrawals must never both succeed against a balance that covers only one. Most cores achieve this with a large relational database and transactions, which works well on one very big machine and less well across many. Some accounts are also hot spots. A merchant's settlement account or a bank's own clearing account may receive thousands of postings a minute, and each posting must lock the same balance. Adding servers does not help if every request queues behind one row.
+
+### Stand-in processing and shadow balances
+
+When the core is busy with batch work, or briefly unavailable, a stand-in layer can keep approving transactions against a shadow copy of each balance, within safe limits. Once the core is back, the stand-in replays what it approved. This keeps payments flowing but means two systems hold a version of the truth for a while, and they must be reconciled afterwards.
+
+## How it plays out in Indian banking
+
+Large Indian banks run large commercial platforms. <Fact id="sbi-bancs" show="claim" /> Smaller banks often share one. <Fact id="ibcc-cbs" show="claim" />
+
+The pressure today comes from instant payments. UPI alone averages <Fact id="upi-daily-2026-08" />, and none of that stops for end of day. Banks answer with stand-in layers, shorter batch windows and payment hubs that shield the core. RBI's resilience rules also reach the batch cycle. <Fact id="itgrc-dr-switchover" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Core design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['One central core', 'One version of every balance; simpler audit', 'A single, very important system to protect and scale'],
+  ['Parameterised products', 'New products without code changes', 'Complex configuration that itself needs testing and control'],
+  ['Nightly batch', 'Efficient bulk processing', 'A window when the core is not fully available'],
+  ['Stand-in processing', 'Payments keep flowing during batch and outages', 'Reconciliation work and the risk of approving against a stale balance'],
+]} /></div>
+
+## Failure modes
+
+- **End of day overruns.** Volumes grow until the batch no longer fits its window, delaying the next business day.
+- **Stand-in drift.** The shadow balance and the core disagree, and a customer is allowed to overdraw or is wrongly declined.
+- **Hot-account contention.** A few very busy accounts slow every posting that touches them.
+- **Configuration errors.** A wrongly set product parameter charges or pays interest incorrectly across thousands of accounts at once.
+
+## When to use it, and when to avoid it
+
+Every bank needs a system of record, so the question is not whether to have a core but how much to put in it. Keep the core to what only it can do: accounts, balances, the ledger and product rules. Move customer journeys, payment orchestration and analytics outside it, where they can change faster. Avoid putting logic in the core simply because it is the one system that already has the data.
+
+## Questions for a design review
+
+- Which work must stay in the core, and which could move to a system that changes faster?
+- Does end of day still fit its window at next year's expected volumes, with margin?
+- What happens to payments while the core is in its batch window, and how are stand-in approvals reconciled?
+- Which accounts are hot spots, and how is contention on them handled?
+- How are product parameter changes reviewed and tested before they reach live accounts?

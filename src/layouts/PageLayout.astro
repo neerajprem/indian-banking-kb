@@ -1,0 +1,41 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Toc from '../components/Toc.astro';
+import Related from '../components/Related.astro';
+import Pager from '../components/Pager.astro';
+import SourceList from '../components/SourceList.astro';
+interface Props {
+  title: string; summary: string; domain: string; updated?: Date; minutes?: number; depth?: string;
+  headings?: { depth: number; slug: string; text: string }[]; tags?: string[]; related?: string[];
+  crumbs?: { title: string; href?: string }[]; back?: { href: string; title: string }; vt?: string; vtCss?: boolean; extraJsonld?: Record<string, unknown>[];
+}
+const p = Astro.props;
+const headings = p.headings ?? [];
+import { SITE } from '../lib/site';
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const crumbList = [{ title: 'Home', href: '/' }, ...(p.crumbs ?? [{ title: p.title }])];
+const jsonld = [
+  { '@context': 'https://schema.org', '@type': 'TechArticle', headline: p.title, description: p.summary, url, inLanguage: 'en-IN',
+    ...(p.updated ? { dateModified: p.updated.toISOString().slice(0, 10) } : {}), publisher: { '@type': 'Organization', name: SITE.publisher } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbList.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.title, ...(c.href || i === crumbList.length - 1 ? { item: new URL(c.href ?? Astro.url.pathname, Astro.site).href } : {}) })) },
+];
+---
+<BaseLayout title={p.title} description={p.summary} jsonld={[...jsonld, ...(p.extraJsonld ?? [])]}>
+  {p.vtCss && <link slot="head" rel="stylesheet" href="/vt.css" />}
+  <div class="container page" data-domain={p.domain}>
+    <PageHeader title={p.title} summary={p.summary} domain={p.domain} crumbs={p.crumbs ?? [{ title: p.title }]} updated={p.updated} minutes={p.minutes} depth={p.depth} back={p.back} vt={p.vt} />
+    <div class="page-body">
+      <aside class="page-toc" data-pagefind-ignore><Toc headings={headings} /></aside>
+      <div class="page-main">
+        <div data-pagefind-ignore><Toc headings={headings} variant="inline" /></div>
+        <article class="prose"><slot /></article>
+        <div class="page-foot" data-pagefind-ignore>
+          <Related tags={p.tags ?? []} explicit={p.related} />
+          <SourceList />
+          <Pager />
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

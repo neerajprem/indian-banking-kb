@@ -1,0 +1,85 @@
+---
+title: Messaging and streaming
+topicId: messaging
+summary: "Messaging moves work between systems without making them wait for each other. Queues hand each message to one consumer; logs keep an ordered record many can replay. Banks use both."
+blurb: "Queues versus logs, the main products, stream processing, and the patterns that keep money safe when messages repeat."
+domain: design
+depth: intermediate
+order: 3
+updated: 2026-09-29
+tags: [messaging, events, integration, technology]
+related: [/architecture/event-driven/, integration, observability]
+facts: [upi-daily-2026-08]
+---
+
+## Why it matters
+
+Banks connect hundreds of systems. Calling each one directly and waiting for an answer makes every system as slow and as fragile as the slowest one it calls. Messaging lets a system hand off work and carry on, while another system picks it up when it can. It is how banks absorb peaks, decouple teams and feed real-time fraud and analytics.
+
+## Queues and logs
+
+A **queue** holds messages until a consumer takes them, and each message goes to one consumer. It suits distributing work: "send this SMS", "generate this statement". A **log** keeps messages in order for a set time, and any number of consumers read it at their own pace, each keeping its own position. It suits event streams, audit trails and feeding several systems from one source. [Event-driven architecture](/architecture/event-driven/) covers the design patterns.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Messaging and streaming technologies" head={['Technology', 'Model', 'Typical use in Indian banking', 'Watch out for']} rows={[
+  ['Apache Kafka (and managed or compatible services)', 'Partitioned, replicated log', 'Event streams, change data capture, feeding fraud and analytics', 'Operational complexity; ordering holds only within a partition'],
+  ['RabbitMQ', 'Broker with queues and flexible routing', 'Task distribution between services', 'Throughput ceilings at very high volumes'],
+  ['IBM MQ', 'Enterprise queue manager with transactions', 'Messaging with mainframes and older cores', 'Licence cost and specialist skills'],
+  ['Cloud messaging services', 'Managed queues and streams', 'Cloud-hosted channels and analytics', 'Data residency and outsourcing obligations'],
+  ['Apache Flink', 'Stateful stream processing', 'Real-time fraud features, running totals, alerts', 'State management and upgrades need care'],
+  ['Spark Structured Streaming', 'Micro-batch stream processing', 'Near-real-time analytics and data pipelines', 'Latency of seconds rather than milliseconds'],
+]} note="Typical uses are general industry patterns, not claims about named banks. Product names are for reference only." /></div>
+
+## How to choose
+
+Ask three questions. **Does more than one system need the same message?** If so, a log. **Must messages stay in order?** If so, which ones: usually all messages for one account or one payment, which a partitioned log can keep together. **How long must messages be kept?** A queue deletes a message once handled; a log can keep days or weeks, so a new consumer or a fixed bug can replay history.
+
+Scale matters too. The UPI system alone averages <Fact id="upi-daily-2026-08" />, so a bank's messaging layer must absorb peaks without back-pressure reaching customers.
+
+## Handling repeats safely
+
+Almost every messaging system can deliver a message more than once, for example after a timeout and retry. For money, a repeated message must never move money twice. The usual answer is an idempotent consumer: it records each message's unique key and ignores keys it has already processed.
+
+<CodeBlock lang="ts" title="An idempotent consumer (illustrative)" code={`
+async function handle(msg: PaymentMessage) {
+  // The key comes from the sender and is the same on every retry.
+  const seen = await db.processed.find(msg.idempotencyKey);
+  if (seen) return seen.result; // already done: return the same answer
+
+  return db.transaction(async (tx) => {
+    const result = await postToLedger(tx, msg);
+    await tx.processed.insert({ key: msg.idempotencyKey, result });
+    return result;
+  });
+}
+`} />
+
+<Callout type="risk" title="Exactly-once has limits">
+  <p>Products that promise exactly-once delivery keep that promise inside their own boundary. The moment a message causes a change in another system, such as a core ledger, the application still needs its own idempotency check.</p>
+</Callout>
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Messaging choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Queue', 'Simple work distribution; message gone once handled', 'No replay; one consumer per message'],
+  ['Log', 'Many consumers, replay and history', 'Retention to manage; ordering only per partition'],
+  ['Managed cloud service', 'No cluster to run', 'Provider dependence, residency and outsourcing rules'],
+  ['Self-run cluster', 'Full control on-premises', 'Specialist operations team'],
+]} /></div>
+
+## Pitfalls
+
+- **Assuming exactly-once delivery** and skipping idempotency checks.
+- **Hot partitions,** where one busy key, such as a large merchant, overloads a single partition.
+- **Unbounded retries** that hammer a failing system; use back-off and a dead-letter queue for messages that keep failing.
+- **Silent consumer lag** with no alert.
+- **Changing message formats** without versioning, breaking consumers.
+
+## Questions for a design review
+
+- What is the key for each message, and does every consumer check it?
+- Which messages must stay in order, and what partition key guarantees that?
+- Where do messages go after repeated failure, and who looks at them?
+- How far can each consumer fall behind before an alert fires?
+- How long are messages kept, and does that respect data retention rules?

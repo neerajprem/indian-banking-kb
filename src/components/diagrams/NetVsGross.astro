@@ -1,0 +1,27 @@
+---
+// Worked example: the same four payments settled gross (one by one) and net (only the differences).
+// Illustrative amounts. Rendered as HTML so it reflows and reads well without CSS.
+const payments = [
+  { from: 'Bank A', to: 'Bank B', amt: 50 },
+  { from: 'Bank B', to: 'Bank A', amt: 20 },
+  { from: 'Bank B', to: 'Bank C', amt: 30 },
+  { from: 'Bank C', to: 'Bank A', amt: 40 },
+];
+const banks = ['Bank A', 'Bank B', 'Bank C'];
+const net = banks.map((b) => ({ bank: b, pos: payments.reduce((s, p) => s + (p.to === b ? p.amt : 0) - (p.from === b ? p.amt : 0), 0) }));
+const gross = payments.reduce((s, p) => s + p.amt, 0);
+const moved = net.filter((n) => n.pos > 0).reduce((s, n) => s + n.pos, 0);
+const fmt = (n: number) => (n > 0 ? `receives ₹${n} crore` : n < 0 ? `pays ₹${-n} crore` : 'nothing to move');
+---
+<div class="nvg">
+  <section class="nvg-col" aria-labelledby="nvg-g">
+    <h3 id="nvg-g">Gross: every payment settles on its own</h3>
+    <ol class="nvg-list">{payments.map((p) => <li><span>{p.from}</span><span class="nvg-arrow" aria-label="pays">→</span><span>{p.to}</span><strong>₹{p.amt} crore</strong></li>)}</ol>
+    <p class="nvg-total">{payments.length} settlements, ₹{gross} crore moved</p>
+  </section>
+  <section class="nvg-col" aria-labelledby="nvg-n">
+    <h3 id="nvg-n">Net: only each bank’s balance settles</h3>
+    <ul class="nvg-list">{net.map((n) => <li class:list={{ plus: n.pos > 0, minus: n.pos < 0 }}><span>{n.bank}</span><strong>{fmt(n.pos)}</strong></li>)}</ul>
+    <p class="nvg-total">1 settlement, ₹{moved} crore moved</p>
+  </section>
+</div>

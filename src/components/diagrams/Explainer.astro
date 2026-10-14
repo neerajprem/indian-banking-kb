@@ -1,0 +1,56 @@
+---
+// Click-through explainer: a sequence diagram beside numbered steps. Without JavaScript it is a static list.
+import Sequence, { type Lane, type Msg } from './Sequence.astro';
+interface Step { title: string; body: string; messages?: Omit<Msg, 'step'>[]; lanes: string[]; band?: boolean }
+interface Props { title: string; desc: string; lanes: Lane[]; steps: Step[]; band?: string; caption: string }
+const { title, desc, lanes, steps, band, caption } = Astro.props;
+const messages: Msg[] = steps.flatMap((s, i) => (s.messages ?? []).map((m) => ({ ...m, step: i })));
+const bandStep = steps.findIndex((s) => s.band);
+const uid = 'xp-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 24);
+---
+<div class="explainer" data-explainer data-who={JSON.stringify(steps.map((s) => s.lanes))}>
+  <figure class="explainer-fig">
+    <Sequence title={title} desc={desc} lanes={lanes} messages={messages} band={band ? { label: band, step: bandStep >= 0 ? bandStep : undefined } : undefined} stepped />
+    <figcaption class="table-note">{caption}</figcaption>
+  </figure>
+  <div>
+    <ol class="steps">
+      {steps.map((s, i) => (
+        <li>
+          <button class="step-btn" type="button" aria-expanded="false" aria-controls={`${uid}-${i}`}><span class="step-n" aria-hidden="true">{i + 1}</span><span><span class="visually-hidden">Step {i + 1}: </span>{s.title}</span></button>
+          <p class="step-body" id={`${uid}-${i}`}>{s.body}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="explainer-ctrl js-only">
+      <button class="btn" type="button" data-prev>Previous</button>
+      <button class="btn btn--primary" type="button" data-next>Next step</button>
+      <output aria-live="polite" data-out></output>
+    </div>
+  </div>
+</div>
+<script>
+  import { ready } from '../../scripts/ready';
+  ready(() => {
+    document.querySelectorAll<HTMLElement>('[data-explainer]').forEach((root) => {
+      if (root.dataset.bound) return; root.dataset.bound = '1';
+      const who: string[][] = JSON.parse(root.dataset.who!);
+      const items = [...root.querySelectorAll<HTMLLIElement>('.steps li')];
+      const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!, next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+      const out = root.querySelector<HTMLOutputElement>('[data-out]')!;
+      let i = 0;
+      const show = (n: number) => {
+        i = n;
+        items.forEach((li, k) => { li.classList.toggle('on', k === n); li.querySelector('button')!.setAttribute('aria-expanded', String(k === n)); });
+        root.querySelectorAll<SVGElement>('[data-step]').forEach((g) => { const k = Number(g.dataset.step); g.classList.toggle('on', k === n); g.classList.toggle('past', k < n); });
+        root.querySelectorAll<SVGElement>('.lane').forEach((l) => l.classList.toggle('on', who[n].includes(l.dataset.lane!)));
+        prev.disabled = n === 0; next.disabled = n === items.length - 1;
+        out.textContent = `Step ${n + 1} of ${items.length}`;
+      };
+      items.forEach((li, k) => li.querySelector('button')!.addEventListener('click', () => show(k)));
+      prev.addEventListener('click', () => i > 0 && show(i - 1));
+      next.addEventListener('click', () => i < items.length - 1 && show(i + 1));
+      show(0);
+    });
+  });
+</script>

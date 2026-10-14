@@ -1,0 +1,140 @@
+---
+title: Limitations and known problems
+summary: "Indian banking technology works at huge scale but carries known weaknesses. Most trace back to batch-era cores and estates that grew by addition. Each has a cause, an effect and a mitigation."
+domain: decision
+order: 2
+updated: 2026-09-29
+tags: [risk, resilience, core, modernisation]
+facts: [kotak-2024, kotak-outages, kotak-deficiencies, kotak-lifted-2025, hdfc-2020, upi-daily-2026-08, tat-2019, outsourcing-concentration, itgrc-dr-drills, data-localisation-2018, outsourcing-cloud-scope]
+---
+
+## How to read this page
+
+Each limitation is described the same way: its **cause**, its **effect**, the **common mitigation** and its **status** today. The page names an institution only where a regulator or reputable press has published the facts. Everything else describes patterns seen across the industry.
+
+## Public examples
+
+Regulators have acted when technology weaknesses reached customers:
+
+- <Fact id="kotak-2024" show="claim" /> <Fact id="kotak-outages" show="claim" /> <Fact id="kotak-deficiencies" show="claim" /> <Fact id="kotak-lifted-2025" show="claim" />
+- <Fact id="hdfc-2020" show="claim" />
+
+Both cases show the same pattern: digital growth outpacing the resilience of the systems underneath, and a regulator choosing to slow a bank's growth until the gap was closed.
+
+## The limitations
+
+### 1. Cores designed for a batch era
+
+- **Cause.** Many cores assume a nightly window when postings stop and batch work runs.
+- **Effect.** Round-the-clock payments must be handled by stand-in layers during end of day, adding complexity and reconciliation.
+- **Common mitigation.** Shorter, incremental batch cycles; stand-in processing; payment hubs that shield the core.
+- **Status.** Widespread; eased gradually through core upgrades and modernisation.
+
+### 2. Monolithic scaling limits
+
+- **Cause.** One large database behind one application holds every account.
+- **Effect.** Capacity is capped by the biggest machine, and busy accounts become hot spots.
+- **Common mitigation.** Caching, queuing, read replicas and moving non-ledger functions out of the core.
+- **Status.** Managed rather than solved at most banks.
+
+### 3. Vendor lock-in and migration risk
+
+- **Cause.** Heavily customised platforms, proprietary formats and long contracts.
+- **Effect.** Changing vendor becomes impractical, weakening the bank's negotiating position.
+- **Common mitigation.** Configuration over customisation, owned data formats, APIs in front of vendor systems and tested exit plans. <Fact id="outsourcing-concentration" show="claim" />
+- **Status.** A standing risk that rises with every customisation.
+
+### 4. Legacy skills
+
+- **Cause.** Critical systems written in older languages or on platforms few people now learn.
+- **Effect.** Knowledge concentrates in a few people; changes slow down and become riskier.
+- **Common mitigation.** Documenting business rules, pairing and training, wrapping legacy code behind APIs and moving logic out in stages.
+- **Status.** Growing as experienced staff retire.
+
+### 5. Pending and reversal states
+
+- **Cause.** Payments cross several independently run systems, and any link can time out.
+- **Effect.** Customers are debited without the payee being credited, and must wait for a reversal. At about <Fact id="upi-daily-2026-08" />, even a tiny failure rate means many cases a day.
+- **Common mitigation.** Unique references, automated status checks and reversal jobs, within regulatory limits. <Fact id="tat-2019" show="claim" />
+- **Status.** Well governed by rules; still a common customer complaint.
+
+### 6. Liquidity and settlement risk
+
+- **Cause.** Customers are credited instantly while banks settle later, on a net basis.
+- **Effect.** A bank carries exposure to other banks until settlement; a failure in the cycle affects many participants.
+- **Common mitigation.** Settlement guarantees, limits and monitoring of intraday positions by operators and banks.
+- **Status.** Managed by operators and regulators; invisible to most customers.
+
+### 7. Retail limits versus business needs
+
+- **Cause.** Instant rails were designed first for consumers, with per-transaction and daily ceilings.
+- **Effect.** Businesses making large payments must switch rails or split payments.
+- **Common mitigation.** Higher ceilings for specified merchant categories, and RTGS for large values.
+- **Status.** Improving as ceilings rise for specific uses; see [payment rails](/payment-rails/).
+
+### 8. Reconciliation burden
+
+- **Cause.** The same transaction is recorded by the app, the switch, the payment hub, the core and the general ledger.
+- **Effect.** Mismatches need investigation, often manually, and delay the resolution of customer complaints.
+- **Common mitigation.** Automated matching on shared references, with exceptions routed to named owners.
+- **Status.** Large operational effort at most banks.
+
+### 9. Social-engineering fraud versus technical controls
+
+- **Cause.** Fraudsters persuade customers to authorise payments themselves, so strong authentication is passed rather than broken.
+- **Effect.** Losses continue even when systems work exactly as designed.
+- **Common mitigation.** Behavioural fraud scoring, cooling-off periods for new payees, warnings at the point of payment, mule-account detection and customer education.
+- **Status.** A leading and growing risk.
+
+### 10. API security gaps between channels and the core
+
+- **Cause.** New channels expose older functions through APIs that were never designed for direct exposure.
+- **Effect.** Weaknesses such as missing authorisation checks or excessive data in responses.
+- **Common mitigation.** A gateway that enforces identity and limits, fine-grained authorisation in each service, and API security testing.
+- **Status.** Improving; a frequent audit finding.
+
+### 11. Fragmented AML views
+
+- **Cause.** Customer and transaction data sit in separate systems for deposits, cards, loans and payments.
+- **Effect.** Suspicious patterns that span products are harder to see.
+- **Common mitigation.** A single customer view feeding transaction monitoring, and entity resolution across systems.
+- **Status.** A long-running programme at most banks.
+
+### 12. Many regulatory returns and data-lineage risk
+
+- **Cause.** Returns are produced from many source systems through many transformations.
+- **Effect.** Errors are hard to trace, and the same figure can differ between returns.
+- **Common mitigation.** A governed data warehouse, documented lineage and automated quality checks. See [data architecture](/architecture/data/).
+- **Status.** Improving with investment; still labour-intensive.
+
+### 13. Cloud adoption constraints
+
+- **Cause.** Data residency, outsourcing duties and exit planning all apply to cloud use. <Fact id="data-localisation-2018" show="claim" /> <Fact id="outsourcing-cloud-scope" show="claim" />
+- **Effect.** Slower adoption than in some other sectors, especially for systems of record.
+- **Common mitigation.** Cloud regions in India, clear placement rules and reusable control evidence.
+- **Status.** Adoption growing for channels, analytics and development.
+
+### 14. Depth of disaster-recovery testing
+
+- **Cause.** Full switch-overs are disruptive, so drills can be narrowed to what is safe.
+- **Effect.** A DR site that has passed drills may still fail in a real disaster.
+- **Common mitigation.** Regular, realistic drills that run real business at the DR site. <Fact id="itgrc-dr-drills" show="claim" />
+- **Status.** Required by rule; depth varies in practice.
+
+### 15. Talent asymmetry
+
+- **Cause.** Engineering talent concentrates in large banks, technology firms and fintechs.
+- **Effect.** Smaller banks depend more on vendors and struggle to keep in-house knowledge.
+- **Common mitigation.** Shared platforms, managed services and focused hiring for the capabilities that matter most.
+- **Status.** Persistent.
+
+## Why "too complex to change" is not the end
+
+Many of these limitations share one root: estates that grew by adding systems rather than replacing them. It is tempting to conclude that nothing can change without a risky replacement. In practice, banks improve step by step:
+- wrap the core behind APIs;
+- move one capability at a time to newer systems;
+- automate reconciliation;
+- test resilience for real;
+- retire what is no longer needed.
+
+Each step is small enough to reverse and valuable on its own. [Legacy modernisation](/architecture/modernisation/) describes the patterns.

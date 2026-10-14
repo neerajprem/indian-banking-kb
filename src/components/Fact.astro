@@ -1,0 +1,15 @@
+---
+// Renders a fact from facts.yaml with its citation. Live facts render as a link, never a number.
+import Cite from './Cite.astro';
+import { getEntry } from 'astro:content';
+import { requireFact } from '../lib/facts';
+interface Props { id: string; show?: 'value' | 'claim'; label?: string }
+const { id, show = 'value', label } = Astro.props;
+const f = requireFact(Astro.locals.citations, id, Astro.locals.where ?? Astro.url.pathname);
+const src = await getEntry('sources', f.data.source.id);
+const draft = f.data.status !== 'verified';
+const text = show === 'claim' || f.data.value === undefined ? f.data.claim : `${f.data.value}${f.data.unit ? ' ' + f.data.unit : ''}`;
+---
+{f.data.volatility === 'live'
+  ? <a class="fact" href={src!.data.url} rel="noopener noreferrer">{label ?? src!.data.title}</a>
+  : <span class:list={['fact', { 'fact--draft': draft }]} data-fact={id} title={draft ? 'Awaiting verification' : undefined}>{label ?? text}</span>}<Cite fact={id} />

@@ -1,0 +1,14 @@
+---
+// Detail view for an Architecture or Technologies topic.
+import PageLayout from './PageLayout.astro';
+interface Props {
+  section: { slug: string; title: string }; title: string; summary: string; domain: string; updated: Date; minutes: number; depth: string;
+  headings: { depth: number; slug: string; text: string }[]; tags: string[]; related: string[]; vt?: string;
+}
+const p = Astro.props;
+---
+<PageLayout {...p} vtCss crumbs={[{ title: p.section.title, href: `/${p.section.slug}/` }, { title: p.title }]}
+  back={{ href: `/${p.section.slug}/`, title: `All ${p.section.title.toLowerCase()} topics` }}
+  related={p.related.map((r) => (r.startsWith('/') ? r : `/${p.section.slug}/${r}/`))}>
+  <slot />
+</PageLayout>

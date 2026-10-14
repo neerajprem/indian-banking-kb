@@ -1,0 +1,11 @@
+---
+import { Code } from 'astro:components';
+import { sentinelTheme, styleToClass } from '../lib/highlight.mjs';
+interface Props { code: string; lang?: string; title?: string }
+const { code, lang = 'text', title } = Astro.props;
+---
+<div class="codeblock">
+  {title && <p class="figure-title">{title}</p>}
+  <Code code={code.trim()} lang={lang as any} theme={sentinelTheme as any} transformers={[styleToClass as any]} />
+  <button class="btn copy-btn js-only" type="button" data-copy>Copy</button>
+</div>

@@ -1,0 +1,25 @@
+# Weekly: open or update an issue listing facts past their freshness window.
+name: freshness
+on:
+  schedule: [{ cron: '30 3 * * 1' }]   # Mondays 03:30 UTC (09:00 IST)
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Build the report
+        run: npx tsx scripts/check-freshness.ts > freshness.md
+      - name: Open or update the issue
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          if grep -q "All facts are within their freshness window" freshness.md; then echo "Nothing stale"; exit 0; fi
+          gh label create freshness --color C5A000 --description "Facts to recheck" --force
+          n=$(gh issue list --label freshness --state open --json number --jq '.[0].number')
+          if [ -n "$n" ]; then gh issue edit "$n" --body-file freshness.md; else gh issue create --title "Facts to recheck" --label freshness --body-file freshness.md; fi

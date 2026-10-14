@@ -1,0 +1,11 @@
+---
+import Icon from './Icon.astro';
+import { pagerFor } from '../lib/nav';
+const { prev, next } = await pagerFor(Astro.url.pathname);
+---
+{(prev || next) && (
+  <nav class="pager" aria-label="Reading order">
+    {prev && <a class="prev" href={prev.href} rel="prev"><span class="dir"><Icon name="chevron-left" />Previous</span><span class="ttl">{prev.title}</span></a>}
+    {next && <a class="next" href={next.href} rel="next"><span class="dir">Next<Icon name="chevron-right" /></span><span class="ttl">{next.title}</span></a>}
+  </nav>
+)}

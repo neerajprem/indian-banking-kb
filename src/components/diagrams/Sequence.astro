@@ -1,0 +1,64 @@
+---
+// Lifeline sequence diagram as build-time SVG, with an automatic text alternative.
+// Used on its own, or by Explainer in "stepped" mode where each message belongs to a step.
+export interface Lane { id: string; label: string }
+export interface Msg { from: string; to: string; label?: string; kind?: 'req' | 'res' | 'self'; step?: number }
+interface Props { title: string; desc: string; lanes: Lane[]; messages: Msg[]; band?: { label: string; step?: number }; stepped?: boolean; alt?: boolean }
+const { title, desc, lanes, messages, band, stepped = false, alt = true } = Astro.props;
+const W = 120, X0 = 60, TOP = 70;
+const xOf = Object.fromEntries(lanes.map((l, i) => [l.id, X0 + i * W]));
+const name = Object.fromEntries(lanes.map((l) => [l.id, l.label.replace(/\n/g, ' ')]));
+let y = TOP + 34;
+const rows = messages.map((m, i) => {
+  const prev = messages[i - 1];
+  if (i > 0) y += m.kind === 'res' && prev && m.step !== undefined && prev.step === m.step ? 18 : 46;
+  const x1 = xOf[m.from], x2 = xOf[m.to];
+  const dir = x2 >= x1 ? 1 : -1;
+  const d = m.kind === 'self' ? `M${x1 + 4} ${y - 8}h36v22h-32` : `M${x1 + dir * 16} ${y}H${x2 - dir * 6}`;
+  const first = m.step === undefined ? m.kind !== 'res' : messages.findIndex((o) => o.step === m.step) === i;
+  const nx = m.kind === 'self' ? x1 + 58 : x1;
+  const ny = m.kind === 'self' ? y + 3 : y;
+  return { ...m, d, y, first, nx, ny, num: m.step !== undefined ? m.step + 1 : undefined, lx: (x1 + x2) / 2 };
+});
+let n = 0;
+rows.forEach((r) => { if (r.num === undefined && r.first) r.num = ++n; });
+const bottom = y + 30;
+const H = band ? bottom + 70 : bottom + 10;
+const width = lanes.length * W;
+const uid = 'seq-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 32);
+---
+<svg class:list={['dg-svg', 'seq', { stepped }]} viewBox={`0 0 ${width} ${H}`} width={width} height={H} role="img" aria-labelledby={`${uid}-t ${uid}-d`} data-seq>
+  <title id={`${uid}-t`}>{title}</title><desc id={`${uid}-d`}>{desc}</desc>
+  <defs><marker id={`${uid}-h`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="ahead" d="M0 0L10 5L0 10z" /></marker></defs>
+  {lanes.map((l, i) => {
+    const x = X0 + i * W; const parts = l.label.split('\n');
+    return (
+      <>
+        <line class="life" x1={x} y1={TOP} x2={x} y2={bottom} />
+        <g class="lane" data-lane={l.id}>
+          <rect x={x - 54} y="10" width="108" height="56" rx="8" />
+          <text x={x} y={parts.length > 1 ? 34 : 44} text-anchor="middle">{parts.map((p, k) => <tspan x={x} dy={k ? '1.15em' : 0}>{p}</tspan>)}</text>
+        </g>
+      </>
+    );
+  })}
+  {rows.map((r) => (
+    <g class="msg-g" data-step={r.step}>
+      <path class:list={['msg', { 'msg--res': r.kind === 'res' }]} d={r.d} marker-end={`url(#${uid}-h)`} />
+      {r.label && !stepped && <text class="mlab" x={r.lx} y={r.y - 8} text-anchor="middle">{r.label}</text>}
+      {r.first && r.num !== undefined && <g class="num"><circle cx={r.nx} cy={r.ny} r="12" /><text x={r.nx} y={r.ny + 4} text-anchor="middle">{r.num}</text></g>}
+    </g>
+  ))}
+  {band && (
+    <g class="band" data-step={band.step}>
+      <rect x="10" y={bottom + 12} width={width - 20} height="54" rx="8" />
+      <text x={width / 2} y={bottom + 45} text-anchor="middle">{band.label}</text>
+      {band.step !== undefined && <g class="num"><circle cx="34" cy={bottom + 39} r="13" /><text x="34" y={bottom + 43} text-anchor="middle">{band.step + 1}</text></g>}
+    </g>
+  )}
+</svg>
+{alt && !stepped && (
+  <details class="alt-text"><summary>Text description</summary>
+    <ol>{rows.map((r) => <li>{r.kind === 'self' ? `${name[r.from]}: ${r.label ?? ''}` : `${name[r.from]} to ${name[r.to]}${r.label ? `: ${r.label}` : ''}`}{r.kind === 'res' ? ' (response)' : ''}</li>)}{band && <li>{band.label}</li>}</ol>
+  </details>
+)}

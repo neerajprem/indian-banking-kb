@@ -1,0 +1,97 @@
+---
+import Icon from './Icon.astro';
+---
+<button class="btn search-btn js-only" type="button" data-search-open aria-haspopup="dialog" aria-keyshortcuts="/">
+  <Icon name="search" /><span class="btn-label">Search</span><kbd>/</kbd>
+</button>
+<dialog class="search-dialog" aria-label="Search the knowledge base" data-search>
+  <div class="search-field">
+    <Icon name="search" />
+    <label for="q" class="visually-hidden">Search</label>
+    <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search topics, rails, short names"
+      role="combobox" aria-expanded="false" aria-controls="search-results" aria-autocomplete="list" />
+    <button class="btn" type="button" data-search-close>Close</button>
+  </div>
+  <p class="search-status" role="status" aria-live="polite" data-search-status>Type to search. Short names like UPI or CTS work.</p>
+  <ul class="search-results" id="search-results" role="listbox" aria-label="Results" data-search-results></ul>
+  <p class="search-hint">Use the up and down arrows to move, Enter to open, Escape to close.</p>
+</dialog>
+<script>
+  import { ready } from '../scripts/ready';
+  type PF = { search: (q: string) => Promise<{ results: { data: () => Promise<any> }[] }> };
+  let pagefind: PF | null = null;
+  // Exact short-name matches are pinned first, from a small index built with the site.
+  let glossary: { t: string; id: string; e: string }[] | null = null;
+  async function loadGlossary() {
+    if (glossary) return glossary;
+    try { glossary = await (await fetch('/glossary.json')).json(); } catch { glossary = []; }
+    return glossary;
+  }
+  const norm = (s: string) => s.toLowerCase().replace(/[\s.-]+/g, '');
+  async function load(): Promise<PF | null> {
+    if (pagefind) return pagefind;
+    try {
+      const url = '/pagefind/pagefind.js';
+      pagefind = await import(/* @vite-ignore */ url);
+    } catch { pagefind = null; }
+    return pagefind;
+  }
+  ready(() => {
+    const dlg = document.querySelector<HTMLDialogElement>('[data-search]');
+    if (!dlg || dlg.dataset.bound) return; dlg.dataset.bound = '1';
+    const input = dlg.querySelector<HTMLInputElement>('input')!;
+    const list = dlg.querySelector<HTMLUListElement>('[data-search-results]')!;
+    const status = dlg.querySelector<HTMLElement>('[data-search-status]')!;
+    let active = -1; let seq = 0;
+    const open = () => { dlg.showModal(); input.focus(); input.select(); load(); loadGlossary(); };
+    document.querySelectorAll('[data-search-open]').forEach((b) => b.addEventListener('click', open));
+    dlg.querySelector('[data-search-close]')!.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    document.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key === '/' && !dlg.open && !/INPUT|TEXTAREA|SELECT/.test(t.tagName) && !t.isContentEditable) { e.preventDefault(); open(); }
+    });
+    const links = () => [...list.querySelectorAll<HTMLAnchorElement>('a')];
+    const select = (i: number) => {
+      const ls = links(); active = Math.max(-1, Math.min(i, ls.length - 1));
+      ls.forEach((a, k) => a.setAttribute('aria-selected', String(k === active)));
+      if (active >= 0) { input.setAttribute('aria-activedescendant', ls[active].id); ls[active].scrollIntoView({ block: 'nearest' }); }
+      else input.removeAttribute('aria-activedescendant');
+    };
+    input.addEventListener('keydown', (e) => {
+      // A search input normally uses the first Escape to clear itself; close the dialog instead, as the hint says.
+      if (e.key === 'Escape') { e.preventDefault(); dlg.close(); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); select(active + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); select(active - 1); }
+      else if (e.key === 'Enter' && active >= 0) { e.preventDefault(); links()[active].click(); }
+    });
+    input.addEventListener('input', async () => {
+      const q = input.value.trim(); const my = ++seq;
+      if (!q) { list.replaceChildren(); status.textContent = 'Type to search. Short names like UPI or CTS work.'; input.setAttribute('aria-expanded', 'false'); return; }
+      const pf = await load();
+      if (!pf) { status.textContent = 'Search is available on the built site only.'; return; }
+      const [res, gl] = await Promise.all([pf.search(q), loadGlossary()]);
+      const pinned = (gl ?? []).filter((g) => norm(g.t) === norm(q) || norm(g.e) === norm(q)).map((g) => ({ url: `/glossary/#${g.id}`, meta: { title: `${g.t}: ${g.e}` }, excerpt: 'Glossary entry', sub_results: [] as any[], pinned: true }));
+      const found = await Promise.all(res.results.slice(0, 8).map((r) => r.data()));
+      const data = [...pinned, ...found.filter((d) => !(pinned.length && d.url.startsWith('/glossary/')))].slice(0, 8);
+      if (my !== seq) return;
+      list.replaceChildren(...data.map((d, i) => {
+        const li = document.createElement('li'); li.setAttribute('role', 'presentation');
+        // For the glossary, link straight to the matching term (a Pagefind sub-result) rather than the page top.
+        const sub = !d.pinned && d.url.startsWith('/glossary/') && d.sub_results?.length ? d.sub_results[0] : null;
+        const a = document.createElement('a'); a.href = sub?.url ?? d.url; a.id = `sr-${i}`; a.setAttribute('role', 'option');
+        const t = document.createElement('span'); t.className = 'r-title'; t.textContent = sub ? `${sub.title.replace(/\s*\(.*\)$/, '')}: glossary` : (d.meta?.title ?? d.url);
+        const ex = document.createElement('span'); ex.className = 'r-ex';
+        // Pagefind excerpts contain only <mark> tags around matches; rebuild them safely.
+        String(d.excerpt).split(/(<mark>.*?<\/mark>)/g).forEach((part) => {
+          const m = part.match(/^<mark>(.*)<\/mark>$/);
+          if (m) { const mk = document.createElement('mark'); mk.textContent = m[1]; ex.append(mk); } else ex.append(part.replace(/<[^>]+>/g, ''));
+        });
+        a.append(t, ex); li.append(a); return li;
+      }));
+      active = -1; input.setAttribute('aria-expanded', String(data.length > 0));
+      list.dataset.q = q; // which query these results belong to
+      status.textContent = data.length ? `${res.results.length + pinned.length} result${res.results.length + pinned.length === 1 ? '' : 's'}` : `No results for “${q}”. Try a short name or a simpler word.`;
+    });
+  });
+</script>

@@ -1,0 +1,39 @@
+---
+import Icon from './Icon.astro';
+import type { NavGroup } from '../lib/nav';
+interface Props { nav: NavGroup[]; current: string; variant: 'menus' | 'drawer' }
+const { nav, current, variant } = Astro.props;
+const top = '/' + (current.split('/').filter(Boolean)[0] ?? '') + '/';
+const isCurrent = (href: string) => href === current || href === top;
+---
+{variant === 'menus' ? (
+  <nav class="site-nav" aria-label="Site">
+    <ul class="nav-groups">
+      {nav.map((g) => (
+        <li>
+          <details class:list={['nav-group', { 'is-current': g.items.some((i) => isCurrent(i.href)) }]} data-domain={g.domain}>
+            <summary>{g.title}<Icon name="chevron-down" /></summary>
+            <ul class="nav-menu">
+              {g.items.map((i) => <li><a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.title}</a></li>)}
+            </ul>
+          </details>
+        </li>
+      ))}
+    </ul>
+  </nav>
+) : (
+  <dialog class="drawer" aria-labelledby="drawer-title" data-drawer>
+    <div class="drawer-head">
+      <span class="drawer-title" id="drawer-title">Menu</span>
+      <button class="btn" type="button" data-drawer-close><Icon name="x" /> Close</button>
+    </div>
+    <nav aria-label="Site">
+      {nav.map((g) => (
+        <section class="drawer-group" data-domain={g.domain}>
+          <h2>{g.title}</h2>
+          <ul>{g.items.map((i) => <li><a href={i.href} aria-current={isCurrent(i.href) ? 'page' : undefined}>{i.title}</a></li>)}</ul>
+        </section>
+      ))}
+    </nav>
+  </dialog>
+)}

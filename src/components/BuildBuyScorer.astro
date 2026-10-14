@@ -1,0 +1,56 @@
+---
+// Client-side build-versus-buy scorer. Nothing leaves the browser; it only reads the radio buttons below.
+const factors = [
+  { id: 'diff', q: 'How much does this capability set you apart from competitors?', lo: 'Commodity', hi: 'Core differentiator', w: 1, dir: 'build' },
+  { id: 'reg', q: 'How complex and fast-changing are the rules it must follow?', lo: 'Simple and stable', hi: 'Complex and changing', w: 0.5, dir: 'buy' },
+  { id: 'scale', q: 'How large and long-lived will your use of it be?', lo: 'Small or short-lived', hi: 'Large and long-lived', w: 0.5, dir: 'build' },
+  { id: 'speed', q: 'How urgently do you need it in production?', lo: 'No rush', hi: 'Very urgent', w: 1, dir: 'buy' },
+  { id: 'talent', q: 'How strong is your own team for building and running it?', lo: 'Weak', hi: 'Strong', w: 1, dir: 'build' },
+  { id: 'control', q: 'How much do you need to control its roadmap, data and exit?', lo: 'Little', hi: 'A great deal', w: 0.75, dir: 'build' },
+];
+---
+<div class="scorer" data-scorer data-factors={JSON.stringify(factors.map(({ id, w, dir, q }) => ({ id, w, dir, q })))}>
+  {factors.map((f) => (
+    <fieldset class="scorer-q">
+      <legend>{f.q}</legend>
+      <div class="scorer-scale">
+        <span class="scorer-end" aria-hidden="true">{f.lo}</span>
+        {[1, 2, 3, 4, 5].map((v) => (
+          <label class="scorer-opt"><input type="radio" name={`bb-${f.id}`} value={v} checked={v === 3} /><span>{v}<span class="visually-hidden">{v === 1 ? ` (${f.lo})` : v === 5 ? ` (${f.hi})` : ''}</span></span></label>
+        ))}
+        <span class="scorer-end" aria-hidden="true">{f.hi}</span>
+      </div>
+    </fieldset>
+  ))}
+  <div class="scorer-result js-only" aria-live="polite">
+    <p class="scorer-verdict" data-verdict>Leaning: hybrid</p>
+    <p class="scorer-why" data-why>Answer the six questions to see which way the factors point.</p>
+  </div>
+  <p class="table-note no-js-only">The scorer needs JavaScript. The table of factors on this page gives the same guidance.</p>
+  <p class="table-note">Illustrative only: a way to structure a discussion, not a decision. Your answers stay in your browser.</p>
+</div>
+<script>
+  import { ready } from '../scripts/ready';
+  ready(() => {
+    document.querySelectorAll<HTMLElement>('[data-scorer]').forEach((root) => {
+      if (root.dataset.bound) return; root.dataset.bound = '1';
+      const factors: { id: string; w: number; dir: string; q: string }[] = JSON.parse(root.dataset.factors!);
+      const verdict = root.querySelector('[data-verdict]')!, why = root.querySelector('[data-why]')!;
+      const update = () => {
+        const parts = factors.map((f) => {
+          const v = Number((root.querySelector(`input[name="bb-${f.id}"]:checked`) as HTMLInputElement | null)?.value ?? 3);
+          return { f, s: (v - 3) * f.w * (f.dir === 'build' ? 1 : -1) };
+        });
+        const total = parts.reduce((a, p) => a + p.s, 0);
+        const label = total >= 1.5 ? 'build' : total <= -1.5 ? 'buy' : 'hybrid';
+        verdict.textContent = `Leaning: ${label}`;
+        const top = parts.filter((p) => p.s !== 0).sort((a, b) => Math.abs(b.s) - Math.abs(a.s)).slice(0, 2);
+        why.textContent = top.length
+          ? `Strongest influences: ${top.map((p) => `${p.f.q.replace(/\?$/, '').toLowerCase()} (towards ${p.s > 0 ? 'build' : 'buy'})`).join('; ')}.`
+          : 'All factors are neutral, which usually points to a hybrid: buy the platform, build what differentiates.';
+      };
+      root.addEventListener('change', update);
+      update();
+    });
+  });
+</script>

@@ -1,0 +1,100 @@
+{
+  "_about": "Claims from earlier drafts that must not appear unless re-verified (04-CONTENT section I). check-facts scans content and data; check-dist scans the built site.",
+  "patterns": [
+    {
+      "id": 1,
+      "re": "\\bSBI\\b(?!-)[^.\\n]{0,80}\\bFinacle\\b|\\bState Bank of India\\b[^.\\n]{0,80}\\bFinacle\\b",
+      "why": "SBI runs TCS BaNCS, not Finacle"
+    },
+    {
+      "id": 3,
+      "re": "14\\s?B\\+?\\s*(a|per)\\s*month|450\\s?M\\+?\\s*(a|per)\\s*day",
+      "why": "Stale UPI volumes"
+    },
+    {
+      "id": 6,
+      "re": "5,000\\s*(to|-|–)\\s*6,000\\s*TPS|15,000\\s*(TPS\\s*)?burst|four settlement cycles a day",
+      "why": "Unverified NPCI internals"
+    },
+    {
+      "id": 8,
+      "re": "1\\.2 million ATMs|about 60% of debit cards",
+      "why": "Unverified card and ATM figures"
+    },
+    {
+      "id": 10,
+      "re": "RPO\\s*(≤|<=|of)\\s*6\\s*hours|RTO\\s*(≤|<=|of)\\s*24\\s*hours",
+      "why": "Unverified RBI RPO/RTO mandate"
+    },
+    {
+      "id": 12,
+      "re": "CIBIL has 90",
+      "why": "Invented market share"
+    },
+    {
+      "id": 15,
+      "re": "NABARD\\s*~\\s*28,000|NPCI\\s*~\\s*5,500",
+      "why": "Invented headcounts"
+    },
+    {
+      "id": 16,
+      "re": "zero settlement failures",
+      "why": "Unverified CCIL claim"
+    },
+    {
+      "id": 17,
+      "re": "351 DCCBs",
+      "why": "Unverified NABARD counts"
+    },
+    {
+      "id": 5,
+      "re": "cheques?[^.\\n]{0,40}\\bT\\s?\\+\\s?1\\b",
+      "why": "Cheque clearing moved to continuous clearing from 4 October 2025"
+    },
+    {
+      "id": 9,
+      "re": "(Visa|Mastercard)[^.\\n]{0,60}\\bfined\\b",
+      "why": "RBI imposed business restrictions (Amex, Diners, Mastercard), not fines; Visa was not restricted"
+    },
+    {
+      "id": 15,
+      "re": "~\\s*28,000",
+      "why": "NABARD had 3,134 staff (31 Mar 2024)"
+    },
+    {
+      "id": 18,
+      "re": "IDRBT[^.\\n]{0,40}deemed university",
+      "why": "IDRBT is a registered society"
+    },
+    {
+      "id": 19,
+      "re": "(NABARD|NHB)[^.\\n]{0,60}stake[^.\\n]{0,40}2023",
+      "why": "RBI's stakes were sold in 2019 (NABARD 26 Feb, NHB 19 Mar)"
+    },
+    {
+      "id": 20,
+      "re": "CERSAI[^.\\n]{0,30}RBI[- ]promoted|RBI[- ]promoted[^.\\n]{0,30}CERSAI",
+      "why": "CERSAI is a Government company set up by the Ministry of Finance"
+    },
+    {
+      "id": "cts-p2",
+      "re": "Phase 2[^.\\n]{0,30}\\b(began|started|commenced|took effect|came into effect)",
+      "why": "CTS Phase 2 was postponed until further notice on 24 Dec 2025"
+    },
+    {
+      "id": 11,
+      "re": "RBI Cloud Policy",
+      "why": "No RBI instrument by this name was found; cloud falls under the IT outsourcing Master Direction (2023)"
+    }
+  ],
+  "_verified_and_removed": [
+    {
+      "id": 21,
+      "verdict": "verified true from RBI/2019-20/111 (6 Dec 2019); circular since consolidated. Use only via fact neft-48-batches-2019."
+    },
+    {
+      "id": 2,
+      "verdict": "The vendor itself brands the product 'Infosys Finacle'; the developer is EdgeVerve Systems, a wholly owned Infosys subsidiary. Writing rule: name EdgeVerve as the maker (fact finacle-edgeverve)."
+    }
+  ]
+}

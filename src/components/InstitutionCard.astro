@@ -1,0 +1,21 @@
+---
+import { fmtDate } from '../lib/site';
+interface Props {
+  short: string; full: string; category: string; categoryDomain?: string; headquarters: string; established: number;
+  employees?: { value: number; asOf: Date; sourceLabel: string }; employeesNote?: string; href?: string; officialUrl: string;
+}
+const p = Astro.props;
+---
+<article class="inst-card" data-domain={p.categoryDomain ?? 'governance'}>
+  <div>
+    <span class="cat-tag">{p.category}</span>
+    <h3>{p.href ? <a href={p.href}>{p.short}</a> : p.short}</h3>
+    <p class="full">{p.full}</p>
+  </div>
+  <dl>
+    <dt>Headquarters</dt><dd>{p.headquarters}</dd>
+    <dt>Established</dt><dd class="tabular">{p.established}</dd>
+    <dt>Employees</dt><dd>{p.employees ? <>{p.employees.value.toLocaleString('en-IN')} <small>(as of {fmtDate(p.employees.asOf)}, {p.employees.sourceLabel})</small></> : (p.employeesNote ?? 'Not publicly disclosed')}</dd>
+    <dt>Official site</dt><dd><a href={p.officialUrl} rel="noopener noreferrer">{new URL(p.officialUrl).hostname}</a></dd>
+  </dl>
+</article>

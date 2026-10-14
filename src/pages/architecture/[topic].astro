@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import TopicPage from '../../layouts/TopicPage.astro';
+export async function getStaticPaths() {
+  return (await getCollection('architecture')).map((entry) => ({ params: { topic: entry.id }, props: { entry } }));
+}
+---
+<TopicPage slug="architecture" entry={Astro.props.entry} />

@@ -1,0 +1,110 @@
+---
+title: Multi-data-centre and disaster recovery
+topicId: multi-dc
+summary: "Banks run critical systems in two or more data centres. Replication decides how much data can be lost and how fast service returns. RBI expects both to be defined, tested and proven."
+blurb: "Active-passive and active-active, RPO and RTO, replication trade-offs, split-brain and what RBI expects from DR drills."
+domain: design
+depth: advanced
+order: 8
+updated: 2026-09-29
+tags: [resilience, disaster-recovery, architecture]
+related: [cbs, payments, hybrid-cloud]
+facts: [itgrc-rpo-rto-define, itgrc-near-zero-rpo, itgrc-dr-drills, itgrc-dr-switchover, itgrc-dc-dr-identical, itgrc-backup-restore]
+---
+
+## Why it matters
+
+A data centre can be lost to a power failure, a flood, a fire or a network cut. For a bank, losing its only site means no payments, no ATMs and no access to money until it is fixed. A second site, kept ready to take over, turns that disaster into an interruption. How ready the second site is, and how much recent data it holds, are design decisions with real costs.
+
+## The model explained
+
+### Two measures: RPO and RTO
+
+The **recovery point objective** (RPO) is how much data, measured in time, the bank can afford to lose. An RPO of zero means no confirmed transaction may be lost. The **recovery time objective** (RTO) is how quickly service must be back. Both are business decisions first and technical designs second: a lower RPO or RTO costs more.
+
+### Active-passive and active-active
+
+<Figure title="Two common topologies" caption="Illustrative. Many banks mix both, choosing per system.">
+  <BoxDiagram title="Data centre topologies" desc="Active-passive: all traffic goes to data centre 1, which replicates to data centre 2; after a failover, traffic moves to data centre 2. Active-active: traffic is split across both data centres, which replicate to each other." width={440} height={400}
+    zones={[{ x: 5, y: 5, w: 430, h: 185, label: 'Active-passive' }, { x: 5, y: 205, w: 430, h: 185, label: 'Active-active' }]}
+    nodes={[
+      { id: 't1', x: 25, y: 85, w: 100, h: 44, label: 'Traffic', tone: 'muted' },
+      { id: 'a1', x: 230, y: 40, w: 180, h: 44, label: 'DC 1: live', tone: 'core' },
+      { id: 'p1', x: 230, y: 125, w: 180, h: 44, label: 'DC 2: standby' },
+      { id: 't2', x: 25, y: 285, w: 100, h: 44, label: 'Traffic', tone: 'muted' },
+      { id: 'a2', x: 230, y: 240, w: 180, h: 44, label: 'DC 1: live', tone: 'core' },
+      { id: 'b2', x: 230, y: 325, w: 180, h: 44, label: 'DC 2: live', tone: 'core' },
+    ]}
+    edges={[{ from: 't1', to: 'a1' }, { from: 't1', to: 'p1', dashed: true, label: 'after failover', ly: 18 }, { from: 'a1', to: 'p1', label: 'replication' }, { from: 't2', to: 'a2' }, { from: 't2', to: 'b2' }, { from: 'a2', to: 'b2', both: true, label: 'both ways' }]} />
+</Figure>
+
+In **active-passive**, one site serves all traffic and the other waits, receiving a copy of the data. Failover means promoting the standby. It is simpler, but the standby sits idle, and a failover is a rare, stressful event. In **active-active**, both sites serve traffic at the same time. Losing one halves capacity instead of stopping service, but keeping one set of balances consistent across two live sites is hard.
+
+### Synchronous and asynchronous replication
+
+With **synchronous replication**, a transaction is confirmed only after both sites have it. That gives an RPO of zero but adds the network round trip to every transaction, which limits how far apart the sites can be. With **asynchronous replication**, the primary confirms first and the copy follows a moment later. It is faster and allows distant sites, but the last few transactions can be lost in a failure and must be reconciled.
+
+### Split-brain
+
+If the link between two sites fails, each may think the other is down and start acting as the primary. Two sites then accept conflicting updates to the same accounts: a **split-brain**. Designs prevent it with a third, independent witness that decides which site may act, and with rules that a site which cannot reach the witness stops accepting writes.
+
+### Traffic shifting and drills
+
+Moving traffic from one site to another uses DNS, global load balancers or routing changes, each with its own delay. A failover that has never been practised is a hope, not a plan, so banks run **drills**: planned switches to the second site under real load.
+
+<Figure title="A controlled failover" caption="Illustrative. Real runbooks include many more checks and approvals.">
+  <Sequence title="Failover sequence" desc="Monitoring detects that data centre 1 has stopped responding and alerts the operations team. The team confirms data centre 2 is up to date, then instructs the traffic manager to shift traffic, and requests go to data centre 2." lanes={[{ id: 'mon', label: 'Monitoring' }, { id: 'ops', label: 'Operations' }, { id: 'tm', label: 'Traffic\nmanager' }, { id: 'd1', label: 'DC 1' }, { id: 'd2', label: 'DC 2' }]}
+    messages={[
+      { from: 'mon', to: 'd1', label: 'Health check' },
+      { from: 'd1', to: 'mon', label: 'No response', kind: 'res' },
+      { from: 'mon', to: 'ops', label: 'Alert' },
+      { from: 'ops', to: 'd2', label: 'Data caught up?' },
+      { from: 'd2', to: 'ops', label: 'Yes, within RPO', kind: 'res' },
+      { from: 'ops', to: 'tm', label: 'Shift traffic' },
+      { from: 'tm', to: 'd2', label: 'Requests now here' },
+    ]} />
+</Figure>
+
+## What RBI expects
+
+RBI's IT governance Direction does not set a single number for every bank. It requires banks to define their own targets, aim high for critical systems and prove them in practice:
+
+- <Fact id="itgrc-rpo-rto-define" show="claim" />
+- <Fact id="itgrc-near-zero-rpo" show="claim" />
+- <Fact id="itgrc-dr-drills" show="claim" />
+- <Fact id="itgrc-dr-switchover" show="claim" />
+- <Fact id="itgrc-dc-dr-identical" show="claim" />
+- <Fact id="itgrc-backup-restore" show="claim" />
+
+<Callout type="caution" title="No fixed RPO or RTO in the Direction">
+  <p>Earlier drafts of this site claimed RBI mandates specific RPO and RTO values. The Direction read for this page sets no such figures; it requires each bank to define them and to prioritise a near-zero RPO for critical systems.</p>
+</Callout>
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Resilience design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Active-passive', 'Simpler consistency; clear primary', 'Idle capacity and rare, risky failovers'],
+  ['Active-active', 'Loss of a site reduces capacity instead of stopping service', 'Hard consistency problems and higher cost'],
+  ['Synchronous replication', 'No confirmed transaction lost', 'Slower transactions; sites must be close'],
+  ['Asynchronous replication', 'Speed and distant sites', 'Recent transactions can be lost and must be reconciled'],
+]} /></div>
+
+## Failure modes
+
+- **Drift between sites,** where configuration or patches differ and the standby fails when it is needed.
+- **Split-brain** after a network partition, leaving two conflicting sets of balances.
+- **Failover that was never really tested** under full load.
+- **Shared dependencies,** such as both sites relying on the same identity service, key store or network provider.
+- **Backups that cannot be restored,** discovered during the incident.
+
+## When to use it, and when to avoid it
+
+Every system that moves money or holds balances needs a tested second site. Choose active-active for the systems where even a short outage is unacceptable and the consistency problem can be solved, for example by partitioning customers between sites. Choose active-passive where simplicity matters more than instant recovery. Avoid claiming an RPO or RTO that the design cannot demonstrate in a drill.
+
+## Questions for a design review
+
+- What RPO and RTO has the business approved for each critical system, and can the design meet them?
+- Is replication synchronous or asynchronous, and how are any lost transactions reconciled?
+- What stops both sites acting as the primary after a network partition?
+- When was the last full switch-over drill, and did it run a complete business day at the second site?
+- Which dependencies, such as identity, keys or network, are shared by both sites?

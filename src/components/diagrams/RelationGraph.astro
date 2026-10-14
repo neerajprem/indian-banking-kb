@@ -1,0 +1,86 @@
+---
+// Institution relationship map, laid out at build time from relations data. The table below it is the
+// text alternative and is generated from the same edges, so the two can never disagree.
+interface Node { id: string; label: string; full?: string; domain?: string; href?: string; hub?: boolean }
+interface Edge { from: string; to: string; type: string; label: string }
+interface Props { title: string; nodes: Node[]; edges: Edge[]; caption: string }
+const { title, nodes, edges, caption } = Astro.props;
+const S = 640, C = S / 2, R = 230;
+// A hub node (such as RBI) sits at the centre; the rest are spaced evenly on a circle around it.
+const ring = nodes.filter((n) => !n.hub);
+const pos = Object.fromEntries(nodes.map((n) => {
+  if (n.hub) return [n.id, [C, C]];
+  const i = ring.indexOf(n);
+  const a = -Math.PI / 2 + (i / ring.length) * Math.PI * 2;
+  return [n.id, [C + R * Math.cos(a), C + R * Math.sin(a)]];
+}));
+const label = Object.fromEntries(nodes.map((n) => [n.id, n.label]));
+const paths = edges.map((e, i) => {
+  const [x1, y1] = pos[e.from], [x2, y2] = pos[e.to];
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  // Edges touching the hub are straight; edges between ring nodes bow towards the centre.
+  const hubEdge = nodes.some((n) => n.hub && (n.id === e.from || n.id === e.to));
+  const k = hubEdge ? 0 : 0.35;
+  const cx = mx + (C - mx) * k, cy = my + (C - my) * k;
+  return { ...e, i, d: `M${x1.toFixed(1)} ${y1.toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}` };
+});
+const types = [...new Set(edges.map((e) => e.type))];
+const uid = 'rg-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 24);
+---
+<div class="rgraph" data-rgraph>
+  <div class="railmap-body">
+    <svg class="dg-svg" viewBox={`0 0 ${S} ${S}`} role="group" aria-labelledby={`${uid}-t`}>
+      <title id={`${uid}-t`}>{title}</title>
+      <g>{paths.map((p) => <path class="edge" d={p.d} data-type={p.type} data-from={p.from} data-to={p.to} />)}</g>
+      <g>{nodes.map((n) => { const [x, y] = pos[n.id]; return (
+        <g class="node" data-node={n.id} data-domain={n.domain} tabindex="0" role="button" aria-label={`${n.label}: show connections`} aria-controls={`${uid}-panel`}>
+          <circle cx={x} cy={y} r={n.hub ? 42 : 34} /><text class:list={{ 'rg-long': n.label.length > 5, 'rg-hub': n.hub }} x={x} y={y + 5} text-anchor="middle">{n.label}</text>
+        </g>); })}</g>
+    </svg>
+    <div class="map-panel js-only" id={`${uid}-panel`} aria-live="polite">
+      <div data-panel=""><h3>Pick an institution</h3><p>Select a circle to see only its connections.</p></div>
+      {nodes.map((n) => (
+        <div data-panel={n.id} hidden>
+          <h3>{n.label}</h3>{n.full && <p>{n.full}</p>}
+          <ul>{paths.filter((p) => p.from === n.id || p.to === n.id).map((p) => <li>{label[p.from]} to {label[p.to]}: {p.label}</li>)}</ul>
+          {n.href && <a class="btn btn--primary" href={n.href}>Open {n.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+  <ul class="rgraph-legend" aria-label="Line types">
+    {types.map((t) => <li><svg viewBox="0 0 28 10" aria-hidden="true"><path class="edge" data-type={t} d="M1 5H27" /></svg>{t[0].toUpperCase() + t.slice(1)}</li>)}
+  </ul>
+  <div class="table-wrap" tabindex="0" role="region" aria-labelledby={`${uid}-cap`}>
+    <table>
+      <caption id={`${uid}-cap`}>{caption}</caption>
+      <thead><tr><th scope="col">From</th><th scope="col">To</th><th scope="col">Type</th><th scope="col">Relationship</th></tr></thead>
+      <tbody>{paths.map((p) => <tr><th scope="row">{label[p.from]}</th><td>{label[p.to]}</td><td>{p.type}</td><td>{p.label}</td></tr>)}</tbody>
+    </table>
+  </div>
+</div>
+<script>
+  import { ready } from '../../scripts/ready';
+  ready(() => {
+    document.querySelectorAll<HTMLElement>('[data-rgraph]').forEach((root) => {
+      if (root.dataset.bound) return; root.dataset.bound = '1';
+      let cur: string | null = null;
+      const pick = (id: string) => {
+        cur = cur === id ? null : id;
+        root.classList.toggle('iso', !!cur);
+        const linked = new Set<string>();
+        root.querySelectorAll<SVGElement>('.edge[data-from]').forEach((e) => {
+          const on = !!cur && (e.dataset.from === cur || e.dataset.to === cur);
+          e.classList.toggle('on', on);
+          if (on) { linked.add(e.dataset.from!); linked.add(e.dataset.to!); }
+        });
+        root.querySelectorAll<SVGElement>('.node').forEach((n) => { n.classList.toggle('on', linked.has(n.dataset.node!)); n.classList.toggle('sel', n.dataset.node === cur); });
+        root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== (cur ?? '')));
+      };
+      root.querySelectorAll<SVGElement>('.node').forEach((n) => {
+        n.addEventListener('click', () => pick(n.dataset.node!));
+        n.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(n.dataset.node!); } });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,96 @@
+---
+title: Event-driven architecture
+topicId: event-driven
+summary: "Event-driven systems announce what happened instead of asking others to act. A durable log lets consumers react at their own pace. The outbox pattern keeps events and data in step."
+blurb: "Events versus requests, logs and consumers, and the outbox pattern that stops events and data drifting apart."
+domain: design
+depth: intermediate
+order: 4
+updated: 2026-09-29
+tags: [events, messaging, architecture, integration]
+related: [payments, data, api-first]
+facts: [upi-daily-2026-08]
+---
+
+## Why it matters
+
+In a request-driven design, the system that records a payment must also call the notification service, the fraud system, the analytics store and anyone else who cares, and wait for each. Every new consumer means changing the payment system. In an event-driven design, the payment system publishes one fact, "payment 123 completed", and anyone interested subscribes. The producer does not need to know who is listening, and a slow consumer cannot slow down the payment.
+
+## The model explained
+
+An **event** records something that has already happened, with the details needed to act on it. A **request** asks for something to happen and expects an answer. Events are published to a **log**: an ordered, durable sequence that consumers read at their own pace and can replay from any point.
+
+<Figure title="One event, many consumers" caption="Illustrative. Consumers are examples; each keeps its own position in the log.">
+  <BoxDiagram title="Event flow" desc="A core or payment service writes a change and an outbox record together. A relay publishes the outbox record to a partitioned event log. Notifications, fraud scoring, analytics and read models each consume the log independently." width={440} height={330}
+    nodes={[
+      { id: 'svc', x: 15, y: 20, w: 200, h: 56, label: 'Core or payment\nservice', tone: 'core' },
+      { id: 'ob', x: 245, y: 20, w: 180, h: 56, label: 'Outbox table\n(same database)' },
+      { id: 'log', x: 60, y: 130, w: 320, h: 48, label: 'Event log (partitioned)', tone: 'accent' },
+      { id: 'n', x: 10, y: 250, w: 96, h: 56, label: 'Notifi-\ncations' },
+      { id: 'f', x: 116, y: 250, w: 96, h: 56, label: 'Fraud\nscoring' },
+      { id: 'a', x: 222, y: 250, w: 96, h: 56, label: 'Analytics' },
+      { id: 'r', x: 328, y: 250, w: 102, h: 56, label: 'Read\nmodels' },
+    ]}
+    edges={[{ from: 'svc', to: 'ob', label: 'one transaction' }, { from: 'ob', to: 'log', label: 'relay' }, { from: 'log', to: 'n' }, { from: 'log', to: 'f' }, { from: 'log', to: 'a' }, { from: 'log', to: 'r' }]} />
+</Figure>
+
+### Designing events
+
+A good event describes a business fact in the past tense, such as payment completed or mandate cancelled, and carries enough detail that most consumers need not call back for more. Its structure is registered in a shared schema registry, so producers and consumers agree on the format. Changes are additive where possible: new fields can be added, but existing ones are not removed or renamed without a new event version. Each event carries a unique identifier, the time it happened and the identifier of the thing it describes, which together make idempotent processing and tracing possible.
+
+### Event sourcing and CQRS
+
+**Event sourcing** goes further: the events themselves are the record, and the current balance is calculated by replaying them. Banking has always worked a little like this, since a ledger is a list of postings. **CQRS** (command query responsibility segregation) separates the model that accepts changes from the models that answer questions. A mobile app's "recent transactions" screen can read from a fast read model built from events, instead of querying the core.
+
+### The outbox pattern and change data capture
+
+The hardest practical problem is keeping the database and the event log in step. If a service updates its database and then publishes an event, a crash between the two leaves them disagreeing. The **outbox pattern** writes the change and a record of the event in the same database transaction; a separate relay then publishes outbox records to the log and marks them sent. **Change data capture** (CDC) achieves a similar result by reading the database's own change log.
+
+<Figure title="The outbox pattern" caption="Illustrative. The relay may deliver an event more than once, so consumers must handle repeats.">
+  <Sequence title="Outbox pattern" desc="The service writes its change and an outbox row in one transaction. A relay reads new outbox rows, publishes them to the event log, then marks them sent. The log delivers the event to consumers, possibly more than once." lanes={[{ id: 's', label: 'Service' }, { id: 'db', label: 'Database' }, { id: 'rl', label: 'Relay' }, { id: 'lg', label: 'Event\nlog' }, { id: 'c', label: 'Consumer' }]}
+    messages={[
+      { from: 's', to: 'db', label: 'Change + outbox row' },
+      { from: 'rl', to: 'db', label: 'Read new rows' },
+      { from: 'db', to: 'rl', label: 'Rows', kind: 'res' },
+      { from: 'rl', to: 'lg', label: 'Publish' },
+      { from: 'rl', to: 'db', label: 'Mark sent' },
+      { from: 'lg', to: 'c', label: 'Deliver' },
+    ]} />
+</Figure>
+
+### Exactly once, ordering and partitions
+
+Some products promise exactly-once delivery. That promise holds inside the product; once an event causes a change in another system, such as a ledger, the consumer still needs its own idempotency check, usually by recording each event's identifier. Ordering is guaranteed only within a **partition**, so events that must stay in order, such as every event for one account, are sent to the same partition by using the account number as the key.
+
+## How it plays out in Indian banking
+
+Events suit the work that surrounds a payment rather than the payment itself: alerts to customers, fraud features, analytics, audit trails and read models for apps. The core posting stays a request with a definite answer. The scale makes the decoupling valuable. At about <Fact id="upi-daily-2026-08" /> across the UPI system, a bank cannot afford for a slow analytics job to hold up payments. The events also form an audit trail: an ordered, time-stamped record of what each system saw and when.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Event-driven design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Publish events instead of calling consumers', 'New consumers without changing the producer', 'No immediate confirmation that a consumer acted'],
+  ['Durable, replayable log', 'Consumers can rebuild state and recover from bugs', 'Storage, retention rules and a platform to run'],
+  ['Read models built from events', 'Fast screens that do not load the core', 'Read models lag behind by seconds or more'],
+  ['Event sourcing', 'Full history and easy audit', 'Complex queries and careful handling of changes to event formats'],
+]} /></div>
+
+## Failure modes
+
+- **Lost events** when a service writes to its database and publishes separately, without an outbox or CDC.
+- **Duplicate effects** when consumers assume each event arrives exactly once.
+- **Out-of-order processing** when related events land in different partitions.
+- **Silent lag,** where a consumer falls hours behind and no alert fires because nothing has technically failed.
+- **Format breakage** when a producer changes an event's structure and old consumers cannot read it.
+
+## When to use it, and when to avoid it
+
+Use events when several systems need to react to the same fact, when consumers can tolerate a short delay, or when an ordered history is valuable in itself. Avoid them for the step that must give the customer a definite yes or no, such as authorising a debit. That step is better as a request with a clear answer, followed by an event that tells everyone else.
+
+## Questions for a design review
+
+- Which step must give a definite answer, and which steps can react later to an event?
+- How does the producer guarantee that a database change and its event never disagree?
+- How does each consumer detect and ignore an event it has already processed?
+- Which events must stay in order, and what partition key keeps them together?
+- How far behind can each consumer fall before someone is alerted?

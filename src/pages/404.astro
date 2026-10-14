@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getNav } from '../lib/nav';
+const nav = await getNav();
+---
+<BaseLayout title="Page not found" description="The page you asked for does not exist." search={false} noindex>
+  <div class="container page">
+    <h1 class="page-title">Page not found</h1>
+    <p class="page-summary">There is no page at this address. It may have moved, or the link may be mistyped. Search for the topic, or start from one of these sections.</p>
+    <p class="js-only"><button class="btn btn--primary" type="button" data-search-open>Search the site</button></p>
+    <div class="related"><ul>{nav.flatMap((g) => g.items).map((i) => <li><a href={i.href}><span class="t">{i.title}</span></a></li>)}</ul></div>
+  </div>
+</BaseLayout>

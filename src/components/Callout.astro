@@ -1,0 +1,15 @@
+---
+import Icon from './Icon.astro';
+interface Props { type?: 'note' | 'caution' | 'risk' | 'definition'; title?: string }
+const { type = 'note', title } = Astro.props;
+const meta = {
+  note: { icon: 'info', label: 'Note' },
+  caution: { icon: 'triangle-alert', label: 'Caution' },
+  risk: { icon: 'shield-alert', label: 'Risk' },
+  definition: { icon: 'book-open', label: 'Definition' },
+}[type];
+---
+<aside class={`callout callout--${type}`} aria-label={title ?? meta.label}>
+  <p class="callout-label"><Icon name={meta.icon} />{title ?? meta.label}</p>
+  <slot />
+</aside>

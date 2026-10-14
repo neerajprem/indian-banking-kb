@@ -1,0 +1,32 @@
+---
+import Cite from './Cite.astro';
+// Data-driven table: caption required, header scope set, scrolls inside its own container.
+type Cell = string | number | { t: string; href: string };
+interface Props { caption: string; head: string[]; rows: Cell[][]; rowHeader?: boolean; numeric?: number[]; sticky?: boolean; note?: string; facts?: string[] }
+const { caption, head, rows, rowHeader = true, numeric = [], sticky = false, note, facts = [] } = Astro.props;
+const c = Astro.locals.citations;
+const seen = new Set<string>();
+const citeFacts = facts.filter((id) => { const src = c?.facts.get(id)?.data.source.id ?? id; if (seen.has(src)) return false; seen.add(src); return true; });
+const cid = 'tbl-' + caption.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+---
+<div class:list={['table-wrap', 'stack-sm', { sticky }]} tabindex="0" role="region" aria-labelledby={cid}>
+  <table role="table">
+    <caption id={cid}>{caption}</caption>
+    <thead role="rowgroup"><tr role="row">{head.map((h, i) => <th scope="col" role="columnheader" class={numeric.includes(i) ? 'num' : undefined}>{h}</th>)}</tr></thead>
+    <tbody role="rowgroup">
+      {rows.map((r) => (
+        <tr role="row">{r.map((cell, i) => {
+          // A cell can be a link: { t: 'label', href: 'https://...' }. External links get noopener.
+          const body = typeof cell === 'object' && cell !== null
+            ? <a href={cell.href} rel={cell.href.startsWith('http') ? 'noopener noreferrer' : undefined}>{cell.t}</a>
+            : cell;
+          return rowHeader && i === 0
+            ? <th scope="row" role="rowheader">{body}</th>
+            : <td role="cell" data-label={head[i]} class={numeric.includes(i) ? 'num' : undefined}>{body}</td>;
+        })}</tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{(note || facts.length > 0) && <p class="table-note">{note}{facts.length > 0 && <> Sources{citeFacts.map((f) => <Cite fact={f} />)}</>}</p>}
+<slot />

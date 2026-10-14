@@ -1,0 +1,16 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { fmtDate } from '../../lib/site';
+const entries = (await getCollection('changelog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const rendered = await Promise.all(entries.map(async (e) => ({ e, C: (await render(e)).Content })));
+---
+<PageLayout title="Changelog" summary="What changed on the site and when, newest first." domain="reference">
+  {rendered.map(({ e, C }) => (
+    <section aria-labelledby={`cl-${e.id}`}>
+      <h2 id={`cl-${e.id}`}>{e.data.title}</h2>
+      <p><time datetime={e.data.date.toISOString().slice(0, 10)}>{fmtDate(e.data.date)}</time></p>
+      <C />
+    </section>
+  ))}
+</PageLayout>

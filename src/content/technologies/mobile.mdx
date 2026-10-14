@@ -1,0 +1,71 @@
+---
+title: Mobile technologies
+topicId: mobile
+summary: "For most customers, the mobile app is the bank. Banks choose native or cross-platform development and must protect the app on devices they do not control. Payment rules shape authentication."
+blurb: "Native Android and iOS, Flutter and Kotlin Multiplatform, design systems, device binding and app security, SDKs and updates."
+domain: design
+depth: intro
+order: 10
+updated: 2026-09-29
+tags: [mobile, channels, security, technology]
+related: [payment-tech, security-tech, languages]
+facts: [upi-volume-2026-08, auth-2025, auth-dynamic-factor, auth-sms-otp]
+---
+
+## Why it matters
+
+Mobile is where most retail banking and payments now happen. UPI alone processed <Fact id="upi-volume-2026-08" /> in August 2026, almost all of it started on a phone. The app must be fast and simple for customers, and must also hold up against fraud on a device the bank does not own, may be years old and may be compromised.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Mobile development approaches" head={['Approach', 'What it is', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['Native Android (Kotlin) and iOS (Swift)', 'Separate apps written for each platform', 'Flagship retail banking apps', 'Best performance and platform features; two codebases'],
+  ['Flutter (Dart)', 'One codebase drawing its own interface on both platforms', 'New apps and journeys that must ship fast on both', 'Consistent look; plugins needed for some device features'],
+  ['React Native (TypeScript)', 'One codebase using native interface components', 'Apps built by teams with web skills', 'Large ecosystem; bridge to native code for sensitive parts'],
+  ['Kotlin Multiplatform', 'Shared business logic in Kotlin; native interfaces on each platform', 'Sharing rules and networking code while keeping native screens', 'Growing; interface still built twice'],
+  ['Mobile web and progressive web apps', 'Browser-based experiences', 'Low-friction journeys and onboarding', 'Limited device security features'],
+]} note="Typical uses are general patterns, not claims about named banks." /></div>
+
+## Design systems
+
+A **design system** is a shared library of interface components, patterns and rules: buttons, amount fields, confirmation screens, error messages. For a bank it keeps every journey consistent and accessible, and it makes the security-critical screens, such as payment confirmation, the same everywhere so customers learn to trust them.
+
+## Device binding and app security
+
+**Device binding** ties a customer's registration to one phone, usually by verifying the SIM and registering the device, so that stolen credentials alone are not enough elsewhere. Common app protections include:
+- detecting rooted or jailbroken devices and emulators;
+- keeping keys in the phone's hardware-backed keystore;
+- certificate pinning, so the app talks only to the bank's servers;
+- obfuscation and runtime checks against tampering;
+- blocking screen capture on sensitive screens;
+- detecting overlay attacks, where malware draws a fake screen over the real one.
+
+Authentication rules have recently changed. <Fact id="auth-2025" show="claim" /> <Fact id="auth-dynamic-factor" show="claim" /> <Fact id="auth-sms-otp" show="claim" /> For apps, this opens the way to stronger factors such as device-bound keys and biometrics, used together with a PIN.
+
+## SDKs and third-party code
+
+Banking apps embed third-party software development kits (SDKs): payment libraries, identity verification, analytics, crash reporting. Each SDK runs with the app's permissions and can see what the app sees. Banks therefore keep an inventory of every SDK, review what data each collects and where it sends it, and keep them updated.
+
+## App stores and updates
+
+Banks do not control when customers update. A security fix can take weeks to reach most users unless the bank sets a **minimum supported version** and asks older apps to update. Changes are usually released in stages, to a small share of users first, with the ability to switch features off remotely if problems appear.
+
+## How to choose
+
+Choose native where the app is the bank's primary channel and needs the best performance and device security. Choose a cross-platform framework where speed across both platforms matters more and the team can still write native code for the sensitive parts. Whatever the choice, put the security-critical pieces, such as key storage, device binding and PIN entry, in well-reviewed native code.
+
+## Pitfalls
+
+- **Trusting the device.** Treat every check done on the phone as advisory; confirm on the server.
+- **Secrets in the app package,** such as API keys, which attackers extract easily.
+- **Unreviewed SDKs** collecting customer data.
+- **No forced-update path,** leaving old, vulnerable versions in use for years.
+- **Inconsistent confirmation screens,** which make fake ones easier to pass off.
+
+## Questions for a design review
+
+- What stops stolen credentials being used on another phone?
+- Which checks run on the device, and which are confirmed on the server?
+- Which SDKs are in the app, and what data does each collect?
+- How quickly can a security fix reach 90% of active users?
+- Which authentication factors does each payment journey use, and is one of them dynamic?

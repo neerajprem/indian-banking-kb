@@ -1,0 +1,11 @@
+---
+import { relatedTo } from '../lib/related';
+interface Props { tags: string[]; explicit?: string[] }
+const items = await relatedTo(Astro.url.pathname, Astro.props.tags, Astro.props.explicit ?? []);
+---
+{items.length > 0 && (
+  <section class="related" aria-labelledby="related-h">
+    <h2 id="related-h">Related topics</h2>
+    <ul>{items.map((i) => <li><a href={i.href}><span class="t">{i.title}</span><span class="s">{i.summary}</span></a></li>)}</ul>
+  </section>
+)}

@@ -1,0 +1,1173 @@
+# Short names. Definitions max 240 characters. status: verified = definition supported by the cited, opened source.
+- id: rbi
+  term: RBI
+  expansion: Reserve Bank of India
+  definition: India's central bank. It regulates banks and payment systems, runs RTGS and NEFT, and holds the accounts in which banks settle with one another.
+  domain: institution
+  see:
+  - npci
+  - dicgc
+  source: rbi-home
+  status: draft
+- id: npci
+  term: NPCI
+  expansion: National Payments Corporation of India
+  definition: A not-for-profit company set up in 2008 as an initiative of RBI and the Indian Banks' Association, owned by banks. It runs retail payment systems such as UPI and the National Financial Switch.
+  domain: institution
+  see:
+  - upi
+  - nfs
+  source: icra-npci-2025
+  status: verified
+- id: iftas
+  term: IFTAS
+  expansion: Indian Financial Technology and Allied Services
+  definition: A wholly owned subsidiary of RBI that runs INFINET, the banking sector's private network, and SFMS, the messaging system behind RTGS and NEFT.
+  domain: institution
+  see:
+  - sfms
+  - infinet
+  source: rbi-iftas-ceo-2022
+  status: verified
+- id: rebit
+  term: ReBIT
+  expansion: Reserve Bank Information Technology Private Limited
+  definition: A wholly owned subsidiary of RBI that handles RBI's IT projects and cyber security, and supports its supervision of banks through security audits.
+  domain: institution
+  see:
+  - rbi
+  source: rbi-rebit-ceo-2022
+  status: verified
+- id: rbih
+  term: RBIH
+  expansion: Reserve Bank Innovation Hub
+  definition: A wholly owned, not-for-profit subsidiary of RBI in Bengaluru that promotes financial innovation. It builds the Unified Lending Interface.
+  domain: institution
+  see:
+  - uli
+  source: rbih-home
+  status: verified
+- id: dicgc
+  term: DICGC
+  expansion: Deposit Insurance and Credit Guarantee Corporation
+  definition: A wholly owned subsidiary of RBI that insures bank deposits, currently up to ₹5 lakh per depositor per bank.
+  domain: institution
+  see:
+  - rbi
+  source: dicgc-guide
+  status: verified
+- id: brbnmpl
+  term: BRBNMPL
+  expansion: Bharatiya Reserve Bank Note Mudran Private Limited
+  definition: A wholly owned subsidiary of RBI that prints banknotes at presses in Mysuru and Salboni.
+  domain: institution
+  see:
+  - rbi
+  source: brbnmpl-profile
+  status: verified
+- id: idrbt
+  term: IDRBT
+  expansion: Institute for Development and Research in Banking Technology
+  definition: A society set up by RBI in 1996 in Hyderabad for research and training in banking technology. It built INFINET, SFMS and the National Financial Switch.
+  domain: institution
+  see:
+  - infinet
+  - sfms
+  - nfs
+  source: idrbt-about
+  status: verified
+- id: nabard
+  term: NABARD
+  expansion: National Bank for Agriculture and Rural Development
+  definition: A statutory development bank for agriculture and rural credit, wholly owned by the Government of India since RBI sold its last shares in 2019.
+  domain: institution
+  see:
+  - rrb
+  - dccb
+  - stcb
+  source: rbi-nabard-nhb-divest-2019
+  status: verified
+- id: nhb
+  term: NHB
+  expansion: National Housing Bank
+  definition: A statutory body, wholly owned by the Government of India, that finances and promotes housing finance institutions and supervises housing finance companies.
+  domain: institution
+  see:
+  - rbi
+  source: nhb-about
+  status: verified
+- id: ccil
+  term: CCIL
+  expansion: The Clearing Corporation of India Limited
+  definition: The central counterparty for India's government securities, money market, forex and rupee derivative trades, authorised by RBI.
+  domain: institution
+  see:
+  - treps
+  source: care-ccil-2025
+  status: verified
+- id: cersai
+  term: CERSAI
+  expansion: Central Registry of Securitisation Asset Reconstruction and Security Interest of India
+  definition: A Government company that runs the central registry of security interests, so lenders can check whether a property already secures a loan.
+  domain: institution
+  see:
+  - ckycrr
+  source: rbi-cersai-2011
+  status: verified
+- id: sebi
+  term: SEBI
+  expansion: Securities and Exchange Board of India
+  definition: The regulator of India's securities markets, including stock exchanges, brokers, depositories and mutual funds.
+  domain: institution
+  see: []
+  source: rbi-home
+  status: draft
+- id: irdai
+  term: IRDAI
+  expansion: Insurance Regulatory and Development Authority of India
+  definition: The regulator of India's insurance sector.
+  domain: institution
+  see: []
+  source: rbi-home
+  status: draft
+- id: pfrda
+  term: PFRDA
+  expansion: Pension Fund Regulatory and Development Authority
+  definition: The regulator of pension funds in India, including the National Pension System.
+  domain: institution
+  see: []
+  source: rbi-home
+  status: draft
+- id: fiu-ind
+  term: FIU-IND
+  expansion: Financial Intelligence Unit – India
+  definition: The national agency that receives, analyses and shares reports of suspicious and large transactions under the PMLA. Not the same as FIU, a financial information user.
+  domain: institution
+  see:
+  - fiu
+  - str
+  - ctr
+  - pmla
+  source: rbi-home
+  status: draft
+- id: cert-in
+  term: CERT-In
+  expansion: Indian Computer Emergency Response Team
+  definition: India's national agency for responding to cyber security incidents. Organisations, including banks, must report certain incidents to it.
+  domain: institution
+  see: []
+  source: certin-directions-2022
+  status: verified
+- id: uidai
+  term: UIDAI
+  expansion: Unique Identification Authority of India
+  definition: The authority that issues Aadhaar numbers and runs Aadhaar authentication and e-KYC.
+  domain: institution
+  see:
+  - ekyc
+  - aua
+  - kua
+  source: rbi-home
+  status: draft
+- id: meity
+  term: MeitY
+  expansion: Ministry of Electronics and Information Technology
+  definition: The ministry responsible for the IT Act and the Digital Personal Data Protection Act.
+  domain: institution
+  see:
+  - it-act
+  - dpdp-act
+  source: rbi-home
+  status: draft
+- id: fsdc
+  term: FSDC
+  expansion: Financial Stability and Development Council
+  definition: A council chaired by the Finance Minister that brings together India's financial regulators on stability and coordination.
+  domain: institution
+  see: []
+  source: rbi-home
+  status: draft
+- id: iba
+  term: IBA
+  expansion: Indian Banks' Association
+  definition: An association of banks in India. With RBI, it set up NPCI.
+  domain: institution
+  see:
+  - npci
+  source: icra-npci-2025
+  status: verified
+- id: upi
+  term: UPI
+  expansion: Unified Payments Interface
+  definition: NPCI's real-time system for paying from a bank account with a UPI ID, QR code or phone number, through apps on a phone.
+  domain: payments
+  see:
+  - vpa
+  - tpap
+  - psp
+  source: rbi-home
+  status: draft
+- id: imps
+  term: IMPS
+  expansion: Immediate Payment Service
+  definition: NPCI's instant, round-the-clock interbank transfer service, used with an account number and IFSC or with a mobile number.
+  domain: payments
+  see:
+  - upi
+  - mmid
+  source: rbi-home
+  status: draft
+- id: neft
+  term: NEFT
+  expansion: National Electronic Funds Transfer
+  definition: RBI's account-to-account transfer system. It settles in half-hourly batches, around the clock, in banks' accounts at RBI.
+  domain: payments
+  see:
+  - rtgs
+  source: rbi-neft-24x7-2019
+  status: verified
+- id: rtgs
+  term: RTGS
+  expansion: Real Time Gross Settlement
+  definition: RBI's system that settles each payment individually and immediately, on a gross basis, between banks.
+  domain: payments
+  see:
+  - neft
+  source: idrbt-about
+  status: verified
+- id: nach
+  term: NACH
+  expansion: National Automated Clearing House
+  definition: NPCI's system for bulk and recurring payments, such as salaries, dividends and loan instalments collected under a mandate.
+  domain: payments
+  see:
+  - autopay
+  source: rbi-home
+  status: draft
+- id: nfs
+  term: NFS
+  expansion: National Financial Switch
+  definition: The network that lets a card from one bank work at another bank's ATM. Built by IDRBT, it has been run by NPCI since December 2009.
+  domain: payments
+  see:
+  - npci
+  source: npci-nfs-takeover-2009
+  status: verified
+- id: cts
+  term: CTS
+  expansion: Cheque Truncation System
+  definition: The system that clears cheques using scanned images instead of moving paper. Since October 2025 it clears continuously through the day.
+  domain: payments
+  see:
+  - micr
+  source: rbi-cts-phase2-2025
+  status: verified
+- id: bbps
+  term: BBPS
+  expansion: Bharat Bill Payment System
+  definition: An interoperable system for paying utility and other recurring bills through many channels.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: apb
+  term: APB
+  expansion: Aadhaar Payment Bridge
+  definition: NPCI's system for sending government benefit payments to bank accounts linked to the recipient's Aadhaar number.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: netc
+  term: NETC
+  expansion: National Electronic Toll Collection
+  definition: NPCI's system for electronic toll payments using FASTag stickers on vehicles.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: bhim
+  term: BHIM
+  expansion: Bharat Interface for Money
+  definition: NPCI's own UPI app.
+  domain: payments
+  see:
+  - upi
+  source: rbi-home
+  status: draft
+- id: rupay
+  term: RuPay
+  expansion: RuPay
+  definition: India's domestic card network, run by NPCI, for debit, credit and prepaid cards.
+  domain: payments
+  see:
+  - nfs
+  source: rbi-home
+  status: draft
+- id: tpap
+  term: TPAP
+  expansion: Third-party application provider
+  definition: A UPI app run by a company that is not a bank. It connects to UPI through one or more partner banks that act as payment service providers.
+  domain: payments
+  see:
+  - psp
+  - upi
+  source: rbi-home
+  status: draft
+- id: psp
+  term: PSP
+  expansion: Payment service provider
+  definition: In UPI, a bank that offers UPI to its customers or to a third-party app. More generally, any firm that provides payment services.
+  domain: payments
+  see:
+  - tpap
+  source: rbi-home
+  status: draft
+- id: vpa
+  term: VPA
+  expansion: Virtual payment address
+  definition: A UPI ID, such as name@bank, that stands in for an account number and IFSC.
+  domain: payments
+  see:
+  - upi
+  source: rbi-home
+  status: draft
+- id: mmid
+  term: MMID
+  expansion: Mobile Money Identifier
+  definition: A seven-digit number that, with a mobile number, identifies a bank account for IMPS transfers.
+  domain: payments
+  see:
+  - imps
+  source: rbi-home
+  status: draft
+- id: ifsc
+  term: IFSC
+  expansion: Indian Financial System Code
+  definition: An 11-character code that identifies a bank branch for NEFT, RTGS and IMPS transfers.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: micr
+  term: MICR
+  expansion: Magnetic Ink Character Recognition
+  definition: The machine-readable line printed on a cheque that identifies the bank, branch and cheque number.
+  domain: payments
+  see:
+  - cts
+  source: rbi-home
+  status: draft
+- id: qr
+  term: QR
+  expansion: Quick Response code
+  definition: A two-dimensional barcode. In Indian payments, a merchant QR code carries the details a UPI or card app needs to pay.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: autopay
+  term: AutoPay
+  expansion: UPI AutoPay
+  definition: The UPI feature for recurring payments under a mandate the customer approves once, such as subscriptions or instalments.
+  domain: payments
+  see:
+  - nach
+  source: rbi-home
+  status: draft
+- id: upi-lite
+  term: UPI Lite
+  expansion: UPI Lite
+  definition: A small on-device balance for quick, low-value UPI payments without entering the UPI PIN each time. See NPCI for current limits.
+  domain: payments
+  see:
+  - upi
+  source: rbi-home
+  status: draft
+- id: upi-123pay
+  term: UPI 123PAY
+  expansion: UPI 123PAY
+  definition: UPI for feature phones, used through voice calls, missed calls, simple apps or sound-based payments.
+  domain: payments
+  see:
+  - upi
+  source: rbi-home
+  status: draft
+- id: aa
+  term: AA
+  expansion: Account Aggregator
+  definition: An RBI-licensed firm that moves a customer's financial data between institutions only with the customer's consent. It does not store the data.
+  domain: payments
+  see:
+  - fip
+  - fiu
+  source: rbi-home
+  status: draft
+- id: fip
+  term: FIP
+  expansion: Financial information provider
+  definition: In the Account Aggregator system, an institution that holds a customer's data, such as a bank, and shares it on consent.
+  domain: payments
+  see:
+  - aa
+  - fiu
+  source: rbi-home
+  status: draft
+- id: fiu
+  term: FIU
+  expansion: Financial information user
+  definition: In the Account Aggregator system, an institution that asks for a customer's data with consent, such as a lender. Not the same as FIU-IND.
+  domain: payments
+  see:
+  - aa
+  - fip
+  - fiu-ind
+  source: rbi-home
+  status: draft
+- id: uli
+  term: ULI
+  expansion: Unified Lending Interface
+  definition: A platform built by the Reserve Bank Innovation Hub that connects lenders to the data they need to assess and process loans.
+  domain: payments
+  see:
+  - rbih
+  source: rbih-home
+  status: verified
+- id: sfms
+  term: SFMS
+  expansion: Structured Financial Messaging System
+  definition: The secure messaging system, launched in 2001 and now run by IFTAS, that carries RTGS, NEFT and government securities settlement messages.
+  domain: payments
+  see:
+  - iftas
+  - infinet
+  source: idrbt-about
+  status: verified
+- id: infinet
+  term: INFINET
+  expansion: Indian Financial Network
+  definition: The closed, private network of the banking sector, launched in 1999 and now run by IFTAS.
+  domain: payments
+  see:
+  - sfms
+  - iftas
+  source: idrbt-about
+  status: verified
+- id: swift
+  term: SWIFT
+  expansion: Society for Worldwide Interbank Financial Telecommunication
+  definition: The global cooperative network banks use to exchange cross-border payment and other financial messages.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: iso-8583
+  term: ISO 8583
+  expansion: ISO 8583
+  definition: An international standard for card and similar transaction messages, used by card networks and ATM switches.
+  domain: payments
+  see:
+  - iso-20022
+  source: rbi-home
+  status: draft
+- id: iso-20022
+  term: ISO 20022
+  expansion: ISO 20022
+  definition: An international standard for richly structured financial messages, increasingly used for high-value and cross-border payments.
+  domain: payments
+  see:
+  - iso-8583
+  source: rbi-home
+  status: draft
+- id: treds
+  term: TReDS
+  expansion: Trade Receivables Discounting System
+  definition: RBI-authorised platforms where small businesses sell unpaid invoices owed by large buyers to financiers, to get paid sooner.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: ppi
+  term: PPI
+  expansion: Prepaid payment instrument
+  definition: A stored-value product, such as a wallet or gift card, loaded in advance and used to pay.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: pa
+  term: PA
+  expansion: Payment aggregator
+  definition: An RBI-authorised firm that collects payments on behalf of merchants and settles the money to them.
+  domain: payments
+  see:
+  - pg
+  source: rbi-home
+  status: draft
+- id: pg
+  term: PG
+  expansion: Payment gateway
+  definition: Technology that routes online payment details between the customer, merchant and banks. It does not hold the funds.
+  domain: payments
+  see:
+  - pa
+  source: rbi-home
+  status: draft
+- id: cbdc
+  term: CBDC
+  expansion: Central bank digital currency
+  definition: Digital money issued by a central bank. RBI's version is the e-rupee.
+  domain: payments
+  see: []
+  source: rbi-home
+  status: draft
+- id: cbs
+  term: CBS
+  expansion: Core banking system
+  definition: The central system of record for a bank's customers, accounts, deposits, loans and general ledger.
+  domain: banking
+  see:
+  - eod
+  - gl
+  source: rbi-home
+  status: draft
+- id: eod
+  term: EOD
+  expansion: End of day
+  definition: 'The daily batch run in a core banking system that closes the business day: interest accrual, charges, ledger posting and reports.'
+  domain: banking
+  see:
+  - bod
+  - cbs
+  source: rbi-home
+  status: draft
+- id: bod
+  term: BOD
+  expansion: Beginning of day
+  definition: The batch run that opens a new business date in a core banking system after end of day.
+  domain: banking
+  see:
+  - eod
+  source: rbi-home
+  status: draft
+- id: gl
+  term: GL
+  expansion: General ledger
+  definition: The bank's master set of accounts, where every transaction is recorded as debits and credits.
+  domain: banking
+  see:
+  - cbs
+  source: rbi-home
+  status: draft
+- id: casa
+  term: CASA
+  expansion: Current account and savings account
+  definition: Deposits in current and savings accounts, a low-cost source of funds for banks.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: kyc
+  term: KYC
+  expansion: Know your customer
+  definition: The process of verifying a customer's identity and address, required before a bank or other regulated entity opens an account.
+  domain: banking
+  see:
+  - ckyc
+  - vkyc
+  - ekyc
+  source: rbi-home
+  status: draft
+- id: ckyc
+  term: CKYC
+  expansion: Central KYC
+  definition: A shared record of a customer's KYC details that regulated entities can reuse instead of collecting documents again.
+  domain: banking
+  see:
+  - ckycrr
+  - kyc
+  source: rbi-ckycr-2016
+  status: verified
+- id: ckycrr
+  term: CKYCRR
+  expansion: Central KYC Records Registry
+  definition: The registry of central KYC records. The Government of India authorised CERSAI to run it; it went live in July 2016.
+  domain: banking
+  see:
+  - ckyc
+  - cersai
+  source: rbi-ckycr-2016
+  status: verified
+- id: vkyc
+  term: VKYC
+  expansion: Video KYC
+  definition: Customer identification carried out over a live video call with an official of the regulated entity.
+  domain: banking
+  see:
+  - kyc
+  source: rbi-home
+  status: draft
+- id: ekyc
+  term: eKYC
+  expansion: Electronic KYC
+  definition: KYC completed by fetching identity details from UIDAI through Aadhaar authentication, with the customer's consent.
+  domain: banking
+  see:
+  - uidai
+  - kyc
+  source: rbi-home
+  status: draft
+- id: aua
+  term: AUA
+  expansion: Authentication User Agency
+  definition: An organisation permitted by UIDAI to use Aadhaar authentication to verify its customers.
+  domain: banking
+  see:
+  - kua
+  - uidai
+  source: rbi-home
+  status: draft
+- id: kua
+  term: KUA
+  expansion: e-KYC User Agency
+  definition: An organisation permitted by UIDAI to receive Aadhaar e-KYC data for its customers.
+  domain: banking
+  see:
+  - aua
+  - uidai
+  source: rbi-home
+  status: draft
+- id: aml
+  term: AML
+  expansion: Anti-money laundering
+  definition: The controls, monitoring and reporting that stop criminals using banks to disguise illegal money.
+  domain: banking
+  see:
+  - cft
+  - pmla
+  source: rbi-home
+  status: draft
+- id: cft
+  term: CFT
+  expansion: Countering the financing of terrorism
+  definition: Controls that stop money reaching terrorist groups, usually run alongside anti-money-laundering controls.
+  domain: banking
+  see:
+  - aml
+  source: rbi-home
+  status: draft
+- id: pmla
+  term: PMLA
+  expansion: Prevention of Money-laundering Act, 2002
+  definition: The law that requires banks and other reporting entities to keep records and report certain transactions to FIU-IND.
+  domain: regulation
+  see:
+  - fiu-ind
+  - str
+  - ctr
+  source: rbi-home
+  status: draft
+- id: str
+  term: STR
+  expansion: Suspicious transaction report
+  definition: A report a bank files with FIU-IND when a transaction looks suspicious under the PMLA.
+  domain: banking
+  see:
+  - fiu-ind
+  - ctr
+  source: rbi-home
+  status: draft
+- id: ctr
+  term: CTR
+  expansion: Cash transaction report
+  definition: A report of large cash transactions that a bank files with FIU-IND under the PMLA rules.
+  domain: banking
+  see:
+  - fiu-ind
+  - str
+  source: rbi-home
+  status: draft
+- id: crar
+  term: CRAR
+  expansion: Capital to risk-weighted assets ratio
+  definition: A bank's capital as a share of its assets weighted by risk. RBI sets a minimum.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: slr
+  term: SLR
+  expansion: Statutory liquidity ratio
+  definition: The share of deposits a bank must hold in safe liquid assets such as government securities.
+  domain: banking
+  see:
+  - crr
+  source: rbi-home
+  status: draft
+- id: crr
+  term: CRR
+  expansion: Cash reserve ratio
+  definition: The share of deposits a bank must keep as a balance with RBI.
+  domain: banking
+  see:
+  - slr
+  source: rbi-home
+  status: draft
+- id: psl
+  term: PSL
+  expansion: Priority sector lending
+  definition: RBI's requirement that banks direct a share of lending to sectors such as agriculture, small business and weaker sections.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: laf
+  term: LAF
+  expansion: Liquidity adjustment facility
+  definition: RBI's operations that lend to or absorb money from banks for short periods to steer short-term interest rates.
+  domain: banking
+  see:
+  - msf
+  source: rbi-home
+  status: draft
+- id: msf
+  term: MSF
+  expansion: Marginal standing facility
+  definition: An RBI window where banks can borrow overnight against government securities at a penal rate when other sources dry up.
+  domain: banking
+  see:
+  - laf
+  source: rbi-home
+  status: draft
+- id: treps
+  term: TREPS
+  expansion: Tri-party Repo Dealing and Settlement
+  definition: CCIL's platform for tri-party repo, a form of short-term borrowing against government securities.
+  domain: banking
+  see:
+  - ccil
+  source: care-ccil-2025
+  status: verified
+- id: npa
+  term: NPA
+  expansion: Non-performing asset
+  definition: A loan on which interest or principal has stayed overdue beyond the period RBI sets.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: pca
+  term: PCA
+  expansion: Prompt corrective action
+  definition: RBI's framework that places restrictions on a weak bank until its capital, asset quality or profits recover.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: sfb
+  term: SFB
+  expansion: Small finance bank
+  definition: A bank licensed by RBI to focus on small businesses, small farmers and others with limited access to banking.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: ucb
+  term: UCB
+  expansion: Urban co-operative bank
+  definition: A co-operative bank serving mainly urban and semi-urban areas.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: rrb
+  term: RRB
+  expansion: Regional rural bank
+  definition: A bank set up to serve rural areas, jointly owned by the Government of India, a state government and a sponsor bank.
+  domain: banking
+  see:
+  - nabard
+  source: rbi-home
+  status: draft
+- id: dccb
+  term: DCCB
+  expansion: District central co-operative bank
+  definition: A co-operative bank at district level that lends to primary agricultural credit societies.
+  domain: banking
+  see:
+  - stcb
+  source: rbi-home
+  status: draft
+- id: stcb
+  term: StCB
+  expansion: State co-operative bank
+  definition: The apex co-operative bank in a state, above the district central co-operative banks.
+  domain: banking
+  see:
+  - dccb
+  source: rbi-home
+  status: draft
+- id: cic
+  term: CIC
+  expansion: Credit information company, or core investment company
+  definition: Usually a credit bureau licensed by RBI that holds borrowers' credit histories. In RBI rules it can also mean a core investment company, a type of NBFC.
+  domain: banking
+  see: []
+  source: rbi-home
+  status: draft
+- id: api
+  term: API
+  expansion: Application programming interface
+  definition: A defined way for one system to request data or actions from another.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: esb
+  term: ESB
+  expansion: Enterprise service bus
+  definition: Middleware that connects many applications through a central hub, often translating messages between them.
+  domain: technology
+  see:
+  - api
+  source: rbi-home
+  status: draft
+- id: bff
+  term: BFF
+  expansion: Backend for frontend
+  definition: A server layer built for one client, such as a mobile app, that shapes data from many services for that client.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: mtls
+  term: mTLS
+  expansion: Mutual TLS
+  definition: TLS in which both sides present certificates, so each proves its identity to the other.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: hsm
+  term: HSM
+  expansion: Hardware security module
+  definition: A tamper-resistant device that stores cryptographic keys and performs operations such as PIN verification.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: pam
+  term: PAM
+  expansion: Privileged access management
+  definition: Tools and controls that govern who can use powerful administrator accounts, and record what they do.
+  domain: technology
+  see:
+  - jit-access
+  source: rbi-home
+  status: draft
+- id: jit-access
+  term: JIT access
+  expansion: Just-in-time access
+  definition: Granting elevated access only when needed and only for a short time, instead of permanently.
+  domain: technology
+  see:
+  - pam
+  source: rbi-home
+  status: draft
+- id: siem
+  term: SIEM
+  expansion: Security information and event management
+  definition: A system that collects security logs from many sources and raises alerts on suspicious patterns.
+  domain: technology
+  see:
+  - soar
+  source: rbi-home
+  status: draft
+- id: soar
+  term: SOAR
+  expansion: Security orchestration, automation and response
+  definition: Tools that automate responses to security alerts, such as isolating a machine or blocking an address.
+  domain: technology
+  see:
+  - siem
+  source: rbi-home
+  status: draft
+- id: waf
+  term: WAF
+  expansion: Web application firewall
+  definition: A filter in front of web applications that blocks common attacks on web traffic.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: dlp
+  term: DLP
+  expansion: Data loss prevention
+  definition: Controls that detect and stop sensitive data leaving an organisation by email, upload or device.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: cspm
+  term: CSPM
+  expansion: Cloud security posture management
+  definition: Tools that continuously check cloud accounts for risky settings and policy violations.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: iac
+  term: IaC
+  expansion: Infrastructure as code
+  definition: Defining servers, networks and other infrastructure in version-controlled files instead of setting them up by hand.
+  domain: technology
+  see:
+  - gitops
+  source: rbi-home
+  status: draft
+- id: gitops
+  term: GitOps
+  expansion: GitOps
+  definition: Running systems so that a Git repository holds the desired state, and automation keeps the live system matched to it.
+  domain: technology
+  see:
+  - iac
+  source: rbi-home
+  status: draft
+- id: ci-cd
+  term: CI/CD
+  expansion: Continuous integration and continuous delivery
+  definition: Automatically building and testing every change, and releasing it through a repeatable pipeline.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: k8s
+  term: K8s
+  expansion: Kubernetes
+  definition: An open-source system for running and scaling containerised applications across a cluster of machines.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: cqrs
+  term: CQRS
+  expansion: Command query responsibility segregation
+  definition: A design that handles writes and reads with separate models, so each can be optimised on its own.
+  domain: technology
+  see:
+  - cdc
+  source: rbi-home
+  status: draft
+- id: cdc
+  term: CDC
+  expansion: Change data capture
+  definition: Streaming every change made to a database so other systems can react to it or keep a copy up to date.
+  domain: technology
+  see:
+  - cqrs
+  source: rbi-home
+  status: draft
+- id: rpo
+  term: RPO
+  expansion: Recovery point objective
+  definition: The most data, measured in time, that an organisation is prepared to lose when a system fails.
+  domain: technology
+  see:
+  - rto
+  - dr
+  source: rbi-home
+  status: draft
+- id: rto
+  term: RTO
+  expansion: Recovery time objective
+  definition: How quickly a system must be working again after a failure.
+  domain: technology
+  see:
+  - rpo
+  - dr
+  source: rbi-home
+  status: draft
+- id: dr
+  term: DR
+  expansion: Disaster recovery
+  definition: The plans and systems for restoring service at another site after a major failure.
+  domain: technology
+  see:
+  - bcp
+  - rpo
+  - rto
+  source: rbi-home
+  status: draft
+- id: bcp
+  term: BCP
+  expansion: Business continuity plan
+  definition: The plan for keeping critical services running, or restoring them, during a disruption.
+  domain: technology
+  see:
+  - dr
+  source: rbi-home
+  status: draft
+- id: dc
+  term: DC
+  expansion: Data centre
+  definition: A facility that houses servers, storage and networking equipment.
+  domain: technology
+  see:
+  - dr
+  source: rbi-home
+  status: draft
+- id: slo
+  term: SLO
+  expansion: Service level objective
+  definition: A target for how reliable or fast a service should be, measured over a period.
+  domain: technology
+  see:
+  - sli
+  source: rbi-home
+  status: draft
+- id: sli
+  term: SLI
+  expansion: Service level indicator
+  definition: The measurement used to judge a service against its objective, such as the share of successful payments.
+  domain: technology
+  see:
+  - slo
+  source: rbi-home
+  status: draft
+- id: tps
+  term: TPS
+  expansion: Transactions per second
+  definition: A measure of how many transactions a system handles each second.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: oltp
+  term: OLTP
+  expansion: Online transaction processing
+  definition: Systems that record many small transactions quickly and reliably, such as a core banking ledger.
+  domain: technology
+  see:
+  - olap
+  source: rbi-home
+  status: draft
+- id: olap
+  term: OLAP
+  expansion: Online analytical processing
+  definition: Systems designed for analysing large volumes of data, such as reporting and dashboards.
+  domain: technology
+  see:
+  - oltp
+  - edw
+  source: rbi-home
+  status: draft
+- id: etl
+  term: ETL
+  expansion: Extract, transform, load
+  definition: Moving data from source systems, reshaping it and loading it into a warehouse or other store.
+  domain: technology
+  see:
+  - edw
+  source: rbi-home
+  status: draft
+- id: edw
+  term: EDW
+  expansion: Enterprise data warehouse
+  definition: A central store of cleaned, integrated data used for reporting and analysis across an organisation.
+  domain: technology
+  see:
+  - etl
+  - olap
+  source: rbi-home
+  status: draft
+- id: mlops
+  term: MLOps
+  expansion: Machine learning operations
+  definition: Practices for deploying, monitoring and updating machine learning models reliably in production.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: llm
+  term: LLM
+  expansion: Large language model
+  definition: A machine learning model trained on large amounts of text that can generate and interpret language.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: kmm
+  term: KMM
+  expansion: Kotlin Multiplatform Mobile
+  definition: A way to share Kotlin code between Android and iOS apps, now called Kotlin Multiplatform.
+  domain: technology
+  see: []
+  source: rbi-home
+  status: draft
+- id: master-direction
+  term: Master Direction
+  expansion: Master Direction
+  definition: An RBI instrument that sets out all its rules on a subject in one place, updated whenever the rules change.
+  domain: regulation
+  see:
+  - master-circular
+  source: rbi-md-itgrc-2023
+  status: verified
+  autolink: false
+- id: master-circular
+  term: Master Circular
+  expansion: Master Circular
+  definition: An RBI document that consolidates its circulars on a subject as of a date.
+  domain: regulation
+  see:
+  - master-direction
+  source: rbi-home
+  status: draft
+  autolink: false
+- id: circular
+  term: Circular
+  expansion: Circular
+  definition: An RBI instruction issued to the entities it regulates, such as banks.
+  domain: regulation
+  see: []
+  source: rbi-home
+  status: draft
+  autolink: false
+- id: notification
+  term: Notification
+  expansion: Notification
+  definition: A formal RBI publication that issues or amends regulations and directions.
+  domain: regulation
+  see: []
+  source: rbi-home
+  status: draft
+  autolink: false
+- id: pss-act
+  term: PSS Act
+  expansion: Payment and Settlement Systems Act, 2007
+  definition: The law under which RBI authorises and regulates payment systems in India.
+  domain: regulation
+  see:
+  - rbi
+  - npci
+  source: npci-nfs-takeover-2009
+  status: verified
+- id: dpdp-act
+  term: DPDP Act
+  expansion: Digital Personal Data Protection Act, 2023
+  definition: India's law on the processing of digital personal data, including consent and the duties of organisations that hold such data.
+  domain: regulation
+  see:
+  - meity
+  source: rbi-home
+  status: draft
+- id: it-act
+  term: IT Act
+  expansion: Information Technology Act, 2000
+  definition: India's main law on electronic records, digital signatures and cyber offences.
+  domain: regulation
+  see:
+  - meity
+  source: rbi-home
+  status: draft

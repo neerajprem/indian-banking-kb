@@ -1,0 +1,73 @@
+---
+title: Databases
+topicId: databases
+summary: "Money needs databases that never lose a confirmed write and never let two transactions spend the same balance. Relational engines hold the ledgers. Caches and other stores take load off them."
+blurb: "Relational engines for ledgers, clustering, caches, document and key-value stores, and what money needs from each."
+domain: design
+depth: intro
+order: 2
+updated: 2026-09-29
+tags: [databases, data, technology]
+related: [/architecture/data/, /architecture/multi-dc/, core-platforms]
+facts: [edb-finacle-2019, itgrc-near-zero-rpo, itgrc-backup-restore]
+---
+
+## Why it matters
+
+A bank's database is where money actually lives. If it loses a confirmed transaction, or lets two withdrawals both succeed against a balance that covers only one, the error is real money. Most other design choices in a bank can be revisited. The database behind the ledger rarely can.
+
+## What money needs from a database
+
+The four properties known as **ACID** matter most:
+- **Atomicity:** a transfer's debit and credit both happen or neither does.
+- **Consistency:** rules such as "balance may not go below the overdraft limit" always hold.
+- **Isolation:** concurrent transactions do not see each other's half-finished work.
+- **Durability:** once confirmed, a transaction survives a crash.
+
+Relational databases were built for exactly this, which is why ledgers run on them.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Database types in banking" head={['Technology', 'Role', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['Commercial relational (for example Oracle Database, IBM Db2, Microsoft SQL Server)', 'System of record', 'Core ledgers, payment systems, loan systems', 'Mature clustering and tooling; significant licence cost'],
+  ['Open-source relational (PostgreSQL and its enterprise distributions)', 'System of record or supporting system', 'Newer applications, channel back ends, some core modules', 'Lower licence cost; enterprise support available'],
+  ['Distributed SQL (for example CockroachDB, YugabyteDB)', 'Relational data spread across nodes', 'New systems that need scale across sites', 'Strong consistency across nodes, at the cost of write latency'],
+  ['In-memory cache (Redis and similar)', 'Fast reads of data held elsewhere', 'Session data, reference data, rate limiting, balance snapshots for display', 'Not a system of record; data can be lost'],
+  ['Document stores (for example MongoDB)', 'Flexible, nested records', 'Customer profiles, onboarding journeys, content', 'Check the transaction guarantees before using for money'],
+  ['Key-value and wide-column stores', 'Very high write and read volumes', 'Event histories, logs, device and fraud features', 'Usually eventual consistency'],
+]} note="Typical uses are general industry patterns, not claims about named banks. Product names are examples only." /></div>
+
+Vendors have also moved established banking software onto open-source relational databases. <Fact id="edb-finacle-2019" show="claim" />
+
+### Clustering and replication
+
+A single database server is a single point of failure. **Clustering** runs several servers so that one can take over from another. **Replication** copies data to other servers or sites, synchronously (no loss, slower writes) or asynchronously (faster, small possible loss). RBI expects critical systems to aim for no loss at all: <Fact id="itgrc-near-zero-rpo" show="claim" /> Replication is not a backup, though: a deleted table is deleted everywhere. <Fact id="itgrc-backup-restore" show="claim" />
+
+## How to choose
+
+Start from the consistency the data needs, not from the technology. Balances, postings and anything else that must never be wrong belong in a relational database with full transactions. Data that is read far more than written, such as reference data or a customer's recent transactions for an app screen, can be cached. Data whose shape changes often and which does not move money, such as onboarding forms, can suit a document store. High-volume append-only data, such as events and logs, suits stores built for writes.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Database choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['One large relational database', 'Simple strong consistency', 'Scale limited to the biggest machine; costly failover'],
+  ['Distributed SQL', 'Scale and resilience across nodes', 'Higher write latency; newer operational skills'],
+  ['Cache in front of the database', 'Fast reads and less load on the core', 'Stale data risk; another system to keep consistent'],
+  ['Open-source engine', 'Lower licence cost, no single vendor', 'Support contracts and in-house skills still needed'],
+]} /></div>
+
+## Pitfalls
+
+- **Treating a cache as the truth,** for example approving a payment against a cached balance.
+- **Assuming replication is a backup.** Mistakes replicate too.
+- **Choosing a store for its speed** and discovering later that it cannot run a multi-record transaction.
+- **Migrating engines without checking behaviour,** such as differences in how dates, rounding or locking work.
+- **Long-running reports on the ledger database,** slowing customer transactions.
+
+## Questions for a design review
+
+- Which data here must never be wrong, and which store holds it?
+- What isolation level do money-moving transactions run at?
+- If the primary database fails now, how much data is lost and who reconciles it?
+- When was a backup last restored and checked?
+- Which reads could move to a cache or replica, and how stale may they be?

@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import FreshnessBadge from './FreshnessBadge.astro';
+import { DOMAIN_NAMES, DEPTH_NAMES, fmtDate } from '../lib/site';
+interface Crumb { title: string; href?: string }
+interface Props { title: string; summary?: string; domain: string; crumbs?: Crumb[]; updated?: Date; minutes?: number; depth?: string; back?: { href: string; title: string }; vt?: string }
+const { title, summary, domain, crumbs = [], updated, minutes, depth, back, vt } = Astro.props;
+const n = depth ? { intro: 1, intermediate: 2, advanced: 3 }[depth] ?? 0 : 0;
+---
+<header class="page-header" data-domain={domain}>
+  {back && <a class="back-link" href={back.href}><Icon name="chevron-left" />{back.title}</a>}
+  <nav aria-label="Breadcrumb">
+    <ol class="crumbs">
+      <li><span class="route-bullet" aria-hidden="true"></span><span>{DOMAIN_NAMES[domain]}</span></li>
+      {crumbs.map((c, i) => <li>{c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.title}</a> : <span aria-current="page">{c.title}</span>}</li>)}
+    </ol>
+  </nav>
+  <h1 class="page-title" data-vt={vt}>{title}</h1>
+  {summary && <p class="page-summary">{summary}</p>}
+  <div class="page-meta">
+    <FreshnessBadge />
+    {depth && (
+      <span class="depth-mark">
+        <svg class="stops" viewBox="0 0 40 12" aria-hidden="true"><line x1="6" y1="6" x2="34" y2="6" />{[0, 1, 2].map((i) => <circle cx={6 + i * 14} cy="6" r="4" class={i < n ? 'on' : undefined} />)}</svg>
+        {DEPTH_NAMES[depth]}
+      </span>
+    )}
+    {minutes && <span>{minutes} min read</span>}
+    {updated && <span>Updated <time datetime={updated.toISOString().slice(0, 10)}>{fmtDate(updated)}</time></span>}
+  </div>
+</header>

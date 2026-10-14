@@ -1,0 +1,14 @@
+---
+import { freshness, type Citations } from '../lib/facts';
+import { fmtDate } from '../lib/site';
+interface Props { citations?: Citations }
+const c = Astro.props.citations ?? Astro.locals.citations;
+const f = c ? freshness(c) : undefined;
+---
+{!f || (f.total === 0 && !f.oldest)
+  ? <span class="fresh fresh--none">No sourced figures on this page</span>
+  : f.total === 0
+    ? <span class="fresh">Sources last checked {fmtDate(f.oldest!)}</span>
+    : f.drafts > 0
+    ? <span class="fresh fresh--draft">{f.drafts} of {f.total} facts awaiting verification</span>
+      : <span class="fresh">Facts last verified {f.oldest ? fmtDate(f.oldest) : ''}</span>}

@@ -1,0 +1,98 @@
+---
+title: API-first and open banking
+topicId: api-first
+summary: "API-first design exposes a bank's capabilities through stable, versioned interfaces. A gateway and orchestration layer protect the core. Account Aggregators apply the idea to consented data sharing."
+blurb: "Layered APIs from channel to core, what a gateway does, and how consented data sharing works through Account Aggregators."
+domain: design
+depth: intro
+order: 3
+updated: 2026-09-29
+tags: [api, integration, open-banking, consent, architecture]
+related: [cbs, security, event-driven]
+facts: [aa-md-2016, aa-consent, aa-data-blind, rebit-aa-specs, rbih-wos]
+---
+
+## Why it matters
+
+A modern bank serves customers through its own apps, partners' apps, branches and payment rails at the same time. If each of these connects to the core in its own way, every change becomes a project and every new partner a risk. API-first design says: decide the interface first, publish it, version it and put controls in front of it. Channels and partners then build against a stable contract rather than against the core's internals.
+
+## The model explained
+
+<Figure title="Layers of an API-first bank" caption="Illustrative. Layer names vary; the separation of concerns is what matters.">
+  <BoxDiagram title="API layers" desc="Channels and partners call the API gateway. The gateway authenticates and limits traffic, then passes requests to orchestration services, which call core adapters that talk to the core banking system." width={440} height={430}
+    nodes={[
+      { id: 'ch', x: 60, y: 20, w: 320, h: 48, label: 'Channels, partners and fintechs' },
+      { id: 'gw', x: 30, y: 110, w: 380, h: 56, label: 'API gateway: identity, mutual TLS,\nrate limits, logging', tone: 'accent' },
+      { id: 'orc', x: 60, y: 210, w: 320, h: 48, label: 'Orchestration services' },
+      { id: 'ad', x: 60, y: 295, w: 320, h: 48, label: 'Core adapters' },
+      { id: 'core', x: 60, y: 375, w: 320, h: 44, label: 'Core banking system', tone: 'core' },
+    ]}
+    edges={[{ from: 'ch', to: 'gw' }, { from: 'gw', to: 'orc' }, { from: 'orc', to: 'ad' }, { from: 'ad', to: 'core' }]} />
+</Figure>
+
+**Channels** are the callers: the bank's apps, partner apps, internal tools. **The gateway** is the front door. It checks who is calling, enforces quotas, rejects malformed requests and records every call. **Orchestration services** combine steps into a business action, such as "open an account" or "make a payment", calling several systems in the right order. **Core adapters** translate between clean API models and the core's own interfaces, so the core can change, or be replaced, without breaking every caller.
+
+### What the gateway is responsible for
+
+- **Identity:** every call carries credentials; partners are identified by certificates or tokens.
+- **Mutual TLS:** for machine-to-machine traffic, both sides present certificates, so each proves who it is.
+- **Rate limits and quotas:** a misbehaving partner cannot exhaust capacity meant for everyone.
+- **Validation:** requests that do not match the published schema are rejected before they reach anything valuable.
+- **Observability:** every request is logged and traced, which is how incidents are investigated later.
+
+### Designing good bank APIs
+
+Good bank APIs share a few habits. They name business resources, such as accounts, payments and mandates, rather than exposing internal tables. Every request that moves money accepts an idempotency key, so a retried call cannot pay twice. Lists are paged, so one call cannot pull a million transactions. Errors use stable, documented codes that tell the caller whether to retry, correct the request or give up. Timestamps carry time zones, and amounts carry currencies. These details sound small, but they decide whether partners can build reliable products on top.
+
+### Versioning, sandboxes and certification
+
+Published APIs change slowly and carefully. A new version runs alongside the old one for a notice period, and callers move across on their own schedule. Partners build first against a sandbox with test data, then pass a certification step before they get production access. For shared public infrastructure, the operator usually publishes the specification and runs the certification.
+
+Onboarding a partner is as much a governance process as a technical one. Before production access, the bank checks who the partner is, what data the use case genuinely needs and how the partner will protect it. Access is then scoped to exactly that use case, reviewed periodically and withdrawn when the relationship ends. A register of every partner, credential and permitted operation makes those reviews possible.
+
+## How it plays out in Indian banking
+
+India's Account Aggregator (AA) framework is API-first thinking applied to data sharing across the whole financial system. <Fact id="aa-md-2016" show="claim" /> <Fact id="aa-consent" show="claim" /> <Fact id="aa-data-blind" show="claim" /> Everyone builds to one published specification: <Fact id="rebit-aa-specs" show="claim" />
+
+<Figure title="A consented data request through an Account Aggregator" caption="Simplified and illustrative. Real flows include consent artefacts, encryption keys and notifications.">
+  <Sequence title="Account Aggregator consent flow" desc="A customer applies to a lender. The lender asks the Account Aggregator for consent, which the customer approves. The aggregator fetches encrypted data from the customer's bank and passes it to the lender." lanes={[{ id: 'cu', label: 'Customer' }, { id: 'fiu', label: 'Lender\n(FIU)' }, { id: 'aa', label: 'Account\nAggregator' }, { id: 'fip', label: 'Bank\n(FIP)' }]}
+    messages={[
+      { from: 'cu', to: 'fiu', label: 'Apply for a loan' },
+      { from: 'fiu', to: 'aa', label: 'Ask for consent' },
+      { from: 'aa', to: 'cu', label: 'Show the request' },
+      { from: 'cu', to: 'aa', label: 'Approve' },
+      { from: 'aa', to: 'fip', label: 'Fetch, with consent' },
+      { from: 'fip', to: 'aa', label: 'Encrypted data', kind: 'res' },
+      { from: 'aa', to: 'fiu', label: 'Pass it on', kind: 'res' },
+    ]} />
+</Figure>
+
+The same pattern extends to lending. <Fact id="rbih-wos" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="API design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['One gateway for all traffic', 'Consistent security and visibility', 'A critical component that must scale and stay available'],
+  ['Thin core adapters', 'The core can be replaced behind a stable interface', 'Another layer to build and run'],
+  ['Long version overlaps', 'Partners are not forced to change at once', 'More versions to support and test'],
+  ['Shared public specifications', 'One integration works with every participant', 'Less freedom to add bank-specific features'],
+]} /></div>
+
+## Failure modes
+
+- **The gateway becomes the bottleneck** because it was sized for normal traffic, not for a salary day or a festival sale.
+- **Orchestration leaks into the gateway,** turning it into a hard-to-test tangle of business rules.
+- **Breaking changes** reach callers because a version was changed in place instead of added alongside.
+- **Over-broad access,** where a partner token can do more than its use case needs.
+
+## When to use it, and when to avoid it
+
+Use API-first design wherever more than one caller needs the same capability, and certainly wherever partners are involved. Avoid publishing an API for something only one internal system will ever use; a direct, well-tested link may be simpler. Avoid exposing the core's own data model as the public API, because it ties every caller to the core forever.
+
+## Questions for a design review
+
+- Is this interface designed for its callers, or does it mirror the core's own data model?
+- How are partners identified, and what exactly can each partner's credentials do?
+- What are the rate limits for a salary day or a festival sale, not just a normal day?
+- How will a breaking change be introduced without forcing every caller to move at once?
+- Can every request be traced from the gateway to the core and back?

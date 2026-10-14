@@ -1,0 +1,35 @@
+# Pull requests: content gate, type check, build, and the browser test suite.
+name: ci
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Install the Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Build (fact gate, astro check, build, search index, output gate)
+        run: npm run build
+      - name: Tests (overflow, accessibility, contrast, behaviour, budgets, CSP)
+        run: npm test
+      - name: Search ranks glossary entries first
+        run: ALL=1 npm run test:search
+      - name: Lighthouse on representative pages
+        run: LH_PROD=1 npm run test:lighthouse -- / /payment-rails/ /architecture/cbs/
+      - name: Dependency audit
+        # Reports without blocking: the current Astro 5 advisories affect features this static site does not use
+        # (see REVIEW.md, finding S1). Dependabot proposes upgrades; remove continue-on-error after the Astro upgrade.
+        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: test-output, path: tests/output, retention-days: 14 }

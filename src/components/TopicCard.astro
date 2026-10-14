@@ -1,0 +1,5 @@
+---
+interface Props { href: string; title: string; blurb: string; minutes: number; vt?: string }
+const { href, title, blurb, minutes, vt } = Astro.props;
+---
+<a class="topic-card" href={href} data-topic-card><span class="t" data-vt={vt}>{title}</span><span class="b">{blurb}</span><span class="m"><span>{minutes} min read</span></span></a>

@@ -1,0 +1,20 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import { mdxComponents } from '../components/mdx';
+import { citationsFor } from '../lib/facts';
+import { readingMinutes } from '../lib/site';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', (p) => p.data.kind === 'page');
+  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+Astro.locals.citations = await citationsFor(entry.data.facts);
+Astro.locals.where = `/${entry.id}/`;
+---
+<PageLayout title={entry.data.title} summary={entry.data.summary} domain={entry.data.domain} updated={entry.data.updated}
+  minutes={readingMinutes(entry.body)} headings={headings} tags={entry.data.tags}>
+  <Content components={mdxComponents} />
+</PageLayout>

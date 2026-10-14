@@ -1,0 +1,124 @@
+---
+// Living styleguide. Not indexed, not searchable, not in the sitemap. Demo data here is fictional or illustrative.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Callout from '../components/Callout.astro';
+import DataTable from '../components/DataTable.astro';
+import Fact from '../components/Fact.astro';
+import Cite from '../components/Cite.astro';
+import SourceList from '../components/SourceList.astro';
+import Abbr from '../components/Abbr.astro';
+import Note from '../components/Note.astro';
+import Figure from '../components/Figure.astro';
+import CodeBlock from '../components/CodeBlock.astro';
+import Compare from '../components/Compare.astro';
+import TopicCard from '../components/TopicCard.astro';
+import InstitutionCard from '../components/InstitutionCard.astro';
+import Icon from '../components/Icon.astro';
+import { ICONS } from '../lib/icons';
+import Sequence from '../components/diagrams/Sequence.astro';
+import Explainer from '../components/diagrams/Explainer.astro';
+import Stack from '../components/diagrams/Stack.astro';
+import Flow from '../components/diagrams/Flow.astro';
+import Timeline from '../components/diagrams/Timeline.astro';
+import Quadrant from '../components/diagrams/Quadrant.astro';
+import RailMap from '../components/diagrams/RailMap.astro';
+import RelationGraph from '../components/diagrams/RelationGraph.astro';
+import { citationsFor } from '../lib/facts';
+
+Astro.locals.citations = await citationsFor(['cts-phase1-live', 'upi-volume-2026-08', 'payment-volumes-live'].map((id) => ({ collection: 'facts' as const, id })));
+Astro.locals.where = '/styleguide/';
+const swatches = ['bg', 'surface', 'surface-2', 'ink', 'ink-2', 'ink-3', 'rule', 'rule-strong', 'accent', 'accent-ink', 'accent-tint', 'upi', 'imps', 'cts', 'nach', 'cards', 'rtgs', 'neft', 'settle', 'd-foundation', 'd-design', 'd-decision', 'd-governance', 'd-reference'];
+const lanes = [{ id: 'app', label: 'Your\napp' }, { id: 'rb', label: 'Your\nbank' }, { id: 'npci', label: 'NPCI' }, { id: 'pb', label: "Payee's\nbank" }, { id: 'payee', label: 'Payee' }];
+---
+<BaseLayout title="Styleguide" description="Components and tokens of the design system." search={false} noindex>
+  <div class="container page">
+    <PageHeader title="Styleguide" summary="Every component and token in the design system, in one place. Demo content on this page is illustrative or fictional." domain="reference" crumbs={[{ title: 'Styleguide' }]} />
+
+    <section class="sg-section" aria-labelledby="sg-colour"><h2 id="sg-colour">Colour tokens</h2>
+      <div class="sg-grid">{swatches.map((s) => <div class="swatch" data-sw={s}><i></i><span>--{s}</span></div>)}</div>
+    </section>
+
+    <section class="sg-section sg-type" aria-labelledby="sg-type"><h2 id="sg-type">Type</h2>
+      <p class="sg-label">Headings: Schibsted Grotesk. Long-form body: Literata. Scale ratio about 1.25.</p>
+      <h1>Step 5, page title</h1><h2>Step 4, section heading</h2><h3>Step 2, sub-heading</h3><h4>Step 1, minor heading</h4>
+      <div class="prose"><p class="lede">Lede paragraph in Literata. How money moves in India, and the technology underneath it.</p>
+      <p>Body paragraph. Settlement moves money between banks in the accounts they hold at the central bank.<Note>A sidenote. On wide screens it sits in the margin; on smaller screens it opens with a tap.</Note> Numbers use lining figures: ₹1,00,000 and 23.66.</p>
+      <blockquote><p>A pull quote states one rule worth remembering.</p></blockquote></div>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-icons"><h2 id="sg-icons">Icons and buttons</h2>
+      <p>{ICONS.map((i) => <><Icon name={i} label={i} /> </>)}</p>
+      <p><button class="btn" type="button">Secondary</button> <button class="btn btn--primary" type="button">Primary</button> <button class="btn" type="button" disabled>Disabled</button></p>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-callouts"><h2 id="sg-callouts">Callouts</h2>
+      <div class="sg-type">
+        <Callout type="note"><p>A note adds useful context.</p></Callout>
+        <Callout type="caution"><p>A caution warns about a common mistake.</p></Callout>
+        <Callout type="risk"><p>A risk describes something that can fail badly.</p></Callout>
+        <Callout type="definition" title="Settlement"><p>The movement of money between banks that completes a payment.</p></Callout>
+      </div>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-facts"><h2 id="sg-facts">Facts, citations and glossary</h2>
+      <div class="prose">
+        <p>A verified fact: <Fact id="cts-phase1-live" show="claim" /></p>
+        <p>A draft fact shows a dotted underline: <Fact id="upi-volume-2026-08" />.</p>
+        <p>A live figure never renders as a number: <Fact id="payment-volumes-live" label="see RBI's monthly payment indicators" />.</p>
+        <p>A citation on its own<Cite source="rbi-cts-phase2-2025" />. A glossary term: <Abbr term="upi" />, and another: <Abbr term="rtgs" />.</p>
+      </div>
+      <SourceList />
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-tables"><h2 id="sg-tables">Tables</h2>
+      <DataTable caption="Demo table with numeric columns" head={['Item', 'Count', 'Share']} numeric={[1, 2]} rows={[['Alpha', '1,204', '41%'], ['Beta', '932', '32%'], ['Gamma', '781', '27%']]} note="Illustrative numbers." />
+      <div class="sg-demo"><p class="sg-label">Compare component</p><Compare /></div>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-diagrams"><h2 id="sg-diagrams">Diagrams</h2>
+      <Figure title="Sequence diagram" caption="Illustrative request and response.">
+        <Sequence title="Balance enquiry" desc="An app asks the bank for a balance through the gateway." lanes={[{ id: 'a', label: 'Mobile\napp' }, { id: 'g', label: 'API\ngateway' }, { id: 'c', label: 'Core\nbanking' }]}
+          messages={[{ from: 'a', to: 'g', label: 'Get balance' }, { from: 'g', to: 'c', label: 'Read account' }, { from: 'c', to: 'g', label: 'Balance', kind: 'res' }, { from: 'g', to: 'a', label: 'Balance', kind: 'res' }]} />
+      </Figure>
+      <Figure title="Layered stack" caption="Illustrative."><Stack label="Demo stack" layers={[{ label: 'Channels', items: ['App', 'Branch'] }, { label: 'Core', items: ['Accounts', 'Ledger'], core: true }, { label: 'Data', items: ['Warehouse'] }]} /></Figure>
+      <Figure title="Flow" caption="Horizontal when there is room, vertical otherwise."><Flow label="Demo flow" steps={[{ label: 'Receive', note: 'Accept the request' }, { label: 'Check', note: 'Validate and authorise' }, { label: 'Post', note: 'Write to the ledger' }, { label: 'Confirm' }]} /></Figure>
+      <Figure title="Timeline" caption="Illustrative dates."><Timeline label="Demo timeline" events={[{ when: 'Phase 1', label: 'First change goes live' }, { when: 'Phase 2', label: 'Tighter timings', note: 'Illustrative' }]} /></Figure>
+      <Figure title="Quadrant" caption="Illustrative positions.">
+        <Quadrant title="Demo quadrant" desc="Four fictional options placed by cost and flexibility." x={['Low cost', 'High cost']} y={['Rigid', 'Flexible']} items={[{ label: 'Option A', x: 0.2, y: 0.7 }, { label: 'Option B', x: 0.75, y: 0.8 }, { label: 'Option C', x: 0.3, y: 0.25 }, { label: 'Option D', x: 0.8, y: 0.3 }]} />
+      </Figure>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-explainer"><h2 id="sg-explainer">Explainer</h2>
+      <Explainer title="One UPI payment, step by step" desc="Five parties: your app, your bank, NPCI, the payee's bank and the payee." lanes={lanes} band="RBI: banks settle net later"
+        caption="Simplified and illustrative. Real flows also involve the app providers and the banks they work with."
+        steps={[
+          { title: 'You start the payment', body: "You enter the payee's UPI ID or scan their QR code, type the amount and confirm with your UPI PIN.", lanes: ['app'], messages: [{ from: 'app', to: 'app', kind: 'self' }] },
+          { title: 'Your app sends the request', body: 'The app passes the request, through the bank it works with, to NPCI.', lanes: ['app', 'npci'], messages: [{ from: 'app', to: 'npci' }] },
+          { title: "NPCI finds the payee's bank", body: "NPCI checks which bank holds the account behind the payee's UPI ID.", lanes: ['npci', 'pb'], messages: [{ from: 'npci', to: 'pb' }, { from: 'pb', to: 'npci', kind: 'res' }] },
+          { title: 'Your bank debits you', body: 'Your bank checks your UPI PIN and balance, debits you and replies.', lanes: ['rb', 'npci'], messages: [{ from: 'npci', to: 'rb' }, { from: 'rb', to: 'npci', kind: 'res' }] },
+          { title: "The payee's bank credits them", body: "NPCI asks the payee's bank to credit the payee, and the bank confirms.", lanes: ['npci', 'pb'], messages: [{ from: 'npci', to: 'pb' }, { from: 'pb', to: 'npci', kind: 'res' }] },
+          { title: 'Everyone is told', body: "NPCI confirms to your app, and the payee's bank notifies the payee.", lanes: ['app', 'npci', 'pb', 'payee'], messages: [{ from: 'npci', to: 'app' }, { from: 'pb', to: 'payee' }] },
+          { title: 'The banks settle later', body: 'The banks settle what they owe each other, net, in their accounts at RBI.', lanes: ['rb', 'pb'], band: true },
+        ]} />
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-map"><h2 id="sg-map">Rail map</h2><RailMap title="Rail map component" /></section>
+
+    <section class="sg-section" aria-labelledby="sg-graph"><h2 id="sg-graph">Relationship graph</h2>
+      <p class="sg-label">Fictional institutions. The real map is generated from relations.yaml in Stage 4e.</p>
+      <RelationGraph title="Demo relationship map" caption="Demo relationships (fictional)"
+        nodes={[{ id: 'a', label: 'Alpha', full: 'Alpha Authority', domain: 'governance' }, { id: 'b', label: 'Beta', full: 'Beta Clearing', domain: 'foundation' }, { id: 'c', label: 'Gamma', full: 'Gamma Network', domain: 'design' }, { id: 'd', label: 'Delta', full: 'Delta Registry', domain: 'decision' }, { id: 'e', label: 'Epsilon', full: 'Epsilon Institute', domain: 'reference' }]}
+        edges={[{ from: 'a', to: 'b', type: 'regulatory', label: 'Oversees' }, { from: 'b', to: 'c', type: 'infrastructure', label: 'Uses the network' }, { from: 'a', to: 'd', type: 'ownership', label: 'Holds a stake' }, { from: 'e', to: 'c', type: 'operational', label: 'Designed the network' }, { from: 'b', to: 'a', type: 'settlement', label: 'Settles in accounts' }]} />
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-cards"><h2 id="sg-cards">Cards</h2>
+      <div class="topic-index" data-domain="design"><section class="depth-col first"><h3>Start here <span>introductory</span></h3><ul><li><TopicCard href="/architecture/cbs/" title="Core banking system architecture" blurb="A demo topic card." minutes={4} /></li></ul></section></div>
+      <div class="sg-demo"><InstitutionCard short="EXI" full="Example Institution (fictional)" category="Demo category" headquarters="Example City" established={2000} employeesNote="not publicly disclosed" officialUrl="https://example.org/" /></div>
+    </section>
+
+    <section class="sg-section" aria-labelledby="sg-code"><h2 id="sg-code">Code</h2>
+      <CodeBlock lang="yaml" title="A fact record" code={`- id: upi-volume-2026-08\n  claim: "UPI processed 24.51 billion transactions in August 2026"\n  asOf: 2026-08-31\n  source: bs-upi-aug-2026\n  volatility: monthly`} />
+    </section>
+  </div>
+</BaseLayout>

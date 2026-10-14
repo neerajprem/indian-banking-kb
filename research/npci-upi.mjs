@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const url = process.argv[2] || 'https://www.npci.org.in/what-we-do/upi/product-statistics';
+const b = await chromium.launch();
+const p = await b.newPage({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36', viewport: { width: 1400, height: 1000 } });
+const resp = await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+console.log('status', resp?.status());
+await p.waitForTimeout(12000);
+const text = await p.evaluate(() => document.body?.innerText ?? '');
+console.log('title', await p.title(), 'len', text.length);
+console.log(text.slice(0, 3000));
+await p.screenshot({ path: 'research/raw/npci-page.png' });
+await b.close();

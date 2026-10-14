@@ -1,0 +1,9 @@
+---
+// Left-to-right flow that becomes vertical in narrow containers. Numbered only when it is a real sequence.
+interface Props { steps: { label: string; note?: string }[]; label: string; numbered?: boolean }
+const { steps, label, numbered = true } = Astro.props;
+const Tag = numbered ? 'ol' : 'ul';
+---
+<div class="flow-wrap"><Tag class:list={['flow', { unnumbered: !numbered }]} aria-label={label}>
+  {steps.map((s) => <li><span class="fl">{s.label}</span>{s.note && <span class="fn">{s.note}</span>}</li>)}
+</Tag></div>

@@ -1,0 +1,8 @@
+---
+// Sidenote. Numbered by CSS counters (document order), shown in the margin on wide screens
+// and behind a tap-to-open marker below 1100 px.
+import { createHash } from 'node:crypto';
+const html = await Astro.slots.render('default');
+const id = 'note-' + createHash('sha1').update(html).digest('hex').slice(0, 8);
+---
+<button class="note-mark" type="button" aria-expanded="false" aria-controls={id}><span class="visually-hidden">Note</span></button><span class="note" id={id} role="note"><span class="note-num" aria-hidden="true"></span><Fragment set:html={html} /></span>

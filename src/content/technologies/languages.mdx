@@ -1,0 +1,69 @@
+---
+title: Programming languages
+topicId: languages
+summary: "Banks run on many languages at once, from COBOL on mainframes to Kotlin and Swift in mobile apps. Each fits some jobs better than others. Skills and long-term support matter as much as features."
+blurb: "Java, Go, Python, TypeScript, Kotlin, Swift, Dart and legacy COBOL: where each fits in banking, and why."
+domain: design
+depth: intro
+order: 11
+updated: 2026-09-29
+tags: [languages, engineering, technology]
+related: [mobile, containers, core-platforms]
+facts: []
+---
+
+## Why it matters
+
+A bank's software outlives most of the people who write it. A language chosen today will need to be read, patched and extended in ten or twenty years. The right choice balances what the language is good at with how many people can work in it, how stable its ecosystem is and how well its tools support security and correctness.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Languages in banking" head={['Language', 'Where it fits', 'Why', 'Watch out for']} rows={[
+  ['Java', 'Core platforms, payment systems, back-end services', 'Mature, fast, huge ecosystem and talent pool; strong for long-lived systems', 'Framework complexity and slow start-up in some styles'],
+  ['Kotlin', 'Android apps; increasingly back-end services', 'Runs on the Java platform with safer, more concise code', 'Smaller back-end talent pool than Java'],
+  ['Go', 'Infrastructure, gateways, high-concurrency services', 'Simple, fast, small binaries, good for network services', 'Fewer libraries for complex business domains'],
+  ['Python', 'Data engineering, analytics, machine learning', 'The standard for data science and ML libraries', 'Slower for heavy transaction processing; dependency management'],
+  ['TypeScript', 'Web front ends, backend-for-frontend services', 'Type safety on top of JavaScript; one language across web and server', 'Fast-moving ecosystem; supply-chain risk in packages'],
+  ['Swift', 'iOS apps', 'The platform language for Apple devices', 'Apple platforms only'],
+  ['Dart', 'Cross-platform apps with Flutter', 'One codebase for Android and iOS', 'Tied closely to Flutter'],
+  ['C and C++', 'Low-level components, HSM integrations, performance-critical code', 'Speed and control', 'Memory-safety bugs; needs expert review'],
+  ['COBOL', 'Legacy mainframe cores and batch jobs', 'Decades of proven business logic still running', 'Shrinking skills pool; hard to change'],
+  ['SQL and stored procedure languages', 'Logic inside databases, especially in older cores', 'Close to the data and fast', 'Business rules hidden in the database, hard to test'],
+]} note="General patterns across the industry, not claims about named banks." /></div>
+
+## Choosing a language for a new system
+
+Four questions settle most choices:
+- **What does the system do?** Transaction processing favours Java or Kotlin; infrastructure favours Go; data and models favour Python; interfaces favour TypeScript, Swift, Kotlin or Dart.
+- **Who will maintain it?** A language the bank can hire for, train in and support internally beats a better language nobody knows.
+- **How long must it live?** Long-lived systems favour languages with long-term-support releases and stable ecosystems.
+- **How safe is it?** Memory-safe languages remove whole classes of security bugs; strong typing catches mistakes before production.
+
+## Legacy languages
+
+COBOL and database procedure languages still run important parts of many banks' estates, often reliably for decades. The risk is not the language itself but the shrinking number of people who understand the code and the rules buried in it. Banks manage this by documenting business rules, wrapping legacy code behind APIs and moving logic out in stages, as described in [legacy modernisation](/architecture/modernisation/).
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Language strategy choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['A few standard languages across the bank', 'Shared tooling, skills and security review', 'Some teams use a less ideal tool for their job'],
+  ['Free choice per team', 'Best fit per system', 'Fragmented skills, tooling and maintenance'],
+  ['Rewrite legacy code in a modern language', 'Easier hiring and change', 'Risk of losing rules the old code encoded'],
+  ['Keep legacy code and wrap it', 'Low risk now', 'The skills problem grows'],
+]} /></div>
+
+## Pitfalls
+
+- **Choosing by fashion** rather than by fit and long-term support.
+- **Unreviewed dependencies** pulled in from public package registries.
+- **Business rules in stored procedures** that no test covers.
+- **One expert** who alone understands a critical codebase.
+- **Floating-point numbers for money,** instead of decimal types or integer minor units.
+
+## Questions for a design review
+
+- Why this language for this system, and who will maintain it in five years?
+- How are third-party dependencies approved, scanned and updated?
+- How are monetary amounts represented and rounded?
+- Where do business rules live, and are they covered by tests?
+- What happens if the one person who knows this codebase leaves?

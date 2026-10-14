@@ -1,0 +1,21 @@
+@layer utilities {
+  @media print {
+    :root, [data-theme="dark"] { --bg: #fff; --surface: #f4f4f4; --ink: #000; --ink-2: #333; --ink-3: #555; --rule: #ccc; --rule-strong: #888; color-scheme: light; }
+    html { font-size: 11pt; }
+    .site-header, .skip, .page-toc, .toc-inline, .pager, .search-dialog, .drawer, .copy-btn, .chips, .explainer-ctrl, .footer-dir, .h-anchor, .no-print { display: none !important; }
+    .page-body { display: block; }
+    .prose { max-inline-size: none; padding: 0; }
+    .prose .wide { margin: 0; }
+    .note, .note.open { display: block; float: none; inline-size: auto; margin: 0.4em 0; padding-inline-start: 0.6em; border-inline-start: 2px solid #888; }
+    .note-mark { background: none !important; color: #000 !important; }
+    .js .steps li:not(.on) .step-body { display: block; }
+    details > *:not(summary) { display: block !important; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; word-break: break-all; color: #333; }
+    .table-wrap { overflow: visible; border: 0; background: none; }
+    .table-wrap table { min-inline-size: 0; }
+    h2, h3, figure, table, .callout { break-inside: avoid; }
+    h2, h3 { break-after: avoid; }
+    .site-footer { margin-block-start: 2em; }
+    .gl-tip, .cite-tip { display: none !important; }
+  }
+}

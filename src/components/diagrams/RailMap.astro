@@ -1,0 +1,131 @@
+---
+// Build-time SVG transit map of payment rails (desktop and a transposed vertical version for phones).
+// JavaScript only adds interaction: isolate a rail, open a stop's panel, draw the lines once.
+import fs from 'node:fs';
+import path from 'node:path';
+import { load as yamlLoad } from 'js-yaml';
+type XY = [number, number];
+type Station = { name: string; mname?: string; xy: XY; lab: XY; mlab: XY; text: string; page?: string };
+type Line = { id: string; name: string; full: string; o: number; pts: (string | XY)[] };
+const data = yamlLoad(fs.readFileSync(path.join(process.cwd(), 'src/data/railmap.yaml'), 'utf8')) as {
+  status: string; stations: Record<string, Station>; lines: Line[]; settle: { from: string; to: string; label: string };
+};
+interface Props { title?: string; hint?: string }
+const { title = 'How a payment travels', hint = 'Select a rail to isolate it, or a stop to read about it.' } = Astro.props;
+const GAP = 6;
+// Link a stop to its institution page only once that page's MDX exists, so the map never links to a missing route.
+const instDir = path.join(process.cwd(), 'src/content/institutions');
+const existing = new Set(fs.existsSync(instDir) ? fs.readdirSync(instDir).filter((f) => f.endsWith('.mdx')).map((f) => f.replace(/\.mdx$/, '')) : []);
+const S = data.stations;
+const base = (p: string | XY, m: boolean): XY => { const xy = typeof p === 'string' ? S[p].xy : p; return m ? [xy[1], xy[0]] : xy; };
+function rounded(pts: XY[], r = 16) {
+  let d = `M${pts[0].join(' ')}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [a, b, c] = [pts[i - 1], pts[i], pts[i + 1]];
+    const l1 = Math.hypot(b[0] - a[0], b[1] - a[1]), l2 = Math.hypot(c[0] - b[0], c[1] - b[1]);
+    const rr = Math.min(r, l1 / 2, l2 / 2);
+    const p1 = [b[0] + ((a[0] - b[0]) * rr) / l1, b[1] + ((a[1] - b[1]) * rr) / l1];
+    const p2 = [b[0] + ((c[0] - b[0]) * rr) / l2, b[1] + ((c[1] - b[1]) * rr) / l2];
+    d += `L${p1.map((v) => +v.toFixed(2)).join(' ')}Q${b.join(' ')} ${p2.map((v) => +v.toFixed(2)).join(' ')}`;
+  }
+  return d + `L${pts[pts.length - 1].join(' ')}`;
+}
+function build(m: boolean) {
+  const lines = data.lines.map((l) => ({ ...l, d: rounded(l.pts.map((p) => { const b = base(p, m); return [b[0] + l.o * GAP, b[1] + l.o * GAP] as XY; })) }));
+  const n = base(data.settle.from, m), r = base(data.settle.to, m);
+  const settle = { d: `M${n.join(' ')}L${r.join(' ')}`, x: m ? (n[0] + r[0]) / 2 : n[0] - 10, y: m ? n[1] - 12 : (n[1] + r[1]) / 2, anchor: m ? 'middle' : 'end' };
+  const stations = Object.entries(S).map(([id, s]) => {
+    const ls = data.lines.filter((l) => l.pts.includes(id));
+    const os = ls.map((l) => l.o);
+    const b = base(id, m); const lo = Math.min(...os), hi = Math.max(...os);
+    const [dx, dy] = m ? s.mlab : s.lab;
+    const anchor = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'start' : 'end') : 'middle';
+    return { id, name: m && s.mname ? s.mname : s.name, lines: ls.map((l) => l.id).join(' '),
+      d: `M${b[0] + lo * GAP} ${b[1] + lo * GAP}L${b[0] + hi * GAP} ${b[1] + hi * GAP}`, tx: b[0] + dx, ty: b[1] + dy, anchor };
+  });
+  return { lines, settle, stations };
+}
+const maps = [{ cls: 'map-d', vb: '0 0 1000 420', ...build(false) }, { cls: 'map-m', vb: '-10 0 440 1000', ...build(true) }];
+const alt = data.lines.map((l) => `${l.name} (${l.full}): ${l.pts.filter((p) => typeof p === 'string').map((p) => S[p as string].name).join(', then ')}.`);
+---
+<section class="railmap" data-railmap aria-labelledby="rm-title">
+  <div class="railmap-head"><h2 id="rm-title">{title}</h2><p class="js-only">{hint}</p></div>
+  <ul class="chips js-only" aria-label="Payment rails">
+    {data.lines.map((l) => <li><button class="chip" type="button" data-iso={l.id} data-line={l.id} aria-pressed="false"><i></i>{l.name}</button></li>)}
+    <li><button class="chip chip--reset" type="button" data-iso-reset>Show all</button></li>
+  </ul>
+  <div class="railmap-body">
+    <div>
+      {maps.map((m) => (
+        <svg class:list={['dg-svg', m.cls]} viewBox={m.vb} role="group" aria-label="Map of Indian payment rails">
+          <g>
+            <path class="ln ln--settle" data-line="settle" d={m.settle.d} />
+            <text class="settle-lab" x={m.settle.x} y={m.settle.y} text-anchor={m.settle.anchor}>{data.settle.label}</text>
+            {m.lines.map((l) => <path class="ln" data-line={l.id} data-ln={l.id} d={l.d} pathLength="1" />)}
+          </g>
+          <g>
+            {m.stations.map((s) => (
+              <g class="st" data-st={s.id} data-lines={s.lines} tabindex="0" role="button" aria-label={`${s.name}: show details`} aria-controls="rm-panel">
+                <path class="cap-o" d={s.d} /><path class="cap-i" d={s.d} />
+                <text x={s.tx} y={s.ty} text-anchor={s.anchor}>{s.name}</text>
+              </g>
+            ))}
+          </g>
+        </svg>
+      ))}
+    </div>
+    <div class="map-panel js-only" id="rm-panel" aria-live="polite">
+      <div data-panel="">
+        <h3>Pick a stop</h3>
+        <p>Each stop is an institution or system that a payment passes through. Where lines meet, several rails share the stop.</p>
+      </div>
+      {Object.entries(S).map(([id, s]) => (
+        <div data-panel={id} hidden>
+          <h3>{s.name}</h3>
+          <p>{s.text}</p>
+          <ul class="serves" aria-label="Rails through this stop">{data.lines.filter((l) => l.pts.includes(id)).map((l) => <li data-line={l.id}><i></i>{l.name}</li>)}</ul>
+          {s.page && existing.has(s.page) && <a class="btn btn--primary" href={`/rbi-ecosystem/${s.page}/`}>Open {s.name.replace(/ \(.*\)/, '')}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="railmap-foot">
+    <span>Illustrative and simplified. Routes show which institutions a payment touches, not exact message paths.{data.status === 'draft' && ' Stop descriptions are awaiting verification.'}</span>
+    <details class="alt-text"><summary>Text version of the map</summary><ul>{alt.map((a) => <li>{a}</li>)}<li>Banks settle their NPCI positions net, in their accounts at RBI.</li></ul></details>
+  </div>
+</section>
+<script>
+  import { ready } from '../../scripts/ready';
+  ready(() => {
+    document.querySelectorAll<HTMLElement>('[data-railmap]').forEach((root) => {
+      if (root.dataset.bound) return; root.dataset.bound = '1';
+      let current: string | null = null;
+      const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-iso]')];
+      const apply = () => {
+        root.classList.toggle('iso', !!current);
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.iso === current)));
+        root.querySelectorAll<SVGElement>('[data-ln]').forEach((p) => p.classList.toggle('on', p.dataset.ln === current));
+        root.querySelectorAll<SVGElement>('.st').forEach((g) => g.classList.toggle('on', !!current && g.dataset.lines!.split(' ').includes(current)));
+      };
+      chips.forEach((c) => c.addEventListener('click', () => { current = current === c.dataset.iso ? null : c.dataset.iso!; apply(); }));
+      root.querySelector('[data-iso-reset]')?.addEventListener('click', () => { current = null; apply(); });
+      root.querySelectorAll<SVGElement>('[data-ln]').forEach((p) => p.addEventListener('click', () => { current = current === p.dataset.ln ? null : p.dataset.ln!; apply(); }));
+      const pick = (id: string) => {
+        root.querySelectorAll<SVGElement>('.st').forEach((g) => g.classList.toggle('sel', g.dataset.st === id));
+        root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== id));
+      };
+      root.querySelectorAll<SVGElement>('.st').forEach((g) => {
+        g.addEventListener('click', () => pick(g.dataset.st!));
+        g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g.dataset.st!); } });
+      });
+      // Draw the lines once, when the map first scrolls into view.
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { root.classList.add('drawn'); return; }
+      const io = new IntersectionObserver((es) => {
+        if (!es.some((e) => e.isIntersecting)) return;
+        io.disconnect(); root.classList.add('drawing');
+        setTimeout(() => { root.classList.add('drawn'); root.classList.remove('drawing'); }, 2400);
+      }, { threshold: 0.25 });
+      io.observe(root);
+    });
+  });
+</script>

@@ -1,0 +1,48 @@
+---
+// Detail view for an RBI-ecosystem institution: the sourced record and its connections first, then the prose.
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import PageLayout from './PageLayout.astro';
+import { GROUPS } from '../lib/institutions';
+import { fmtDate } from '../lib/site';
+interface Props { record: CollectionEntry<'institutionData'>; updated: Date; headings: { depth: number; slug: string; text: string }[] }
+const { record, updated, headings } = Astro.props;
+const d = record.data;
+const group = GROUPS[d.group];
+const all = new Map((await getCollection('institutionData')).map((r) => [r.id, r]));
+const pages = new Set((await getCollection('institutions')).map((e) => e.id));
+const links = (await getCollection('relations')).filter((r) => r.data.from.id === record.id || r.data.to.id === record.id);
+const empSrc = d.employees ? await getEntry('sources', d.employees.source.id) : undefined;
+const num = Astro.locals.citations?.number;
+const summary = `${d.full}: ${d.roles[0].charAt(0).toLowerCase() + d.roles[0].slice(1)}.`.slice(0, 200);
+---
+<PageLayout title={d.full} summary={summary} domain="governance" updated={updated}
+  headings={[{ depth: 2, slug: 'at-a-glance', text: 'At a glance' }, ...headings, { depth: 2, slug: 'connections', text: 'Connections' }]}
+  crumbs={[{ title: 'RBI ecosystem', href: '/rbi-ecosystem/' }, { title: d.short }]} back={{ href: '/rbi-ecosystem/', title: 'All institutions' }} tags={['institutions', 'governance']}>
+  <h2 id="at-a-glance">At a glance</h2>
+  <div class="wide">
+    <article class="inst-card" data-domain={group.domain}>
+      <div><span class="cat-tag">{group.label}</span></div>
+      <dl>
+        <dt>Short name</dt><dd>{d.short}</dd>
+        <dt>Legal form</dt><dd>{d.category}</dd>
+        <dt>Headquarters</dt><dd>{d.headquarters ?? 'Not confirmed from an official source'}</dd>
+        <dt>Established</dt><dd class="tabular">{d.established ?? 'Not confirmed'}{d.establishedNote && <small> {d.establishedNote}</small>}</dd>
+        <dt>Employees</dt><dd>{d.employees
+          ? <>{d.employees.value.toLocaleString('en-IN')} <small>(as of {fmtDate(d.employees.asOf)}; {empSrc?.data.publisher}{num?.get(d.employees.source.id) && <>, <a href={`#src-${num.get(d.employees.source.id)}`}>source {num.get(d.employees.source.id)}</a></>})</small></>
+          : 'No official figure found in the sources checked'}</dd>
+        <dt>Official site</dt><dd><a href={d.officialUrl} rel="noopener noreferrer">{new URL(d.officialUrl).hostname}</a></dd>
+      </dl>
+      <div><strong>Roles</strong><ul>{d.roles.map((r) => <li>{r}</li>)}</ul></div>
+    </article>
+  </div>
+  <slot />
+  <h2 id="connections">Connections</h2>
+  {links.length ? (
+    <ul>{links.map((l) => {
+      const other = l.data.from.id === record.id ? l.data.to.id : l.data.from.id;
+      const o = all.get(other)!;
+      const n = num?.get(l.data.source.id);
+      return <li>{pages.has(other) ? <a href={`/rbi-ecosystem/${other}/`}>{o.data.short}</a> : o.data.short}: {l.data.description}{n && <sup class="cite"><a href={`#src-${n}`} aria-label={`Source ${n}`}>{n}</a></sup>}</li>;
+    })}</ul>
+  ) : <p>No sourced connections are recorded yet.</p>}
+</PageLayout>

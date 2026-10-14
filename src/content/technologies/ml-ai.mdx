@@ -1,0 +1,75 @@
+---
+title: Machine learning and AI
+topicId: ml-ai
+summary: "Banks use machine learning for fraud, credit, collections, service and documents. The hard parts are data, monitoring and explaining decisions. RBI's AI and model risk rules are still being settled."
+blurb: "Fraud scoring, credit models, assistants and document AI; feature stores, serving, drift, explainability and RBI's emerging expectations."
+domain: design
+depth: advanced
+order: 9
+updated: 2026-09-29
+tags: [ai, machine-learning, models, technology]
+related: [/architecture/data/, observability, security-tech]
+facts: [freeai-2025, mrm-draft-2024, mrm-draft-2026, rbih-wos, aa-consent]
+---
+
+## Why it matters
+
+Machine learning now touches many of a bank's most important decisions: whether a payment looks fraudulent, whether a borrower is likely to repay, which customer to call about an overdue loan. Language models add assistants for customers and staff, and tools that read documents. Each can bring speed and consistency. Each can also be wrong at scale, treat groups of customers unfairly or be impossible to explain to a customer or a supervisor.
+
+## Where banks use it
+
+<div class="wide"><DataTable caption="Common uses of machine learning in banking" head={['Use', 'What the model does', 'Typical technique', 'Key risk']} rows={[
+  ['Fraud scoring', 'Scores each payment or login for fraud in milliseconds', 'Gradient-boosted trees, graph features, anomaly detection', 'Blocking genuine customers; missing new fraud patterns'],
+  ['Credit underwriting', 'Estimates the chance a borrower repays', 'Scorecards, gradient-boosted trees', 'Unfair outcomes; decisions that cannot be explained'],
+  ['Collections', 'Chooses whom to contact, when and how', 'Propensity models', 'Aggressive or unfair treatment of vulnerable customers'],
+  ['Customer and staff assistants', 'Answers questions and drafts responses', 'Large language models with retrieval', 'Wrong answers stated confidently; data leakage'],
+  ['Document AI', 'Reads forms, statements and identity documents', 'Optical character recognition plus language models', 'Extraction errors flowing into decisions'],
+]} note="General industry patterns, not claims about named banks." /></div>
+
+Some of the data these models use arrives through consent-based channels, such as Account Aggregators: <Fact id="aa-consent" show="claim" /> Shared infrastructure for credit is also emerging: <Fact id="rbih-wos" show="claim" />
+
+## The machinery around a model
+
+- **Feature stores** calculate model inputs once and serve the same values for training and for live decisions.
+- **Model serving** runs models behind an API with a fixed latency budget. A fraud score that arrives after the payment has completed is useless.
+- **Monitoring and drift detection** watch whether live inputs and outcomes still resemble the training data. Fraud patterns and economic conditions change, and models decay.
+- **Explainability** produces reasons for a decision, such as the factors that most lowered a credit score. Customers, staff and supervisors can then understand and challenge it.
+- **Model inventory and validation** records every model, its owner, purpose, data and last independent review.
+
+## RBI's expectations: emerging, not settled
+
+RBI's position on AI and model risk is still developing, and it matters which documents are final:
+
+- <Fact id="freeai-2025" show="claim" />
+- <Fact id="mrm-draft-2024" show="claim" />
+- <Fact id="mrm-draft-2026" show="claim" />
+
+<Callout type="caution" title="Draft and advisory, as of this page's date">
+  <p>The FREE-AI report is a committee report, and the model risk documents above are drafts released for comment. Treat them as a strong signal of direction, and check for final RBI instruments before treating any recommendation as a rule.</p>
+</Callout>
+
+The direction is already clear enough to design for. Keep a model inventory, validate models independently before use and after significant change, monitor them in production, be able to explain decisions that affect customers, and hold the bank accountable for models bought from vendors as well as those built in-house.
+
+## Large language models and data protection
+
+Language models raise specific questions: where prompts and outputs are processed and stored, whether customer data could be used to train someone else's model, and how to stop a model revealing information to the wrong user. Common safeguards include hosting models within the bank's controlled environment or an approved region, masking personal data before it reaches the model, retrieving only documents the user is allowed to see, and logging prompts and responses for review.
+
+## How to choose
+
+Prefer the simplest model that works, especially where decisions must be explained. Start where errors are cheap to catch, such as staff-facing assistants with human review, before customer-facing or credit decisions. Build the inventory, monitoring and validation process before the second model, not after the tenth.
+
+## Pitfalls
+
+- **Training on data the model will not have live,** so it performs well in testing and badly in production.
+- **No monitoring after launch,** letting a model decay unnoticed.
+- **Proxies for protected characteristics,** such as location standing in for community, producing unfair outcomes.
+- **Vendor models treated as black boxes,** although the bank remains accountable for them.
+- **Language models given access to data** their users should not see.
+
+## Questions for a design review
+
+- Is this model in the inventory, with an owner and a validation date?
+- What happens to a customer when the model is wrong, and how can they challenge it?
+- How is drift detected, and what triggers retraining or rollback?
+- Can the reasons for an individual decision be produced on request?
+- Where is data processed when this model runs, and does any of it leave the bank's control?

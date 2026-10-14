@@ -1,0 +1,17 @@
+---
+import Icon from './Icon.astro';
+interface Props { title: string; caption: string; download?: string; alt?: string; wide?: boolean }
+const { title, caption, download, alt, wide = false } = Astro.props;
+const id = 'fig-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+---
+<figure class:list={['figure', { wide }]} aria-labelledby={`${id}-t`}>
+  <p class="figure-title" id={`${id}-t`}>{title}</p>
+  <slot />
+  <figcaption>
+    <span>{caption}</span>
+    {download && <a class="figure-dl" href={download} download><Icon name="download" />Download SVG</a>}
+  </figcaption>
+  {(alt || Astro.slots.has('alt')) && (
+    <details class="alt-text"><summary>Text description</summary><div>{alt}<slot name="alt" /></div></details>
+  )}
+</figure>

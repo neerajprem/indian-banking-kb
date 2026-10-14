@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import DataTable from '../../components/DataTable.astro';
+import { fmtDate } from '../../lib/site';
+const facts = await getCollection('facts');
+const sources = await getCollection('sources');
+const src = Object.fromEntries(sources.map((s) => [s.id, s]));
+const now = Date.now();
+const window: Record<string, number> = { monthly: 45, annual: 400, static: 90, live: Infinity };
+const rows = facts
+  .sort((a, b) => a.data.asOf.getTime() - b.data.asOf.getTime())
+  .map((f) => {
+    const age = Math.floor((now - src[f.data.source.id].data.accessed.getTime()) / 86400000);
+    const stale = age > Math.min(90, window[f.data.volatility]);
+    return [f.data.claim, f.data.status === 'verified' ? 'Verified' : 'Awaiting verification', f.data.confidence, fmtDate(f.data.asOf), src[f.data.source.id].data.publisher, stale ? `${age} days: review` : `${age} days`];
+  });
+---
+<PageLayout title="Sources and methodology" summary="How facts are chosen, dated and checked, and when each one was last verified." domain="reference">
+  <h2 id="method">How facts are handled</h2>
+  <p>Every number, date, limit, named customer and named regulation on this site is stored once, with its source and the date it was true. Pages cite that record rather than restating the figure, so a correction reaches every page at once.</p>
+  <p>Primary sources come first: the Reserve Bank of India, NPCI, other regulators, the Government of India and official annual reports. Reputable press is used where no primary source exists and is labelled as reported. Vendor statements are labelled as the vendor's claim. Figures that change monthly link to the live source instead of repeating a number that will go stale.</p>
+  <p>A fact is marked verified only after its source was opened and read. Anything that could not be confirmed is left out.</p>
+  <h2 id="freshness">Freshness</h2>
+  <p>Each fact is reviewed at least every 90 days, and monthly figures every 45 days.</p>
+  <div class="wide"><DataTable caption="All facts, oldest first" head={['Claim', 'Status', 'Confidence', 'As of', 'Source', 'Checked']} rows={rows} rowHeader={false} /></div>
+  <h2 id="registry">Source registry</h2>
+  <ol>{sources.map((s) => <li><a href={s.data.url} rel="noopener noreferrer">{s.data.title}</a>. {s.data.publisher}. Accessed {fmtDate(s.data.accessed)}.</li>)}</ol>
+  <h2 id="corrections">Corrections and independence</h2>
+  <p>This is an independent reference. It is not affiliated with, or endorsed by, the Reserve Bank of India, NPCI or any bank or vendor. If you find an error, tell the Infrastructure Team with the page, the claim and a source; corrections are listed in the changelog.</p>
+</PageLayout>

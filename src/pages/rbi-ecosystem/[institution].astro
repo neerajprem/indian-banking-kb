@@ -1,0 +1,24 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import InstitutionLayout from '../../layouts/InstitutionLayout.astro';
+import { mdxComponents } from '../../components/mdx';
+import { citationsFor } from '../../lib/facts';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('institutions');
+  return Promise.all(pages.map(async (entry) => {
+    const record = await getEntry('institutionData', entry.id);
+    if (!record) throw new Error(`src/content/institutions/${entry.id}.mdx has no record in institutions.yaml`);
+    return { params: { institution: entry.id }, props: { entry, record } };
+  }));
+}
+const { entry, record } = Astro.props;
+const { Content, headings } = await render(entry);
+const rel = (await getCollection('relations')).filter((r) => r.data.from.id === record.id || r.data.to.id === record.id);
+const extra = [...new Set([...record.data.sources.map((s) => s.id), ...(record.data.employees ? [record.data.employees.source.id] : []), ...rel.map((r) => r.data.source.id)])];
+Astro.locals.citations = await citationsFor(entry.data.facts, extra);
+Astro.locals.where = `/rbi-ecosystem/${entry.id}/`;
+---
+<InstitutionLayout record={record} updated={entry.data.updated} headings={headings}>
+  <Content components={mdxComponents} />
+</InstitutionLayout>

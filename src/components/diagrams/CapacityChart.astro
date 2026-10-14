@@ -1,0 +1,36 @@
+---
+// Illustrative month of load against capacity. Build-time SVG; values are made up for illustration.
+interface Props { title?: string }
+const { title = 'Load across a month against capacity' } = Astro.props;
+const days = Array.from({ length: 30 }, (_, i) => i + 1);
+const load = days.map((d) => {
+  let v = 42 + (d % 7 === 6 || d % 7 === 0 ? -6 : 0);          // quieter weekends
+  if (d === 1) v = 78;                                            // salary day
+  if (d === 2) v = 64;
+  if (d >= 5 && d <= 7) v += 10;                                  // loan instalment and bill dates
+  if (d === 22) v = 88;                                           // festival sale
+  if (d === 30) v = 72;                                           // month end
+  return v;
+});
+const W = 440, H = 260, L = 44, R = 12, T = 16, B = 40;
+const x = (d: number) => L + ((d - 1) / 29) * (W - L - R);
+const y = (v: number) => T + (1 - v / 110) * (H - T - B);
+const pts = load.map((v, i) => `${x(i + 1).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+// Each label sits beside its point, clear of the capacity and headroom lines.
+const marks = [{ d: 1, label: 'Salary day', dx: 8, dy: 20, anchor: 'start' }, { d: 22, label: 'Festival sale', dx: -10, dy: 6, anchor: 'end' }, { d: 30, label: 'Month end', dx: -10, dy: 22, anchor: 'end' }];
+---
+<svg class="dg-svg cap" viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-labelledby="cap-t cap-d">
+  <title id="cap-t">{title}</title>
+  <desc id="cap-d">Illustrative. Normal load sits around 40 per cent of capacity, with spikes on salary day, loan and bill dates, a festival sale and month end. A dashed line at 80 per cent marks planned headroom; the festival peak goes above it but stays below full capacity at 100 per cent.</desc>
+  <line class="cap-axis" x1={L} y1={H - B} x2={W - R} y2={H - B} />
+  <line class="cap-axis" x1={L} y1={T} x2={L} y2={H - B} />
+  <line class="cap-max" x1={L} y1={y(100)} x2={W - R} y2={y(100)} />
+  <text class="cap-lab" x={L + 8} y={y(100) - 6}>Capacity</text>
+  <line class="cap-head" x1={L} y1={y(80)} x2={W - R} y2={y(80)} />
+  <text class="cap-lab" x={L + 8} y={y(80) - 6}>Planned headroom</text>
+  <polyline class="cap-load" points={pts} />
+  {marks.map((m) => <g><circle class="cap-dot" cx={x(m.d)} cy={y(load[m.d - 1])} r="4" /><text class="cap-lab" x={x(m.d) + m.dx} y={y(load[m.d - 1]) + m.dy} text-anchor={m.anchor}>{m.label}</text></g>)}
+  <text class="cap-lab" x={L} y={H - 14}>Day 1</text>
+  <text class="cap-lab" x={W - R} y={H - 14} text-anchor="end">Day 30</text>
+  <text class="cap-lab" x={12} y={y(50)} transform={`rotate(-90 12 ${y(50)})`} text-anchor="middle">Share of capacity</text>
+</svg>

@@ -1,0 +1,71 @@
+---
+title: Observability
+topicId: observability
+summary: "Observability lets teams see what their systems are doing and why. Metrics, logs and traces answer different questions. Service level objectives turn that data into decisions about reliability."
+blurb: "Metrics, logs and traces; Prometheus, Grafana and OpenTelemetry; alerting, SLOs, on-call and incident review."
+domain: design
+depth: intermediate
+order: 8
+updated: 2026-09-29
+tags: [observability, operations, reliability, technology]
+related: [messaging, containers, /architecture/multi-dc/]
+facts: [upi-daily-2026-08, tat-2019, outsourcing-6h]
+---
+
+## Why it matters
+
+A payment passes through an app, a gateway, several services, a payment switch and a core. When customers report failures, the team must find which step is failing, for whom and since when, in minutes. Observability is the ability to answer those questions from the data systems emit, without guessing or adding code during the incident.
+
+## Three kinds of signal
+
+**Metrics** are numbers over time: requests per second, error rate, response time, queue depth. They are cheap to store and ideal for dashboards and alerts. **Logs** are records of individual events, with detail about what happened. They are essential for investigation and audit, but costly at volume. **Traces** follow one request across every service it touches, showing where time was spent and where it failed. Together they answer "is something wrong?", "what happened?" and "where?".
+
+## The landscape
+
+<div class="wide"><DataTable caption="Observability technologies" head={['Technology', 'Role', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['Prometheus', 'Metrics collection and alerting rules', 'Metrics from container platforms and services', 'The standard for Kubernetes metrics'],
+  ['Grafana', 'Dashboards across many data sources', 'Operations and business dashboards', 'Works with metrics, logs and traces'],
+  ['OpenTelemetry', 'Vendor-neutral standard and libraries for emitting signals', 'Instrumenting services once, sending anywhere', 'Avoids lock-in to one monitoring vendor'],
+  ['Elasticsearch or OpenSearch, Loki, Splunk', 'Log storage and search', 'Application and security logs', 'Plan retention and cost carefully'],
+  ['Jaeger, Tempo', 'Distributed tracing back ends', 'Following requests across microservices', 'Needs trace IDs passed through every hop'],
+  ['Commercial observability suites', 'All signals in one managed product', 'Teams that prefer a managed service', 'Check where data is stored and processed'],
+]} note="Typical uses are general industry patterns, not claims about named banks. Product names are for reference only." /></div>
+
+## From data to decisions: SLOs
+
+A **service level indicator** (SLI) is a measure of what users experience, such as the share of payments that succeed within two seconds. A **service level objective** (SLO) is the target for it, such as 99.9% over 30 days. The gap between the target and perfection is the **error budget**: while it lasts, the team can ship changes; when it runs out, reliability work comes first.
+
+Scale makes these measures essential. With UPI alone averaging <Fact id="upi-daily-2026-08" />, a success rate that looks excellent as a percentage can still mean many failed payments. Failures also have regulatory clocks attached: <Fact id="tat-2019" show="claim" />
+
+## Alerting, on-call and incident review
+
+Good alerts fire on symptoms users would notice, such as rising payment failures, rather than on every internal blip. Each alert has an owner, a runbook and a clear severity. On-call rotations share the load fairly and include time to recover. After every significant incident, a **blameless review** records what happened, why it made sense to the people involved at the time and what will change. Incident timelines built from good observability data also feed regulatory reporting: <Fact id="outsourcing-6h" show="claim" />
+
+## How to choose
+
+Instrument once with OpenTelemetry, so the choice of back end can change later. Start with the few SLIs that matter most to customers, such as payment success and response time, and build dashboards and alerts around them before adding more. Decide log retention by need and rule, not by default.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Observability choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Open-source stack', 'Control, no per-host licence', 'A team to run and scale it'],
+  ['Managed suite', 'Fast start, less to operate', 'Cost at volume; data leaves the bank\u2019s estate'],
+  ['Log everything', 'Nothing missing during an investigation', 'High cost and personal data in logs'],
+  ['Sample traces', 'Lower cost', 'The one failing request may not be sampled'],
+]} /></div>
+
+## Pitfalls
+
+- **Dashboards nobody watches** and alerts nobody owns.
+- **Alerting on causes,** such as high CPU, instead of symptoms users feel.
+- **Personal data in logs,** such as full account numbers or card details.
+- **Broken traces** because one service does not pass the trace ID on.
+- **Reviews that assign blame,** which teach people to hide problems.
+
+## Questions for a design review
+
+- What are this service's SLIs and SLOs, and who agreed them?
+- If payments start failing, which alert fires first, and who receives it?
+- Can one payment be traced from the app to the core?
+- What personal data could appear in these logs, and how is it masked?
+- How long are logs kept, and why that long?

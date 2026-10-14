@@ -1,0 +1,100 @@
+---
+title: High-volume systems
+summary: "Indian payment volumes are among the highest in the world, and they peak on predictable days. Banks shield their cores with layers that absorb, queue and shed load. Idempotency makes retries safe."
+domain: design
+order: 3
+updated: 2026-09-29
+tags: [scale, resilience, payments, architecture]
+facts: [upi-volume-2026-08, upi-daily-2026-08, imps-volume-2026-08, tat-upi-transfer, itgrc-dr-drills, itgrc-dr-switchover, kotak-outages, kotak-2024]
+---
+
+## What "high volume" means here
+
+In August 2026, UPI processed <Fact id="upi-volume-2026-08" />, about <Fact id="upi-daily-2026-08" />, and IMPS another <Fact id="imps-volume-2026-08" />. Every one of those payments touches at least two banks' systems, and demand is not spread evenly. It climbs on predictable days:
+
+- **Salary days,** at the start of the month, when credits arrive and spending follows.
+- **Loan instalment and bill dates,** in the first week, when mandates debit millions of accounts.
+- **Month end and financial-year end,** when businesses settle and reporting runs.
+- **Festive sales,** when card and UPI payments to merchants spike for hours.
+- **Deadline days,** such as tax due dates or popular share offers, when many people pay in the same window.
+
+<Figure title="A month of load against capacity" caption="Illustrative. The shape, not the numbers, is the point: peaks are predictable, and capacity is planned for them.">
+  <CapacityChart />
+</Figure>
+
+The consequence of getting this wrong is public and regulatory, not just technical. <Fact id="kotak-outages" show="claim" /> <Fact id="kotak-2024" show="claim" />
+
+## Shielding the core
+
+The core banking system is usually the hardest component to scale, so high-volume design is largely about protecting it. Requests pass through layers that each absorb part of the load before anything reaches the ledger.
+
+<Figure title="Layers that shield the core" caption="Illustrative. Not every bank has every layer, and the order varies.">
+  <BoxDiagram title="Core shielding layers" desc="Traffic from channels and payment rails reaches the edge, where rate limits apply. A cache answers reads such as balance display. A queue buffers writes and smooths peaks. A payment hub applies back-pressure and stand-in rules. Only then do postings reach the core banking system." width={440} height={430}
+    nodes={[
+      { id: 'in', x: 60, y: 15, w: 320, h: 44, label: 'Channels and payment rails', tone: 'muted' },
+      { id: 'rl', x: 60, y: 95, w: 320, h: 44, label: 'Edge: rate limits and quotas', tone: 'accent' },
+      { id: 'ca', x: 20, y: 180, w: 190, h: 56, label: 'Cache: balances\nfor display' },
+      { id: 'q', x: 230, y: 180, w: 190, h: 56, label: 'Queue: buffers\nwrites at peaks' },
+      { id: 'hub', x: 60, y: 275, w: 320, h: 56, label: 'Payment hub: back-pressure,\nstand-in rules', tone: 'accent' },
+      { id: 'core', x: 60, y: 370, w: 320, h: 44, label: 'Core banking system', tone: 'core' },
+    ]}
+    edges={[{ from: 'in', to: 'rl' }, { from: 'rl', to: 'ca', label: 'reads' }, { from: 'rl', to: 'q', label: 'writes' }, { from: 'q', to: 'hub' }, { from: 'hub', to: 'core', label: 'postings' }, { from: 'ca', to: 'hub', dashed: true }]} />
+</Figure>
+
+- **Caching** serves reads, such as a balance shown on an app's home screen, without asking the core each time.
+- **Queues** buffer writes, so a peak becomes a slightly longer line rather than a failure.
+- **Back-pressure** slows or rejects new work when the systems behind are saturated, instead of letting everything time out together.
+- **Rate limits** protect shared capacity from any one channel, partner or runaway client.
+
+## Idempotency and safe retries
+
+At high volume, time-outs are not rare events but a steady stream. A client that times out will retry, and a retry must never move money twice. Each payment therefore carries a unique reference from its sender, and every system records references it has already processed. A repeated request returns the original result.
+
+<Figure title="A retry that does not pay twice" caption="Illustrative. The same reference makes the second request harmless.">
+  <Sequence title="Idempotent retry" desc="The app sends a payment with reference R1. The bank processes it, but the reply is lost and the app times out. The app retries with the same reference R1. The bank sees R1 was already processed and returns the original result without posting again." lanes={[{ id: 'app', label: 'App' }, { id: 'hub', label: 'Payment\nhub' }, { id: 'core', label: 'Core' }]}
+    messages={[
+      { from: 'app', to: 'hub', label: 'Pay, ref R1' },
+      { from: 'hub', to: 'core', label: 'Post R1' },
+      { from: 'core', to: 'hub', label: 'Posted', kind: 'res' },
+      { from: 'hub', to: 'app', label: 'Reply lost', kind: 'res' },
+      { from: 'app', to: 'hub', label: 'Retry, ref R1' },
+      { from: 'hub', to: 'hub', label: 'R1 already done', kind: 'self' },
+      { from: 'hub', to: 'app', label: 'Original result', kind: 'res' },
+    ]} />
+</Figure>
+
+Retries themselves need discipline: wait longer between each attempt, add a little randomness so thousands of clients do not retry in step, and stop after a limit. Payments that end up stuck must still be resolved within regulatory limits. <Fact id="tat-upi-transfer" show="claim" />
+
+## Circuit breakers, bulkheads and graceful degradation
+
+A **circuit breaker** stops calling a failing dependency for a short time, returning a fast failure instead of waiting on time-outs, then tests it again. A **bulkhead** gives each channel or function its own pool of threads and connections, so a problem in one cannot exhaust capacity for all. **Graceful degradation** keeps the most important functions working when something fails. Payments may continue while statements and analytics pause. The app may show a balance marked "as of" a few minutes ago, rather than an error.
+
+**Stand-in processing** is the payment-specific form. When the core is unavailable or busy with its batch cycle, a stand-in layer approves low-risk transactions against a shadow balance within limits, and replays them to the core afterwards. It keeps payments flowing, at the cost of reconciliation work.
+
+## Asynchronous processing and the outbox
+
+Work that does not need to finish before the customer gets an answer, such as notifications, loyalty points or analytics, is done asynchronously. The service records the change and an event in one database transaction, the outbox, and a separate process publishes the event. That keeps the customer path short and the event reliable. See [event-driven architecture](/architecture/event-driven/).
+
+## Capacity planning, load testing and warm capacity
+
+Capacity is planned for the peak, not the average, with headroom on top. Load tests replay realistic peak traffic, including the mix of payment types and the slow dependencies, not just a simple script. Autoscaling helps for stateless services, but new capacity takes time to start and warm up. Banks therefore scale up before known peaks rather than waiting for load to rise. Databases and cores usually cannot autoscale at all, which is why the shielding layers matter.
+
+## Batch windows
+
+Not all volume is real time. Mandate collections, salary files and statement runs arrive as large batches, often at the same times each month. Batch jobs are scheduled so they do not collide with real-time peaks, split into pieces that can run in parallel, and checkpointed so a failure resumes rather than restarts.
+
+## Latency budgets for fraud scoring
+
+Real-time fraud scoring sits inside the payment path, so it gets a fixed slice of the time available. An illustrative budget might give the fraud engine a few tens of milliseconds. If it cannot answer in time, the payment proceeds or stops by a pre-agreed rule, rather than waiting. Any such figure here is illustrative; each bank sets its own from its end-to-end limits.
+
+## Measuring success: SLOs and resilience drills
+
+The measure that matters is the share of payments that succeed, and how fast, broken down by channel, partner and type. Service level objectives turn that into targets, and error budgets decide when reliability work takes priority. Resilience is proven by drills, not by design documents. <Fact id="itgrc-dr-drills" show="claim" /> <Fact id="itgrc-dr-switchover" show="claim" />
+
+## Questions for a design review
+
+- What is the expected peak for this system, on which day, and what headroom does it have above that?
+- Which layer absorbs the peak before it reaches the core?
+- How does every client retry, and does every retry reuse its reference?
+- What does this system do when a dependency is slow: wait, fail fast or degrade?
+- When was it last load-tested at peak volume, with realistic traffic?

@@ -1,0 +1,18 @@
+---
+// Two-axis positioning chart. x and y run from 0 to 1. Positions are attributes, never inline styles (CSP).
+interface Props { title: string; desc: string; x: [string, string]; y: [string, string]; quadrants?: [string, string, string, string]; items: { label: string; x: number; y: number }[] }
+const { title, desc, x, y, quadrants, items } = Astro.props;
+const S = 420, P = 40, A = S - 2 * P;
+const uid = 'q-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 24);
+---
+<svg class="dg-svg quad" viewBox={`0 0 ${S} ${S}`} width={S} height={S} role="img" aria-labelledby={`${uid}-t ${uid}-d`}>
+  <title id={`${uid}-t`}>{title}</title><desc id={`${uid}-d`}>{desc}</desc>
+  <line class="grid" x1={S / 2} y1={P} x2={S / 2} y2={S - P} /><line class="grid" x1={P} y1={S / 2} x2={S - P} y2={S / 2} />
+  <line class="axis" x1={P} y1={S - P} x2={S - P} y2={S - P} /><line class="axis" x1={P} y1={P} x2={P} y2={S - P} />
+  <text class="alab" x={P} y={S - 12}>{x[0]}</text><text class="alab" x={S - P} y={S - 12} text-anchor="end">{x[1]}</text>
+  <text class="alab" x={P - 8} y={S - P} text-anchor="end" transform={`rotate(-90 ${P - 8} ${S - P})`}>{y[0]}</text>
+  <text class="alab" x={P - 8} y={P} text-anchor="end" transform={`rotate(-90 ${P - 8} ${P})`} dy="0">{y[1]}</text>
+  {quadrants && quadrants.map((q, i) => <text class="qlab" x={i % 2 ? S - P - 8 : P + 8} y={i < 2 ? P + 18 : S - P - 10} text-anchor={i % 2 ? 'end' : 'start'}>{q}</text>)}
+  {items.map((it) => { const cx = P + it.x * A, cy = S - P - it.y * A; return <g class="pt"><circle cx={cx} cy={cy} r="6" /><text x={cx + 10} y={cy + 5}>{it.label}</text></g>; })}
+</svg>
+<details class="alt-text"><summary>Text description</summary><ul>{items.map((it) => <li>{it.label}: {it.x >= 0.5 ? x[1] : x[0]}, {it.y >= 0.5 ? y[1] : y[0]}</li>)}</ul></details>

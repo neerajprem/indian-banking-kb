@@ -1,0 +1,6 @@
+# Navigation groups and reading order. Items are page slugs; missing pages are skipped automatically.
+- { id: foundations, title: Foundations, domain: foundation, order: 1, items: [core-systems, payment-rails] }
+- { id: design, title: Design, domain: design, order: 2, items: [architecture, technologies, high-volume] }
+- { id: decisions, title: Decisions and risk, domain: decision, order: 3, items: [build-vs-buy, limitations] }
+- { id: governance, title: Governance, domain: governance, order: 4, items: [regulators, rbi-ecosystem] }
+- { id: reference, title: Reference, domain: reference, order: 5, items: [glossary, sources, changelog] }

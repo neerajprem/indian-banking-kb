@@ -1,0 +1,70 @@
+---
+title: Security technologies
+topicId: security-tech
+summary: "Bank security uses a stack of tools, each covering a different way in. Firewalls filter traffic, HSMs guard keys, vaults and PAM guard credentials, SIEM watches it all. Tools help only if run well."
+blurb: "Firewalls, WAFs, HSMs, secrets vaults, privileged access, SIEM and SOAR, cloud posture management and DLP, conceptually."
+domain: design
+depth: intermediate
+order: 7
+updated: 2026-09-29
+tags: [security, technology, compliance]
+related: [/architecture/security/, cloud, observability]
+facts: [certin-6h-2022, outsourcing-6h, cof-2022, idrbt-ca, auth-2025]
+---
+
+## Why it matters
+
+No single product makes a bank secure. Each tool covers a different way an attacker could get in or a different stage of an attack: preventing, detecting or responding. [Security architecture](/architecture/security/) explains how the layers fit together; this page describes the technology families.
+
+This page is conceptual. It does not describe any organisation's tools or configuration.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Security technology families" head={['Technology', 'What it does', 'Where it sits', 'Notes']} rows={[
+  ['Next-generation firewall', 'Filters network traffic by application, user and threat, not just address and port', 'Between network zones and at the perimeter', 'Rules need regular review; old rules pile up'],
+  ['Web application firewall (WAF)', 'Blocks common attacks on web traffic, such as injection', 'In front of websites and APIs', 'Tune it to the application, or it blocks customers'],
+  ['DDoS protection', 'Absorbs floods of traffic meant to take a service down', 'At the network edge, often a provider service', 'Test it before an attack does'],
+  ['Hardware security module (HSM)', 'Stores keys and performs cryptography without revealing keys', 'Payment, card and signing systems', 'Keys never leave the device in clear'],
+  ['Secrets vault', 'Issues and rotates passwords, keys and certificates at run time', 'Used by applications and pipelines', 'Removes secrets from code and configuration'],
+  ['Privileged access management (PAM)', 'Controls and records administrator access, ideally just in time', 'Between administrators and systems', 'Standing admin rights are the thing to eliminate'],
+  ['SIEM', 'Collects logs and raises alerts on suspicious patterns', 'Central, fed by every system', 'Only as good as the logs and the people reading alerts'],
+  ['SOAR', 'Automates responses to alerts', 'Alongside the SIEM', 'Automate the routine; keep people for judgement'],
+  ['Cloud security posture management (CSPM)', 'Finds risky settings in cloud accounts', 'Across cloud accounts', 'Catches exposed storage and open network rules'],
+  ['Data loss prevention (DLP)', 'Detects and blocks sensitive data leaving', 'Email, web, endpoints and cloud storage', 'Needs well-labelled data to work'],
+]} note="Families, not products. Product choices depend on each bank's estate." /></div>
+
+## Where banking adds requirements
+
+- **Cards and keys.** Card numbers are replaced by tokens wherever possible, shrinking what must be protected: <Fact id="cof-2022" show="claim" /> PINs and keys are handled inside HSMs.
+- **Customer authentication.** <Fact id="auth-2025" show="claim" />
+- **Digital certificates.** <Fact id="idrbt-ca" show="claim" />
+- **Reporting clocks.** Detection tools must feed a process fast enough to meet deadlines. <Fact id="certin-6h-2022" show="claim" /> <Fact id="outsourcing-6h" show="claim" />
+
+## How to choose
+
+Choose by the risk each tool reduces, in order of what would hurt most: money movement, keys, customer data and administrator access. Prefer fewer tools that are well integrated and fully used over many that are partly deployed. For each tool, decide in advance who owns it, who reads its alerts and what happens when it fires.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Security technology choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Best-of-breed tools', 'The strongest capability in each area', 'Integration work and more consoles to watch'],
+  ['One platform suite', 'Integration and a single view', 'Dependence on one vendor; weaker in some areas'],
+  ['Managed security service', 'Round-the-clock monitoring without building a team', 'Outsourcing obligations; less in-house knowledge'],
+  ['Strict blocking by default', 'Fewer successful attacks', 'More false positives affecting customers and staff'],
+]} /></div>
+
+## Pitfalls
+
+- **Shelfware:** tools bought, partly installed and never tuned.
+- **Alert fatigue,** where so many alerts fire that real ones are missed.
+- **Blind spots,** such as cloud accounts, supplier connections or new services not sending logs.
+- **Firewall rule sprawl,** with thousands of rules nobody can explain.
+- **Secrets outside the vault,** in scripts, tickets or chat.
+
+## Questions for a design review
+
+- Which risk does each security tool here reduce, and who owns it?
+- Does every system, including cloud and supplier connections, send logs to the SIEM?
+- Who reads alerts at 3 a.m., and how fast can an incident reach the reporting deadline?
+- Which administrator accounts have standing access, and why?
+- Where are this system's secrets, and when were they last rotated?

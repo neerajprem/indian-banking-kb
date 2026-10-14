@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import SiteNav from './SiteNav.astro';
+import Search from './Search.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { getNav } from '../lib/nav';
+import { SITE } from '../lib/site';
+interface Props { current: string }
+const { current } = Astro.props;
+const nav = await getNav();
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header" data-pagefind-ignore>
+  <div class="container header-inner">
+    <a class="brand" href="/"><span class="brand-name">{SITE.short}</span><span class="brand-sub">{SITE.sub}</span></a>
+    <SiteNav nav={nav} current={current} variant="menus" />
+    <div class="tools">
+      <Search />
+      <ThemeToggle />
+      <a class="btn menu-btn" href="#footer-nav" data-drawer-open aria-haspopup="dialog"><Icon name="menu" /><span class="btn-label">Menu</span></a>
+    </div>
+  </div>
+  <SiteNav nav={nav} current={current} variant="drawer" />
+</header>
+<script>
+  import { ready } from '../scripts/ready';
+  ready(() => {
+    // Desktop menus: one open at a time; outside click and Escape close them.
+    const groups = [...document.querySelectorAll<HTMLDetailsElement>('.nav-group')];
+    groups.forEach((d) => {
+      if (d.dataset.bound) return; d.dataset.bound = '1';
+      d.addEventListener('toggle', () => { if (d.open) groups.forEach((o) => { if (o !== d) o.open = false; }); });
+    });
+    if (!document.body.dataset.navBound) {
+      document.body.dataset.navBound = '1';
+      document.addEventListener('click', (e) => { if (!(e.target as Element).closest('.nav-group')) groups.forEach((o) => (o.open = false)); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const open = groups.find((g) => g.open);
+        if (open) { open.open = false; open.querySelector('summary')?.focus(); }
+      });
+    }
+    // Mobile drawer: native modal dialog. Without JavaScript the button jumps to the footer directory.
+    const drawer = document.querySelector<HTMLDialogElement>('[data-drawer]');
+    const openBtn = document.querySelector<HTMLAnchorElement>('[data-drawer-open]');
+    if (drawer && openBtn && !openBtn.dataset.bound) {
+      openBtn.dataset.bound = '1';
+      openBtn.setAttribute('role', 'button');
+      openBtn.setAttribute('aria-expanded', 'false');
+      openBtn.addEventListener('click', (e) => { e.preventDefault(); drawer.showModal(); openBtn.setAttribute('aria-expanded', 'true'); });
+      drawer.addEventListener('close', () => { openBtn.setAttribute('aria-expanded', 'false'); openBtn.focus(); });
+      drawer.querySelector('[data-drawer-close]')!.addEventListener('click', () => drawer.close());
+      drawer.addEventListener('click', (e) => { if (e.target === drawer) drawer.close(); });
+    }
+  });
+</script>

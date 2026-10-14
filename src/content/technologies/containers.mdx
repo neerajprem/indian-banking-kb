@@ -1,0 +1,72 @@
+---
+title: Containers and orchestration
+topicId: containers
+summary: "Containers package an application with everything it needs to run. Kubernetes runs them at scale; GitOps and infrastructure as code keep them reproducible. Regulated workloads add controls."
+blurb: "Kubernetes, Helm, GitOps with Argo CD or Flux, Terraform, workflow engines, and what regulated workloads need on top."
+domain: design
+depth: intermediate
+order: 5
+updated: 2026-09-29
+tags: [containers, platform, devops, technology]
+related: [cloud, observability, security-tech]
+facts: [itgrc-dc-dr-identical, rbi-md-it-outsourcing-2023]
+---
+
+## Why it matters
+
+Banks now build many of their channel, payment and integration services as small applications that change often. Containers let each one be packaged once and run the same way on a laptop, in testing and in production. An orchestration platform then runs hundreds of them, restarts failures, scales with load and rolls out changes gradually. For a bank, the prize is faster, safer change; the cost is a platform that must itself be run to a very high standard.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Container and platform technologies" head={['Technology', 'Role', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['Kubernetes (upstream, or distributions such as OpenShift and Rancher)', 'Container orchestration', 'Running microservices for channels, payments and APIs', 'The standard; distributions add support and security defaults'],
+  ['Managed Kubernetes (EKS, AKS, GKE, OKE)', 'Kubernetes run by a cloud provider', 'Cloud-hosted channel and analytics services', 'Cloud outsourcing and residency rules apply'],
+  ['Helm', 'Packaging for Kubernetes applications', 'Versioned, repeatable deployments', 'Keep charts simple and reviewed'],
+  ['Argo CD, Flux', 'GitOps delivery', 'Keeping clusters matched to what is in Git', 'Every change becomes a reviewed commit'],
+  ['Terraform, OpenTofu', 'Infrastructure as code', 'Networks, clusters and cloud resources defined in code', 'Protect the state file; review plans before applying'],
+  ['Temporal, Camunda', 'Workflow and orchestration engines', 'Long-running processes such as onboarding or loan origination', 'Durable state for multi-step processes'],
+]} note="Typical uses are general industry patterns, not claims about named banks. Product names are for reference only." /></div>
+
+## GitOps and infrastructure as code
+
+**Infrastructure as code** defines servers, networks and clusters in files kept in version control, so an environment can be rebuilt exactly. **GitOps** extends that to applications: the Git repository holds the desired state of every cluster, and an agent keeps the live cluster matched to it. Every change is a reviewed commit with an author and a timestamp, which is also an audit trail.
+
+This matters for resilience. RBI expects the primary and DR sites to match: <Fact id="itgrc-dc-dr-identical" show="claim" /> Defining both sites from the same code is the most reliable way to keep them identical.
+
+## What regulated workloads add
+
+- **Separation:** production isolated from development and testing, with separate clusters or strictly controlled namespaces.
+- **Image control:** only images built by the bank's pipeline, scanned for vulnerabilities and signed, may run in production.
+- **Policy enforcement:** admission rules that block privileged containers, missing resource limits or unapproved registries.
+- **Secrets:** credentials supplied at run time from a vault, never baked into images.
+- **Evidence:** logs of who deployed what, when, and with which approval.
+- **Outsourcing:** where a provider runs the platform, <Fact id="rbi-md-it-outsourcing-2023" show="claim" />
+
+## How to choose
+
+Start with a supported distribution or a managed service rather than assembling upstream Kubernetes by hand, unless the bank has a strong platform team. Standardise on one deployment method, usually GitOps, across all teams. Move stateless services first; keep databases and other stateful systems on proven infrastructure until the platform has shown it can run them reliably.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Platform choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Self-run Kubernetes', 'Full control, on-premises', 'A skilled platform team, and upgrades every few months'],
+  ['Managed Kubernetes in the cloud', 'The provider runs the control plane', 'Outsourcing and residency obligations'],
+  ['GitOps for every change', 'Reproducible environments and an audit trail', 'Discipline: no manual fixes in production'],
+  ['Workflow engine', 'Reliable long-running processes', 'Another stateful system to operate'],
+]} /></div>
+
+## Pitfalls
+
+- **Treating the platform as a project,** not a product that needs a permanent team.
+- **Manual changes in production** that drift from what Git says.
+- **Stateful systems moved too early,** before backup, failover and upgrades are proven.
+- **Missing resource limits,** so one service starves others on the same nodes.
+- **Unpatched base images** carrying known vulnerabilities into production.
+
+## Questions for a design review
+
+- Can this environment be rebuilt from code alone, and when was that last done?
+- Which images may run in production, and how is that enforced?
+- Where do this service's secrets come from?
+- Are the primary and DR clusters defined from the same code?
+- Who owns the platform, and how are its upgrades scheduled and tested?

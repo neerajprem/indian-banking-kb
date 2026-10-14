@@ -1,0 +1,91 @@
+---
+title: Legacy modernisation
+topicId: modernisation
+summary: "Replacing a core in one move is among the riskiest things a bank can do. Most succeed by changing it in stages. The strangler fig moves one capability at a time until the old system retires."
+blurb: "The strangler fig, anti-corruption layers, data migration, parallel runs and why cutover is where projects fail."
+domain: design
+depth: intermediate
+order: 6
+updated: 2026-09-29
+tags: [modernisation, core, migration, architecture]
+related: [cbs, api-first, hybrid-cloud]
+facts: [sbi-bancs, rbi-md-it-outsourcing-2023, outsourcing-exit, itgrc-dr-switchover]
+---
+
+## Why it matters
+
+A bank's core holds decades of products, rules and integrations. Replacing it means moving every account and open loan without losing a rupee, while the bank keeps trading. A "big bang" replacement, where everything switches on one weekend, concentrates all of that risk into one moment. Incremental approaches spread it out, so each step is small enough to test, reverse and learn from.
+
+## The model explained
+
+### The strangler fig
+
+Named after a vine that grows around a tree until it can stand on its own, the **strangler fig** pattern puts a facade in front of the old system. At first the facade simply passes every request through. Then, one capability at a time, requests are routed to new services instead. When nothing is left routed to the old system, it can be switched off.
+
+<Figure title="The strangler fig, in three stages" caption="Illustrative. Real programmes move many capabilities, often over several years.">
+  <BoxDiagram title="Strangler fig stages" desc="Stage 1: a facade passes all requests to the legacy core. Stage 2: the facade sends deposits to a new service and everything else to the legacy core. Stage 3: the facade sends everything to the new platform, and the legacy core is retired." width={440} height={380}
+    zones={[{ x: 5, y: 5, w: 430, h: 105, label: 'Stage 1: wrap' }, { x: 5, y: 125, w: 430, h: 120, label: 'Stage 2: move one capability' }, { x: 5, y: 260, w: 430, h: 110, label: 'Stage 3: retire' }]}
+    nodes={[
+      { id: 'f1', x: 25, y: 45, w: 140, h: 44, label: 'Facade', tone: 'accent' },
+      { id: 'l1', x: 255, y: 45, w: 160, h: 44, label: 'Legacy core' },
+      { id: 'f2', x: 25, y: 170, w: 140, h: 44, label: 'Facade', tone: 'accent' },
+      { id: 'n2', x: 255, y: 150, w: 160, h: 40, label: 'New: deposits', tone: 'core' },
+      { id: 'l2', x: 255, y: 197, w: 160, h: 40, label: 'Legacy core' },
+      { id: 'f3', x: 25, y: 300, w: 140, h: 44, label: 'Facade', tone: 'accent' },
+      { id: 'n3', x: 255, y: 290, w: 160, h: 40, label: 'New platform', tone: 'core' },
+      { id: 'l3', x: 255, y: 335, w: 160, h: 30, label: 'Legacy (retired)', tone: 'muted' },
+    ]}
+    edges={[{ from: 'f1', to: 'l1', label: 'everything' }, { from: 'f2', to: 'n2' }, { from: 'f2', to: 'l2' }, { from: 'f3', to: 'n3' }]} />
+</Figure>
+
+### Supporting patterns
+
+- **Anti-corruption layer.** New services talk to the old system only through a translator, so the old system's data model and quirks do not leak into the new design.
+- **Wrapping the core.** Before replacing anything, put APIs in front of the core. Channels then depend on the APIs, not the core, which makes every later step easier.
+- **Branch by abstraction.** Inside a codebase, introduce an interface over the thing being replaced, move callers to the interface, then swap what sits behind it.
+- **Hollowing out.** Move functions such as payments, customer data or lending out of the core one by one, leaving it as a thinner ledger.
+
+### Sequencing the moves
+
+Order matters. Many programmes start with capabilities that are valuable but loosely coupled to the ledger, such as customer onboarding, notifications or a new digital product, because they can move without touching balances. Deposits and loans move later, product by product, once migration tooling and reconciliation have been proven on smaller waves. The general ledger and end-of-day processing usually move last, because everything depends on them.
+
+### Data migration and parallel runs
+
+Data is usually the hardest part. Migration moves accounts in waves, by product, region or customer segment, with automated checks that every balance, rate and schedule arrived intact. A **parallel run** processes real transactions through both old and new systems and compares the results before customers depend on the new one. Differences found in a parallel run are cheap; differences found by customers are not.
+
+### Cutover
+
+**Cutover** is the moment a wave of customers starts being served by the new system. It needs a rehearsed plan, a clear decision point, a tested way back and enough people on hand to resolve problems quickly. Most failed migrations fail here, usually because the rollback was never really tested.
+
+## How it plays out in Indian banking
+
+Core changes at large Indian banks are multi-year programmes. <Fact id="sbi-bancs" show="claim" /> Most are carried out with vendors and system integrators, which brings RBI's outsourcing rules into scope: <Fact id="rbi-md-it-outsourcing-2023" show="claim" /> <Fact id="outsourcing-exit" show="claim" /> A new core must also meet the same resilience tests as the old one before it goes live. <Fact id="itgrc-dr-switchover" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Modernisation approaches" head={['Approach', 'You gain', 'You give up']} rows={[
+  ['Big-bang replacement', 'One short transition; no long period of two systems', 'All risk concentrated in one event'],
+  ['Strangler fig', 'Small, reversible steps; value delivered early', 'Years of running old and new side by side'],
+  ['Wrap first, replace later', 'Immediate agility for channels', 'The old core lives on, and the wrapper can become permanent'],
+  ['Hollow out the core', 'Fast-changing functions move to modern systems', 'More integration points to keep consistent'],
+]} /></div>
+
+## Failure modes
+
+- **The permanent middle,** where the old and new systems both keep running indefinitely because the last capabilities are never moved.
+- **Untested rollback,** discovered only when a cutover goes wrong.
+- **Migration defects** that surface weeks later as wrong interest or charges.
+- **Scope creep,** where the migration becomes a chance to redesign every product at once.
+- **Knowledge loss,** when the people who understood the old system leave before its rules are documented.
+
+## When to use it, and when to avoid it
+
+Prefer incremental change whenever the old system can be wrapped and the business can tolerate running two systems for a while, which is most of the time. Consider a big-bang switch only for small, self-contained systems, or when the old one is failing so badly that running it longer is the greater risk. In every case, test the rollback as seriously as the rollout.
+
+## Questions for a design review
+
+- What will be wrapped first, so that channels stop depending on the old system directly?
+- In what order will capabilities move, and what is the first small move that proves the approach?
+- How will migrated balances, rates and schedules be checked, account by account?
+- What will the parallel run compare, and for how long?
+- Has the rollback been rehearsed end to end, with real data volumes?

@@ -1,0 +1,158 @@
+---
+title: Payment rails
+summary: "A payment rail is the system that carries money between banks. India runs several, each built for a different job. This page explains how they differ and how they settle."
+domain: foundation
+order: 2
+updated: 2026-09-29
+tags: [payments, settlement, cheques, upi, cards]
+facts: [rtgs-gross, rtgs-min, rtgs-24x7-2020-12-14, rbi-operated-systems, neft-vs-rtgs, neft-24x7-2019, neft-48-batches-2019, neft-return-2h, tat-imps, upi-volume-2026-08, upi-daily-2026-08, imps-volume-2026-08, cts-phase1-live, cts-hourly-settlement, npci-cts-role, cts-phase2-postponed, cts-session-hours, positive-pay-2020, nfs-npci-2009, nfs-atms-2024, aa-md-2016, aa-consent, aa-data-blind, rebit-aa-specs, upi-p2m-limits-2025, upi-gem-limit-2025, upi-card-bill-limit-2025, upi-p2p-limit-2025, upi-credit-lines-2023, rupay-cc-upi-2022, tat-2019, tat-failed-definition, tat-upi-transfer, tat-upi-merchant, tat-atm, cof-2022, data-localisation-2018, amex-diners-2021, mastercard-restriction-2021, mastercard-lifted-2022, sfms-2001, infinet-1999, iftas-hiveoff-2015, payment-volumes-live]
+---
+
+## What a payment rail is
+
+A payment rail is a shared system that banks use to move money for their customers. Each rail has an operator, a rulebook, a message format and a way of settling between banks. In India the main operators are the Reserve Bank of India (RBI), which runs RTGS and NEFT, and the National Payments Corporation of India (NPCI), which runs UPI, IMPS, NACH, the card and ATM network, and cheque clearing.
+
+Every payment has two parts. The message tells the banks what to do. Settlement then moves the money between the banks themselves, in the accounts they hold at RBI.<Note>Banks hold current accounts with RBI. Moving money between those accounts is what settlement means on this page.</Note> This is why a customer can see a credit within seconds while the banks settle later.
+
+<Figure wide title="The two halves of a payment" caption="Illustrative and simplified. The order is the same on every rail; the timing of the last step differs.">
+  <Flow label="Steps in a payment" steps={[
+    { label: 'Instruction', note: 'The payer asks their bank to pay' },
+    { label: 'Message', note: 'The rail carries it to the payee’s bank' },
+    { label: 'Credit', note: 'The payee’s bank credits the payee' },
+    { label: 'Settlement', note: 'The banks settle in their RBI accounts' },
+  ]} />
+</Figure>
+
+## The rails at a glance
+
+<div class="wide"><RailsTable /></div>
+
+To compare two rails side by side, choose them below. Without JavaScript, every rail is shown.
+
+<div class="wide"><Compare /></div>
+
+## Gross and net settlement
+
+Gross settlement moves each payment on its own, at once. It removes the risk that one bank's failure strands everyone else's money, but each bank needs enough money in its RBI account to cover every payment as it goes. Net settlement adds up what each bank owes and is owed over a period, then moves only the difference. That needs far less cash, but money stays in flight until the cycle closes, and a bank that cannot pay its net amount affects everyone in that cycle.
+
+<Figure title="The same four payments, settled two ways" caption="Illustrative amounts. The payments are identical; only the settlement method changes." alt="Four payments between three banks total ₹140 crore. Settled gross, that is four settlements moving ₹140 crore. Netted, Bank A receives ₹10 crore, Bank C pays ₹10 crore, Bank B has nothing to move: one settlement of ₹10 crore." wide>
+  <NetVsGross />
+</Figure>
+
+## RTGS and NEFT
+
+RBI runs both of the main account-to-account rails. The difference between them is the difference between gross and net settlement, described in [payment system architecture](/architecture/payments/). <Fact id="rtgs-gross" show="claim" /> <Fact id="rtgs-min" show="claim" /> <Fact id="rtgs-24x7-2020-12-14" show="claim" /> Because each payment settles individually in RBI's books, an RTGS payment is final once it is processed.
+
+<p><Fact id="neft-vs-rtgs" show="claim" /> <Fact id="neft-24x7-2019" show="claim" /> <Fact id="neft-48-batches-2019" show="claim" /> <Fact id="neft-return-2h" show="claim" /></p>
+
+## IMPS and UPI
+
+IMPS and UPI both credit the customer within seconds, at any hour, and both settle between banks later, on a net basis. IMPS came first and is used from bank apps and branches with an account number and IFSC. UPI added a simpler address, the UPI ID, and opened payments to apps that are not banks. In August 2026, IMPS handled <Fact id="imps-volume-2026-08" /> and UPI <Fact id="upi-volume-2026-08" />, about <Fact id="upi-daily-2026-08" />.
+
+### Who takes part in a UPI payment
+
+- **The payer's bank** holds the account that is debited. It checks the UPI PIN and the balance.
+- **The app** is where the customer starts the payment. It is either the bank's own app or a third-party app provider (TPAP) that works through one or more partner banks, called payment service providers (PSPs).
+- **NPCI** runs the switch that routes the request between banks and works out what each bank owes the others.
+- **The payee's bank** credits the person or merchant being paid.
+
+When a customer first sets up an app, UPI ties the app to that phone and its SIM, a step called device binding. Each payment is then approved with the UPI PIN. The PIN proves the customer; the binding proves the phone.
+
+<div class="wide">
+<Explainer title="One UPI payment, step by step" desc="Five parties: your app, your bank, NPCI, the payee's bank and the payee." lanes={[{ id: 'app', label: 'Your\napp' }, { id: 'rb', label: 'Your\nbank' }, { id: 'npci', label: 'NPCI' }, { id: 'pb', label: "Payee's\nbank" }, { id: 'payee', label: 'Payee' }]} band="Banks settle net later, in their RBI accounts"
+  caption="Simplified and illustrative. Real flows also involve the app's partner bank, and the order of the debit and credit messages can vary."
+  steps={[
+    { title: 'You start the payment', body: "You enter the payee's UPI ID or scan their QR code, type the amount and confirm with your UPI PIN.", lanes: ['app'], messages: [{ from: 'app', to: 'app', kind: 'self' }] },
+    { title: 'Your app sends the request', body: 'The app passes the request, through the bank it works with, to NPCI.', lanes: ['app', 'npci'], messages: [{ from: 'app', to: 'npci' }] },
+    { title: "NPCI finds the payee's bank", body: "NPCI works out which bank holds the account behind the payee's UPI ID.", lanes: ['npci', 'pb'], messages: [{ from: 'npci', to: 'pb' }, { from: 'pb', to: 'npci', kind: 'res' }] },
+    { title: 'Your bank debits you', body: 'Your bank checks your UPI PIN and balance, debits your account and replies.', lanes: ['rb', 'npci'], messages: [{ from: 'npci', to: 'rb' }, { from: 'rb', to: 'npci', kind: 'res' }] },
+    { title: "The payee's bank credits them", body: "NPCI asks the payee's bank to credit the payee, and the bank confirms.", lanes: ['npci', 'pb'], messages: [{ from: 'npci', to: 'pb' }, { from: 'pb', to: 'npci', kind: 'res' }] },
+    { title: 'Everyone is told', body: "NPCI confirms to your app, and the payee's bank notifies the payee.", lanes: ['app', 'npci', 'pb', 'payee'], messages: [{ from: 'npci', to: 'app' }, { from: 'pb', to: 'payee' }] },
+    { title: 'The banks settle later', body: 'The banks settle what they owe each other, net, in their accounts at RBI.', lanes: ['rb', 'pb'], band: true },
+  ]} />
+</div>
+
+### UPI limits
+
+NPCI sets ceilings on how much can move through UPI. Your bank and your app may set lower limits of their own.
+
+<div class="wide"><DataTable caption="UPI ceilings from 15 September 2025" head={['Payment type', 'Per transaction', 'Per day']} rows={[
+  ['Person to person', '₹1 lakh', '₹1 lakh'],
+  ['Capital markets and insurance (verified merchants)', '₹5 lakh', '₹10 lakh'],
+  ['Government e-Marketplace, including taxes and deposits', '₹5 lakh', 'Not stated in sources checked'],
+  ['Credit card bill payments', '₹5 lakh', '₹6 lakh'],
+]} note="Other merchant categories have their own ceilings; check NPCI for the full list." facts={['upi-p2p-limit-2025', 'upi-p2m-limits-2025', 'upi-gem-limit-2025', 'upi-card-bill-limit-2025']} /></div>
+
+### Ways to pay with UPI
+
+UPI has grown several variants on the same rails. AutoPay lets a customer approve a recurring payment, such as a subscription, once. UPI Lite keeps a small balance on the phone for quick, low-value payments without entering the PIN each time. UPI 123PAY brings UPI to feature phones through voice calls, missed calls and simple apps. NPCI publishes the current limits for each.
+
+UPI is no longer only about bank balances. <Fact id="rupay-cc-upi-2022" show="claim" /> <Fact id="upi-credit-lines-2023" show="claim" />
+
+## When a payment fails
+
+A payment can end in three ways. It succeeds; it fails before any money moves; or it gets stuck, with the payer debited but the payee not credited. The third case is the one customers notice, and RBI sets rules for fixing it. <Fact id="tat-failed-definition" show="claim" /> <Fact id="tat-2019" show="claim" />
+
+<div class="wide"><DataTable caption="Outer time limits for fixing a stuck payment" head={['What went wrong', 'Must be reversed by', 'After that']} rows={[
+  ['UPI transfer: payer debited, beneficiary not credited', 'T+1 day', '₹100 a day to the customer'],
+  ['UPI payment to a merchant: payer debited, merchant not confirmed', 'T+5 days', '₹100 a day to the customer'],
+  ['IMPS transfer: payer debited, beneficiary not credited', 'T+1 day', '₹100 a day to the customer'],
+  ['ATM: account debited, cash not dispensed', 'T+5 days', '₹100 a day to the customer'],
+]} note="T is the day of the transaction. These are outer limits; banks are expected to fix failures sooner." facts={['tat-upi-transfer', 'tat-upi-merchant', 'tat-imps', 'tat-atm']} /></div>
+
+<Callout type="caution" title="Why pending states are hard">
+  <p>A payment that times out is not necessarily a failure: the money may have moved, and only the confirmation was lost. Systems must be able to ask “what happened to this payment?” and get one consistent answer, which is why every payment carries a unique reference and every retry reuses it. <a href="/architecture/payments/">Payment system architecture</a> explains the state machine behind this.</p>
+</Callout>
+
+## Bulk and recurring payments: NACH
+
+NACH moves many payments in one go, such as a company's salaries, dividends, or the monthly instalments a lender collects. Collections run under a mandate: the customer authorises a lender or biller once, and the bank then debits the account on each due date. Files are processed in batches, so NACH suits planned, scheduled money rather than urgent payments.
+
+## Cards, tokens and ATMs
+
+Card payments run over card networks, including NPCI's domestic network, RuPay. Online card payments changed in 2022. <Fact id="cof-2022" show="claim" /> A token stands in for the card number and works only for the merchant it was issued for, so a breached merchant database no longer exposes usable card numbers.
+
+ATM withdrawals at another bank's machine travel over the National Financial Switch. <Fact id="nfs-npci-2009" show="claim" /> <Fact id="nfs-atms-2024" show="claim" />
+
+Card networks must also keep payment data in India. <Fact id="data-localisation-2018" show="claim" /> <Fact id="amex-diners-2021" show="claim" /> <Fact id="mastercard-restriction-2021" show="claim" /> <Fact id="mastercard-lifted-2022" show="claim" />
+
+## Cheques now clear within the day
+
+The Cheque Truncation System (CTS) clears cheques by image, so the paper never travels between banks. <Fact id="npci-cts-role" show="claim" />
+
+<Callout type="note" title="Changed recently">
+  <p><Fact id="cts-phase1-live" show="claim" /></p>
+  <p><Fact id="cts-hourly-settlement" show="claim" /></p>
+  <p><Fact id="cts-phase2-postponed" show="claim" /> <Fact id="cts-session-hours" show="claim" /></p>
+</Callout>
+
+Large cheques get an extra check. <Fact id="positive-pay-2020" show="claim" /> The issuer tells their bank the date, payee and amount in advance, and CTS flags any cheque that does not match.
+
+## Bill payments: BBPS
+
+The Bharat Bill Payment System (BBPS) lets customers pay electricity, water, telecom and many other bills through any participating bank, app or agent, with a common confirmation. Its value is interoperability: a biller connects once and can be paid through every channel on the system.
+
+## Messaging networks: SFMS, INFINET and SWIFT
+
+Behind RTGS and NEFT sit a private network and a messaging layer. <Fact id="infinet-1999" show="claim" /> <Fact id="sfms-2001" show="claim" /> <Fact id="iftas-hiveoff-2015" show="claim" /> For cross-border payments, banks use SWIFT, the global cooperative network for financial messages.
+
+## Account Aggregators: moving data, not money
+
+An Account Aggregator (AA) is not a payment rail, but lenders now use it alongside the rails, for example to check a borrower's bank statements with consent. <Fact id="aa-md-2016" show="claim" /> <Fact id="aa-consent" show="claim" />
+
+Three roles make it work. A financial information provider (FIP), such as a bank, holds the data. A financial information user (FIU), such as a lender, asks for it. The aggregator carries the request and the encrypted data between them. <Fact id="aa-data-blind" show="claim" /> <Fact id="rebit-aa-specs" show="claim" />
+
+## Which rail for which job
+
+<div class="wide"><DataTable caption="Choosing a rail" head={['Job', 'Usual rail', 'Why']} rows={[
+  ['Paying a friend or a shop', 'UPI', 'Instant, works from a phone number, UPI ID or QR code'],
+  ['A large transfer that must be final at once', 'RTGS', 'Settles gross and immediately; minimum ₹2 lakh'],
+  ['An ordinary transfer between accounts', 'NEFT or IMPS', 'NEFT settles in batches through the day; IMPS credits instantly'],
+  ['Salaries, dividends or loan instalments', 'NACH', 'Built for bulk files and mandates'],
+  ['A cheque', 'CTS', 'Cleared by image, continuously through the day'],
+  ['A card payment in a shop or online', 'Card networks', 'Accepted widely; online payments use tokens'],
+  ['Paying a utility bill', 'BBPS', 'One connection for the biller, many channels for the customer'],
+  ['Sharing bank statements with a lender', 'Account Aggregator', 'Consent-based data sharing, not a payment'],
+]} note="Guidance, not rules: banks and apps may route a payment differently." facts={['rtgs-min']} /></div>
+
+Live volumes for every system are published each month: <Fact id="payment-volumes-live" label="see RBI's payment system indicators" />.

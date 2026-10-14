@@ -1,0 +1,28 @@
+---
+// Every rail from rails.yaml in one table. Draft rows are labelled, and each row cites its facts.
+import { getCollection } from 'astro:content';
+import Cite from './Cite.astro';
+const rails = await getCollection('rails');
+const order = ['rtgs', 'neft', 'imps', 'upi', 'nach', 'cts', 'cards', 'bbps', 'aa'];
+rails.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+// One marker per source: two facts from the same source share a number.
+const c = Astro.locals.citations;
+const bySource = (ids: string[]) => { const seen = new Set<string>(); return ids.filter((id) => { const src = c?.facts.get(id)?.data.source.id ?? id; if (seen.has(src)) return false; seen.add(src); return true; }); };
+---
+<div class="table-wrap stack-sm" tabindex="0" role="region" aria-labelledby="rails-cap">
+  <table role="table">
+    <caption id="rails-cap">The main rails at a glance</caption>
+    <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Rail</th><th scope="col" role="columnheader">Run by</th><th scope="col" role="columnheader">How it settles</th><th scope="col" role="columnheader">Typical use</th></tr></thead>
+    <tbody role="rowgroup">
+      {rails.map((r) => (
+        <tr role="row">
+          <th scope="row" role="rowheader"><span class="rail-key" data-line={r.data.line ?? 'settle'}>{r.data.short}</span><span class="rail-full">{r.data.full}</span></th>
+          <td role="cell" data-label="Run by">{r.data.operator}</td>
+          <td role="cell" data-label="How it settles">{r.data.settlement}</td>
+          <td role="cell" data-label="Typical use">{r.data.use}{bySource(r.data.facts.map((f) => f.id)).map((f) => <Cite fact={f} />)}{r.data.status !== 'verified' && <span class="draft-tag">Awaiting verification</span>}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="table-note">Rows marked “awaiting verification” are still being checked against the operator’s own documentation.</p>

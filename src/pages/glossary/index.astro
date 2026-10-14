@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { citationsFor } from '../../lib/facts';
+const terms = (await getCollection('glossary')).sort((a, b) => a.data.term.localeCompare(b.data.term));
+// Only sources behind verified definitions are cited; drafts are labelled instead.
+Astro.locals.citations = await citationsFor([], [...new Set(terms.filter((t) => t.data.status === 'verified').map((t) => t.data.source.id))]);
+const byId = Object.fromEntries(terms.map((t) => [t.id, t.data.term]));
+const num = Astro.locals.citations!.number;
+const verified = terms.filter((t) => t.data.status === 'verified').length;
+const domains: Record<string, string> = { institution: 'Institution', payments: 'Payments', banking: 'Banking and risk', technology: 'Technology', regulation: 'Regulatory instrument' };
+---
+<PageLayout extraJsonld={[{ "@context": "https://schema.org", "@type": "DefinedTermSet", name: "Glossary of short names", hasDefinedTerm: terms.map((t) => ({ "@type": "DefinedTerm", name: t.data.term, alternateName: t.data.expansion, description: t.data.definition, url: new URL(`/glossary/#${t.id}`, Astro.site).href })) }]} title="Glossary of short names" summary="Every acronym used on the site, with its expansion and a plain definition. Each term has its own link." domain="reference">
+  <p class="table-note">{verified} of {terms.length} definitions have been checked against a cited source. The others are marked and are being sourced.</p>
+  <div class="gl-filter js-only">
+    <label for="gl-q" class="visually-hidden">Filter terms</label>
+    <input id="gl-q" type="search" placeholder="Filter, for example UPI or settlement" data-gl-filter />
+    <span role="status" aria-live="polite" data-gl-count>{terms.length} terms</span>
+  </div>
+  <div class="gl-list">
+    {terms.map((t) => (
+      <div class="gl-entry" data-gl={`${t.data.term} ${t.data.expansion} ${t.data.definition}`.toLowerCase()}>
+        <h2 class="gl-h" id={t.id} data-pagefind-weight="10">{t.data.term}<span class="visually-hidden"> ({t.data.expansion})</span></h2>
+        <div>
+          <span class="exp" data-pagefind-weight="5">{t.data.expansion}</span>{t.data.status === 'verified'
+            ? <sup class="cite"><a href={`#src-${num.get(t.data.source.id)}`} aria-label={`Source ${num.get(t.data.source.id)}`}>{num.get(t.data.source.id)}</a></sup>
+            : <span class="draft-tag">Awaiting source</span>}
+          <p class="def">{t.data.definition}</p>
+          <p class="see">{domains[t.data.domain]}{t.data.see.length > 0 && <>. See also {t.data.see.map((s, i) => <>{i ? ', ' : ''}<a href={`#${s}`}>{byId[s] ?? s}</a></>)}</>}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</PageLayout>
+<script>
+  import { ready } from '../../scripts/ready';
+  ready(() => {
+    const q = document.querySelector<HTMLInputElement>('[data-gl-filter]');
+    if (!q || q.dataset.bound) return; q.dataset.bound = '1';
+    const items = [...document.querySelectorAll<HTMLElement>('[data-gl]')];
+    const count = document.querySelector('[data-gl-count]')!;
+    q.addEventListener('input', () => {
+      const v = q.value.trim().toLowerCase(); let n = 0;
+      items.forEach((i) => { const on = !v || i.dataset.gl!.includes(v); i.hidden = !on; if (on) n++; });
+      count.textContent = `${n} term${n === 1 ? '' : 's'}`;
+    });
+  });
+</script>

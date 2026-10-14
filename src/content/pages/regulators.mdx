@@ -1,0 +1,75 @@
+---
+title: Regulators and mandates
+summary: "Several regulators shape bank technology in India, with RBI at the centre. They make rules through consultation and directions, and enforce them through inspection and business restrictions."
+domain: governance
+order: 1
+updated: 2026-09-29
+tags: [regulation, compliance, governance]
+facts: [rbi-md-itgrc-2023, rbi-md-it-outsourcing-2023, outsourcing-6h, data-localisation-2018, storage-audit-2018, cof-2022, tat-2019, auth-2025, auth-drafts, aa-md-2016, ckycr-cersai, positive-pay-2020, cts-phase1-live, certin-6h-2022, certin-logs-180, dpdp-rules-2025, kotak-2024, mastercard-restriction-2021, amex-diners-2021, mastercard-lifted-2022, mrm-draft-2026, npci-swips-2020, npci-2008]
+---
+
+## Who regulates what
+
+A bank's technology answers to more than one authority. RBI regulates banks and payment systems; other bodies cover cyber incidents, identity, personal data and the financial markets in which banks also operate.
+
+<div class="wide"><DataTable caption="Regulators and what they cover" head={['Body', 'What it regulates or runs', 'Where it touches bank technology']} rows={[
+  ['Reserve Bank of India (RBI)', 'Banks, non-bank lenders and payment systems', 'IT governance, outsourcing and cloud, cyber security, payment data storage, authentication, KYC, failed-transaction rules'],
+  ['National Payments Corporation of India (NPCI)', 'Operator of retail payment systems, authorised by RBI', 'Technical specifications, certification and operating rules for UPI, IMPS, cards and other systems it runs'],
+  ['CERT-In', 'National agency for cyber incidents, under MeitY', 'Incident reporting deadlines and log retention'],
+  ['Ministry of Electronics and IT (MeitY)', 'IT Act and data protection law', 'Digital Personal Data Protection Act and Rules'],
+  ['UIDAI', 'Aadhaar', 'Aadhaar authentication and e-KYC for banks acting as authentication or e-KYC user agencies'],
+  ['FIU-IND', 'Financial intelligence under the Prevention of Money-laundering Act', 'Suspicious and cash transaction reporting systems'],
+  ['SEBI, IRDAI, PFRDA', 'Securities, insurance and pensions', 'Rules for bank activities in those markets, such as broking, depository and insurance distribution'],
+  ['Ministry of Finance and FSDC', 'Financial policy and coordination between regulators', 'Laws such as the SARFAESI Act; inter-regulatory issues'],
+]} /></div>
+
+NPCI is not a regulator in the legal sense, but its rules bind every participant in the systems it runs. <Fact id="npci-2008" show="claim" /> <Fact id="npci-swips-2020" show="claim" />
+
+## How rules are made
+
+RBI usually consults before it regulates. It publishes a draft, invites comments, then issues a final instrument. The 2025 authentication framework followed that path: <Fact id="auth-drafts" show="claim" /> <Fact id="auth-2025" show="claim" /> Model risk guidance is at the draft stage now: <Fact id="mrm-draft-2026" show="claim" />
+
+RBI's rules take a few forms:
+- **Master Directions** set out all the rules on a subject in one place and are updated as the rules change.
+- **Circulars** issue specific instructions.
+- **Master Circulars** consolidate circulars on a subject as of a date.
+
+Other bodies use their own instruments: CERT-In issues directions under the IT Act, and MeitY notifies rules under the laws it administers.
+
+## The main technology mandates
+
+<div class="wide"><DataTable caption="Technology mandates, with primary sources" head={['Mandate', 'Issued by', 'Date', 'What it requires, in brief']} rows={[
+  [{ t: 'IT Governance, Risk, Controls and Assurance Practices Directions', href: 'https://rbi.org.in/Scripts/NotificationUser.aspx?Id=12562&Mode=0' }, 'RBI', '7 Nov 2023', 'Board-level IT governance, risk management, recovery objectives and DR drills'],
+  [{ t: 'Outsourcing of IT Services Master Direction', href: 'https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12486' }, 'RBI', '10 Apr 2023', 'Due diligence, accountability, cloud use, incident reporting and exit plans'],
+  [{ t: 'Storage of Payment System Data', href: 'https://rbi.org.in/scripts/NotificationUser.aspx?Id=11244' }, 'RBI', '6 Apr 2018', 'Payment data stored only in India'],
+  [{ t: 'Restriction on storage of actual card data (card-on-file)', href: 'https://website.rbi.org.in/web/rbi/-/notifications/restriction-on-storage-of-actual-card-data-i.e.-card-on-file-cof-12363' }, 'RBI', '28 Jul 2022', 'Only issuers and networks may store card data; merchants use tokens'],
+  [{ t: 'Harmonisation of turnaround time for failed transactions', href: 'https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11693' }, 'RBI', '20 Sep 2019', 'Deadlines for reversals and automatic compensation'],
+  [{ t: 'Positive Pay System for CTS', href: 'https://website.rbi.org.in/web/rbi/-/notifications/positive-pay-system-for-cheque-truncation-system-11969' }, 'RBI', '25 Sep 2020', 'Advance confirmation for large cheques'],
+  [{ t: 'Continuous clearing in CTS: Phase 2 postponed', href: 'https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=13232&Mode=0' }, 'RBI', '24 Dec 2025', 'Phase 1 continues; Phase 2 postponed; new session hours'],
+  [{ t: 'Account Aggregator Master Direction', href: 'https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10598' }, 'RBI', '2 Sep 2016', 'Licensing and operation of consent-based data sharing'],
+  [{ t: 'Central KYC Records Registry operationalised', href: 'https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=10498' }, 'RBI', '8 Jul 2016', 'Use of the central KYC registry run by CERSAI'],
+  [{ t: 'Directions under section 70B(6) of the IT Act', href: 'https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf' }, 'CERT-In', '28 Apr 2022', 'Report incidents within 6 hours; keep logs for 180 days in India'],
+]} note="Dates are issue dates. Check each source for amendments and effective dates." facts={['rbi-md-itgrc-2023', 'rbi-md-it-outsourcing-2023', 'data-localisation-2018', 'cof-2022', 'tat-2019', 'positive-pay-2020', 'cts-phase1-live', 'aa-md-2016', 'ckycr-cersai', 'certin-6h-2022']} /></div>
+
+The detail behind several of these:
+
+- **Payment data.** <Fact id="data-localisation-2018" show="claim" /> <Fact id="storage-audit-2018" show="claim" />
+- **Cyber incidents.** <Fact id="certin-6h-2022" show="claim" /> <Fact id="certin-logs-180" show="claim" /> RBI adds its own clock for incidents at suppliers: <Fact id="outsourcing-6h" show="claim" />
+- **Personal data.** <Fact id="dpdp-rules-2025" show="claim" />
+
+## How rules are enforced
+
+RBI supervises banks through off-site returns and on-site inspections, including IT examinations. When it finds weaknesses, it issues corrective action plans; when those are not met, it can restrict business.
+
+- **Payment data storage.** <Fact id="amex-diners-2021" show="claim" /> <Fact id="mastercard-restriction-2021" show="claim" /> <Fact id="mastercard-lifted-2022" show="claim" />
+- **IT resilience.** <Fact id="kotak-2024" show="claim" />
+
+The pattern is consistent. Restrictions target growth, such as new customers or new cards, rather than existing customers, and they are lifted once the regulator is satisfied the gaps are closed. [Limitations and known problems](/limitations/) describes these cases in more detail.
+
+## Questions for a compliance review
+
+- Which of the mandates above apply to this system, and who owns evidence for each?
+- Where is this system's payment data stored, including backups and logs?
+- Could a cyber incident here be reported to CERT-In and RBI within 6 hours?
+- Which parts of this system are outsourced, and is the outsourcing assessment complete?
+- Which rules affecting this system are still in draft, and who is tracking them?

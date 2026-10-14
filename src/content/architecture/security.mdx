@@ -1,0 +1,104 @@
+---
+title: Security architecture
+topicId: security
+summary: "Bank security relies on layers, so no single failure exposes money or data. Networks are zoned, keys live in hardware and admin access is granted only when needed. Incidents are reported in hours."
+blurb: "Defence in depth: network zones, hardware security modules, just-in-time privileged access, detection and reporting duties."
+domain: design
+depth: intermediate
+order: 7
+updated: 2026-09-29
+tags: [security, architecture, compliance]
+related: [api-first, multi-dc, hybrid-cloud]
+facts: [certin-6h-2022, outsourcing-6h, cof-2022, idrbt-ca, rbi-md-itgrc-2023]
+---
+
+## Why it matters
+
+Banks are attractive targets because they hold money and personal data, and because their systems connect to thousands of others. Security architecture decides how far an attacker can get after the first mistake: a phished password, an unpatched server, a misconfigured cloud bucket. The goal is not a system that can never be breached, but one where a breach is contained, detected quickly and reported properly.
+
+This page describes principles and common patterns only. It does not describe any organisation's actual controls.
+
+## The model explained
+
+### Defence in depth and zones
+
+**Defence in depth** stacks independent controls so that each failure is caught by the next layer. The network is split into **zones** by trust level, and traffic between zones passes through controlled points. The most sensitive systems, such as the core ledger and the systems that handle keys and PINs, sit in the innermost zone and accept connections only from specific systems in the zone next to them.
+
+<Figure title="Security zones in a typical bank" caption="Illustrative and conceptual. The dashed line is administrative access only. Real networks have more zones and many controls not shown.">
+  <BoxDiagram title="Security zones" desc="Customers and partners reach an edge zone with a web application firewall and DDoS protection, then a DMZ with the API gateway, then an application zone with channel services and fraud and risk systems. The innermost zone holds core banking and the hardware security modules. A separate management zone holds privileged access tools, used for administration only." width={440} height={470}
+    zones={[{ x: 10, y: 70, w: 420, h: 70, label: 'Edge' }, { x: 10, y: 150, w: 420, h: 70, label: 'DMZ' }, { x: 10, y: 230, w: 420, h: 85, label: 'Application zone' }, { x: 10, y: 325, w: 275, h: 135, label: 'Core and payments', tone: 'trust' }, { x: 295, y: 325, w: 135, h: 135, label: 'Management' }]}
+    nodes={[
+      { id: 'u', x: 105, y: 15, w: 230, h: 40, label: 'Customers and partners', tone: 'muted' },
+      { id: 'waf', x: 95, y: 95, w: 250, h: 36, label: 'WAF and DDoS protection', tone: 'accent' },
+      { id: 'gw', x: 140, y: 175, w: 160, h: 36, label: 'API gateway' },
+      { id: 'cs', x: 30, y: 260, w: 170, h: 44, label: 'Channel services' },
+      { id: 'fr', x: 240, y: 260, w: 170, h: 44, label: 'Fraud and risk' },
+      { id: 'core', x: 30, y: 370, w: 115, h: 56, label: 'Core\nbanking', tone: 'core' },
+      { id: 'hsm', x: 160, y: 370, w: 110, h: 56, label: 'HSMs:\nkeys, PINs', tone: 'core' },
+      { id: 'pam', x: 308, y: 370, w: 110, h: 56, label: 'Privileged\naccess', tone: 'accent' },
+    ]}
+    edges={[{ from: 'u', to: 'waf' }, { from: 'waf', to: 'gw' }, { from: 'gw', to: 'cs' }, { from: 'cs', to: 'core' }, { from: 'core', to: 'hsm' }, { from: 'pam', to: 'hsm', dashed: true }]} />
+</Figure>
+
+### Card data scope
+
+Systems that store, process or transmit card numbers fall under strict card-industry security rules. Architects shrink that **scope** by keeping card data in as few systems as possible and replacing it with tokens everywhere else, so most of the estate never sees a real card number.
+
+### Hardware security modules
+
+A **hardware security module** (HSM) is a tamper-resistant device that stores cryptographic keys and performs operations with them, such as verifying a PIN or signing a message, without ever revealing the key. Payment PINs are checked inside HSMs, so no application server ever holds a PIN in clear text.
+
+### Privileged access, just in time
+
+Administrator accounts can change anything, so they are the most valuable thing an attacker can steal. **Privileged access management** (PAM) keeps those credentials in a vault, grants access through a controlled gateway and records every session. **Just-in-time access** goes further: nobody holds standing administrator rights, and access is granted for a specific task, approved, time-limited and revoked automatically.
+
+<Figure title="Just-in-time privileged access" caption="Illustrative and conceptual.">
+  <Sequence title="Just-in-time access" desc="An engineer requests access for a change ticket. The privileged access system asks an approver, who approves. The system opens a time-limited, recorded session to the server, sends the session record to monitoring, and revokes access at expiry." lanes={[{ id: 'e', label: 'Engineer' }, { id: 'p', label: 'PAM' }, { id: 'a', label: 'Approver' }, { id: 's', label: 'Server' }, { id: 'm', label: 'Monitoring' }]}
+    messages={[
+      { from: 'e', to: 'p', label: 'Request, with ticket' },
+      { from: 'p', to: 'a', label: 'Approve?' },
+      { from: 'a', to: 'p', label: 'Approved', kind: 'res' },
+      { from: 'p', to: 's', label: 'Time-limited session' },
+      { from: 's', to: 'm', label: 'Session recorded' },
+      { from: 'p', to: 's', label: 'Revoke at expiry' },
+    ]} />
+</Figure>
+
+### Secrets, zero trust and detection
+
+Applications need passwords, keys and certificates to talk to each other. A **secrets vault** issues them at run time and rotates them, so they are never written into code or configuration files. **Zero trust** means no request is trusted just because it comes from inside the network; every call is authenticated and authorised. A **SIEM** collects logs from across the estate and raises alerts on suspicious patterns, and a security operations team investigates them.
+
+## How it plays out in Indian banking
+
+RBI sets the governance frame for IT and cyber security: <Fact id="rbi-md-itgrc-2023" show="claim" /> Reporting deadlines are short, and they apply even when the incident happens at a supplier. <Fact id="certin-6h-2022" show="claim" /> <Fact id="outsourcing-6h" show="claim" /> Detection and escalation therefore have to be fast enough to meet those clocks.
+
+Card data rules have shrunk the attack surface for online payments. <Fact id="cof-2022" show="claim" /> Digital certificates for the banking sector have their own certifying authority: <Fact id="idrbt-ca" show="claim" />
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Security design choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Many small zones', 'A breach stays contained', 'More rules to manage and more paths to test'],
+  ['Just-in-time admin access', 'No standing credentials to steal', 'Slower emergency fixes unless break-glass access is designed well'],
+  ['Tokens instead of card numbers', 'Most systems leave card-data scope', 'A tokenisation service that must itself be highly available'],
+  ['Central log collection', 'Incidents can be seen across the estate', 'Large volumes of data to store, protect and analyse'],
+]} /></div>
+
+## Failure modes
+
+- **Flat networks,** where one compromised server can reach the core directly.
+- **Standing administrator accounts** shared by teams, with no record of who did what.
+- **Secrets in code** or configuration files that end up in a repository or a backup.
+- **Alerts no one reads,** where monitoring exists but is not staffed or tuned.
+- **Supplier blind spots,** where an incident at a service provider is not passed on quickly enough to meet reporting deadlines.
+
+## When to use it, and when to avoid it
+
+Every principle here applies to every bank; the question is depth. Put the strongest controls around what would hurt most: money movement, keys, customer data and administrator access. Avoid security measures that people work around, such as approval steps so slow that teams share credentials to meet a deadline. A control that is bypassed in practice gives false comfort.
+
+## Questions for a design review
+
+- If one application server is compromised, which systems can it reach?
+- Who holds standing administrator rights today, and could that be replaced with just-in-time access?
+- Where are keys and PINs handled, and does any application ever see them in clear?
+- Where are application secrets stored, and how often are they rotated?
+- Can an incident at a supplier be detected and reported to the regulator within the deadline?

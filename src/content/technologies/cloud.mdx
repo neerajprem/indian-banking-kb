@@ -1,0 +1,77 @@
+---
+title: Cloud platforms
+topicId: cloud
+summary: "The main cloud providers all run regions in India, so banks can keep data in the country. For a bank, cloud use is outsourcing, with rules on data, security and exit. Providers differ mostly in fit."
+blurb: "AWS, Azure, Google Cloud and Oracle Cloud in Indian banking: regions in India, regulatory constraints and community cloud."
+domain: design
+depth: intermediate
+order: 6
+updated: 2026-09-29
+tags: [cloud, infrastructure, outsourcing, technology]
+related: [/architecture/hybrid-cloud/, containers, security-tech]
+facts: [cloud-regions-india, data-localisation-2018, outsourcing-cloud-scope, outsourcing-cloud-shared, outsourcing-exit, ibcc-cbs]
+---
+
+## Why it matters
+
+Cloud platforms give banks capacity on demand, managed databases and analytics, and environments that can be created in minutes. Whether and how a bank uses them is shaped less by technology than by rules: where data may live, what counts as outsourcing and how the bank would leave. [Hybrid and multi-cloud deployment](/architecture/hybrid-cloud/) covers the architecture; this page covers the providers and constraints.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Major cloud providers" head={['Provider', 'Regions in India (see sources)', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['Amazon Web Services', 'Mumbai, Hyderabad', 'Channel back ends, analytics, development and testing', 'Broadest service catalogue'],
+  ['Microsoft Azure', 'Pune, Chennai, Mumbai', 'Workloads tied to Microsoft software and identity', 'Strong hybrid and identity tooling'],
+  ['Google Cloud', 'Mumbai, Delhi NCR', 'Data analytics and machine learning', 'Strong data and analytics services'],
+  ['Oracle Cloud Infrastructure', 'Mumbai, Hyderabad', 'Oracle database and application workloads', 'Natural home for Oracle-based systems'],
+  ['Indian data-centre and cloud operators', 'Various Indian cities', 'Private and community cloud, colocation', 'Local contracts and support'],
+]} note="Typical uses are general patterns, not claims about named banks. Region lists change; confirm on each provider's region page." facts={['cloud-regions-india']} /></div>
+
+<p><Fact id="cloud-regions-india" show="claim" /> Having more than one region in the country lets a bank run a primary and a disaster-recovery site without moving data abroad.</p>
+
+## The regulatory frame
+
+Three rules shape almost every cloud decision:
+
+- **Data residency.** <Fact id="data-localisation-2018" show="claim" />
+- **Outsourcing.** <Fact id="outsourcing-cloud-scope" show="claim" /> <Fact id="outsourcing-cloud-shared" show="claim" />
+- **Exit.** <Fact id="outsourcing-exit" show="claim" />
+
+### Sovereign and community cloud
+
+Some workloads are better served by cloud infrastructure dedicated to a sector or a country. A **community cloud** is shared among a defined group, such as banks of one type. <Fact id="ibcc-cbs" show="claim" /> A **sovereign cloud** is operated so that data, operations and control stay within one jurisdiction. Both trade some of the public cloud's breadth for tighter control.
+
+## How to choose
+
+Most banks choose a provider per workload rather than for the whole estate. The deciding factors are usually:
+- the software the workload already depends on;
+- the services it needs, such as a managed database, analytics or AI;
+- the availability of two regions in India for resilience;
+- the bank's existing skills and contracts;
+- how easily the workload could move elsewhere.
+
+Start with workloads that benefit most and carry least risk, such as development environments, analytics on masked data and customer-facing channels. Build the controls, contracts and evidence once, then reuse them.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Cloud choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Public cloud region in India', 'Elastic capacity and managed services, data in India', 'Outsourcing obligations and provider dependence'],
+  ['Provider-specific managed services', 'Speed and less to operate', 'Harder exit'],
+  ['Portable, open technologies on cloud', 'Easier exit', 'More to run yourself'],
+  ['Community or sovereign cloud', 'Tighter control and sector fit', 'Fewer services and less scale'],
+]} /></div>
+
+## Pitfalls
+
+- **Assuming the provider handles security.** Configuration, identity and data protection remain the bank's job.
+- **Data leaving India unnoticed,** through backups, logs, support access or a global service.
+- **Lock-in by convenience,** when a workload uses so many provider-specific services that it cannot move.
+- **Cost surprises** from idle resources and data transfer.
+- **An exit plan written only for the auditor.**
+
+## Questions for a design review
+
+- In which regions will this workload's data, backups and logs reside?
+- Which controls does the bank own, and which does the provider?
+- What provider-specific services does this workload use, and what would replace them on exit?
+- Has the outsourcing assessment been completed and approved?
+- Who owns the running cost, and how is it reviewed?

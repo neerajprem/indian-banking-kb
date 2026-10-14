@@ -1,0 +1,21 @@
+---
+import { fmtDate } from '../lib/site';
+const c = Astro.locals.citations;
+const typeName: Record<string, string> = { primary: 'Primary source', 'reputable-press': 'Reported', vendor: 'Vendor', analyst: 'Analyst' };
+---
+{c && c.sources.length > 0 && (
+  <section class="sources-list" aria-labelledby="sources-h">
+    <h2 id="sources-h">Sources</h2>
+    <ol>
+      {c.sources.map((s, i) => {
+        const fs = [...c.facts.values()].filter((f) => f.data.source.id === s.id);
+        return (
+          <li id={`src-${i + 1}`}>
+            <a href={s.data.url} rel="noopener noreferrer">{s.data.title}</a>. {s.data.publisher}. <span class="src-type">{typeName[s.data.type]}</span>, accessed {fmtDate(s.data.accessed)}.
+            {fs.length > 0 && <span class="src-facts">Supports: {fs.map((f) => `${f.data.claim.replace(/\.$/, '')} (as of ${fmtDate(f.data.asOf)})`).join('; ')}.</span>}
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+)}

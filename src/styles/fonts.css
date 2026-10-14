@@ -1,0 +1,15 @@
+/* Self-hosted, OFL-licensed variable fonts (Fontsource), cut by scripts/subset-fonts.py to the characters and
+   weights the site uses. The rupee sign is a tiny separate face fetched only on pages that contain it. */
+@font-face { font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url('../assets/fonts/schibsted-latin.woff2') format('woff2-variations'), url('../assets/fonts/schibsted-latin.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2009, U+200B, U+2010-2014, U+2018-201E, U+2022, U+2026, U+2032-2033, U+2039-203A, U+20AC, U+2122, U+2190-2193, U+2212, U+2248, U+2260, U+2264-2265, U+FEFF, U+FFFD; }
+@font-face { font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url('../assets/fonts/schibsted-rupee.woff2') format('woff2'); unicode-range: U+20B9; }
+@font-face { font-family: "Literata"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('../assets/fonts/literata-latin.woff2') format('woff2-variations'), url('../assets/fonts/literata-latin.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2009, U+200B, U+2010-2014, U+2018-201E, U+2022, U+2026, U+2032-2033, U+2039-203A, U+20AC, U+2122, U+2190-2193, U+2212, U+2248, U+2260, U+2264-2265, U+FEFF, U+FFFD; }
+@font-face { font-family: "Literata"; font-style: normal; font-weight: 400 700; font-display: swap;
+  src: url('../assets/fonts/literata-rupee.woff2') format('woff2'); unicode-range: U+20B9; }
+/* Metric-matched fallbacks keep layout shift near zero while the web fonts load. */
+@font-face { font-family: "Literata Fallback"; src: local("Georgia"), local("Times New Roman"); size-adjust: 104%; ascent-override: 94%; descent-override: 25%; }
+@font-face { font-family: "Schibsted Fallback"; src: local("Arial"), local("Helvetica"); size-adjust: 99%; ascent-override: 98%; descent-override: 26%; }

@@ -1,0 +1,96 @@
+---
+title: Core systems
+summary: "The core banking system is a bank's system of record; apps and payment rails read from it or post to it. This page covers the platforms, the daily cycle and the systems around the core."
+domain: foundation
+order: 1
+updated: 2026-09-29
+tags: [core, ledger, batch, platforms, architecture]
+facts: [sbi-bancs, finacle-edgeverve, finacle-reach-2020, upi-daily-2026-08, ibcc-cbs, rbi-md-it-outsourcing-2023, ckycr-cersai]
+---
+
+## What a core banking system is
+
+A core banking system (CBS) holds a bank's customers, accounts and balances, and posts every debit and credit to the general ledger. It is the system of record: when two systems disagree about a balance, the core is right by definition.
+
+"Core" also means centralised. Before core banking, each branch kept its own books, and a customer could only be served at the branch that held the account. A central core lets every branch, ATM and app see the same account at the same moment. That shift is what made anywhere banking and, later, instant payments possible.<Note>Instant rails such as UPI assume that any bank can debit or credit any account in seconds, at any hour. That is only possible because each bank's accounts sit in one central system.</Note>
+
+## The layers around the core
+
+A core rarely talks to customers directly. Channels reach it through an integration layer, and a ring of specialist systems sits around it.
+
+<Figure title="The layers of a bank's systems" caption="Illustrative. Real estates contain many more systems, but this layering is typical." alt="From top to bottom: channels (branch, internet banking, mobile app, ATM); integration (API gateway, middleware, core adapters); the core itself (customers, accounts, deposits, loans, general ledger, charges); surrounding systems (KYC, fraud, AML, cards, treasury, loan origination); and data and reporting (data warehouse, regulatory returns).">
+  <Stack label="Layers of a banking system estate" layers={[
+    { label: 'Channels', items: ['Branch', 'Internet banking', 'Mobile app', 'ATM', 'Payment rails'] },
+    { label: 'Integration', items: ['API gateway', 'Middleware', 'Core adapters'] },
+    { label: 'Core banking', items: ['Customers', 'Accounts', 'Deposits', 'Loans', 'General ledger', 'Charges'], core: true },
+    { label: 'Around the core', items: ['KYC', 'Credit bureau checks', 'Loan origination', 'Fraud', 'AML', 'Cards', 'Treasury'] },
+    { label: 'Data and reporting', items: ['Data warehouse', 'Regulatory returns'] },
+  ]} />
+</Figure>
+
+## Systems around the core
+
+<div class="wide"><DataTable caption="The main systems that surround a core" head={['System', 'What it does', 'How it relates to the core']} rows={[
+  ['Channels', 'Branch, internet banking, mobile apps, ATMs', 'Send requests through the integration layer; rarely call the core directly'],
+  ['Integration layer', 'API gateway and middleware that translate and route requests', 'Protects the core from load and hides its interfaces'],
+  ['KYC and identity', 'Verifies customers, including Aadhaar-based and video KYC', 'Creates or updates the customer record in the core'],
+  ['Credit bureau checks', 'Pulls credit histories from credit information companies', 'Feeds lending decisions before an account is opened'],
+  ['Loan origination', 'Takes a loan from application to approval', 'Books the approved loan into the core'],
+  ['Fraud monitoring', 'Scores payments and logins for fraud, often in real time', 'Can hold or block a transaction before the core posts it'],
+  ['AML', 'Monitors for money laundering and files reports to FIU-IND', 'Reads transactions from the core, usually after posting'],
+  ['Cards and treasury', 'Card management; the bank\u2019s own money-market and investment desk', 'Separate systems that post summaries to the general ledger'],
+  ['Data warehouse and regulatory reporting', 'Stores history and produces returns for RBI', 'Loaded from the core, often overnight'],
+]} /></div>
+
+KYC records increasingly come from a shared source rather than each bank's own files. <Fact id="ckycr-cersai" show="claim" />
+
+## The platform landscape
+
+Several commercial platforms are used by Indian banks. Customer names appear on this site only where a public source confirms them.
+
+<div class="wide"><DataTable caption="Core banking platforms" head={['Platform', 'Maker', 'Indian users named in public sources']} rows={[
+  ['TCS BaNCS', 'Tata Consultancy Services', 'State Bank of India (see sources)'],
+  ['Finacle', 'EdgeVerve Systems, a wholly owned Infosys subsidiary', 'None confirmed yet on this site'],
+  ['Oracle FLEXCUBE', 'Oracle', 'None confirmed yet on this site'],
+  ['Temenos Transact', 'Temenos', 'None confirmed yet on this site'],
+  ['Cloud-native cores, such as Mambu and Thought Machine', 'Various', 'None confirmed yet on this site'],
+  ['Cooperative-sector and legacy systems', 'Various, including shared community platforms', 'See the note on shared platforms below'],
+]} note="Product names are for reference only. The site does not recommend vendors." facts={['sbi-bancs', 'finacle-edgeverve']} /></div>
+
+<p><Fact id="sbi-bancs" show="claim" /> <Fact id="finacle-edgeverve" show="claim" /> <Fact id="finacle-reach-2020" show="claim" /></p>
+
+<Callout type="caution" title="How to read vendor claims">
+  <p>Customer counts, market shares and "largest" claims usually come from the vendor. This site labels them as the vendor's claim and does not repeat them as fact. Which bank runs which platform changes over time, so every named customer carries the date of its source.</p>
+</Callout>
+
+## The daily cycle: end of day and beginning of day
+
+A core does two kinds of work. Online processing handles each transaction as it happens: a withdrawal, a transfer, a balance enquiry. Batch processing handles work that is easier to do for every account at once, such as accruing interest, applying charges and producing statements.
+
+The batch run that closes a business day is called end of day (EOD). The run that opens the next day is beginning of day (BOD).
+
+<Figure title="A typical end-of-day cycle" caption="Illustrative. The exact stages and their order vary by platform and by bank.">
+  <Timeline label="End-of-day stages" events={[
+    { when: 'Cut-off', label: 'Stop or divert new postings', note: 'Channels switch to stand-in balances' },
+    { when: 'Batch', label: 'Accrue interest and apply charges', note: 'Every account, in bulk' },
+    { when: 'Ledger', label: 'Post to the general ledger and reconcile' },
+    { when: 'Reports', label: 'Produce statements and regulatory extracts' },
+    { when: 'BOD', label: 'Open the next business date' },
+  ]} />
+</Figure>
+
+### Why round-the-clock payments strain the core
+
+Many cores were designed around a quiet night. Instant rails never have one: UPI alone now averages <Fact id="upi-daily-2026-08" />. So a bank cannot simply stop posting while its end-of-day batch runs.
+
+Banks bridge the gap in a few ways. A stand-in layer keeps a shadow balance and approves or declines payments while the core is busy, then replays them afterwards. Batch jobs are split into smaller pieces that run while the core stays online. Some banks move payment processing into separate systems that post to the core in bulk. Each approach adds reconciliation work: two systems now hold a version of the balance, and they must agree.
+
+## How cores are deployed
+
+A common pattern is for a large bank to run its core in its own data centres, with a second site for disaster recovery (see [multi-data-centre and disaster recovery](/architecture/multi-dc/)). Smaller banks, especially in the cooperative sector, often use a shared platform instead of running their own. <Fact id="ibcc-cbs" show="claim" />
+
+Running a core on a vendor's or a public cloud is possible, but it counts as outsourcing and brings RBI's rules for outsourced IT with it (see [hybrid and multi-cloud deployment](/architecture/hybrid-cloud/)). <Fact id="rbi-md-it-outsourcing-2023" show="claim" />
+
+## Why cores are hard to change
+
+A core accumulates decades of products, interest rules and integrations. Replacing it means moving every account, every balance and every open loan without losing a rupee, while the bank keeps trading. That is why core replacements are rare, run for years, and are usually done in stages rather than all at once. The architecture section covers the patterns banks use: [core banking system architecture](/architecture/cbs/) explains the model, and [legacy modernisation](/architecture/modernisation/) explains how banks change it in stages.

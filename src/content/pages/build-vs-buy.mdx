@@ -1,0 +1,91 @@
+---
+title: Build versus buy
+summary: "Banks buy most of their technology and build the parts that set them apart. Six factors decide which is which. RBI's outsourcing rules apply whenever a third party runs part of the service."
+domain: decision
+order: 1
+updated: 2026-09-29
+tags: [strategy, vendors, outsourcing, platforms]
+facts: [outsourcing-accountability, outsourcing-grievance, outsourcing-concentration, outsourcing-due-diligence, outsourcing-exit, outsourcing-cloud-scope, ibcc-cbs, sbi-bancs]
+---
+
+## Why it is rarely all one or the other
+
+Almost every bank buys its core banking platform, card systems and much of its infrastructure, and builds at least some of its customer experience and decisioning. The real questions are which capabilities belong in each group, how much to customise what is bought, and how to keep the ability to change course. This page gives a framework, not a verdict. The right answer differs by bank and changes over time.
+
+## Six factors
+
+<div class="wide"><DataTable caption="The six factors in a build-versus-buy decision" head={['Factor', 'Points towards building', 'Points towards buying']} rows={[
+  ['Differentiation', 'The capability is how you win customers', 'Every competitor needs the same thing'],
+  ['Regulatory complexity', 'Rules are simple, or you want control over how you meet them', 'Rules are complex and change often, and a vendor tracks them for many clients'],
+  ['Total cost of ownership', 'Large, long-lived use where build costs are spread thinly', 'Small or short-lived use, or costs that are mostly shared R&D'],
+  ['Speed to market', 'There is time to build well', 'You need it working soon'],
+  ['Talent', 'You can hire and keep the people to build and run it', 'The skills are scarce or not core to your organisation'],
+  ['Sovereignty and lock-in', 'You need full control of roadmap, data and exit', 'A vendor’s roadmap is acceptable and exit is manageable'],
+]} /></div>
+
+## Try it: a simple scorer
+
+Rate one capability against the six factors. The scorer treats differentiation, urgency and in-house talent as the strongest influences, and control, scale and regulatory complexity as moderate ones. The result is a starting point for discussion.
+
+<div class="wide"><BuildBuyScorer /></div>
+
+## System by system
+
+<div class="wide"><DataTable caption="Common patterns, system by system" head={['System', 'Common pattern', 'Why']} rows={[
+  ['Core banking', 'Buy', 'Huge, regulated, slow-changing functionality that vendors spread across many banks'],
+  ['Mobile app', 'Build, on bought components', 'The main customer experience and a key differentiator'],
+  ['Credit underwriting models', 'Build or hybrid', 'Models encode the bank’s own risk appetite and data'],
+  ['Anti-money laundering', 'Buy, then tune', 'Complex, rule-heavy and audited; tuning to the bank’s customers is the in-house part'],
+  ['KYC and onboarding', 'Hybrid', 'Buy identity and document checks; build the journey'],
+  ['API gateway', 'Buy', 'Commodity infrastructure; configuration is the work'],
+  ['Data platform', 'Hybrid', 'Buy storage and processing; build data models, pipelines and reports'],
+  ['Fraud detection', 'Hybrid', 'Buy the engine; build rules, features and models from the bank’s own data'],
+  ['Cloud infrastructure', 'Buy', 'Nobody builds their own cloud; the decisions are which and how'],
+  ['Conversational AI', 'Hybrid', 'Buy the models and platform; build the knowledge, guardrails and journeys'],
+  ['Payment orchestration', 'Build or hybrid', 'Routing, retries and reconciliation are tightly tied to the bank’s own systems'],
+]} note="Illustrative patterns across the industry, not a description of any named bank." /></div>
+
+## Patterns by type of institution
+
+- **Public-sector banks** tend to buy large, proven platforms and run long programmes with system integrators. Scale, procurement rules and the need for stability shape those choices. <Fact id="sbi-bancs" show="claim" />
+- **Large private banks** usually buy the core and build more around it: apps, decisioning and data, with sizeable in-house engineering teams.
+- **Small finance banks and newer banks** often choose modern or hosted platforms to launch quickly, and build selectively where they compete.
+- **Cooperative banks** frequently share a platform rather than run their own. <Fact id="ibcc-cbs" show="claim" />
+- **Fintechs** build most of their product, rent infrastructure and partner with banks for the regulated parts.
+
+These are tendencies, not rules; any single institution may differ.
+
+## What RBI expects when a third party is involved
+
+Buying often means a vendor runs part of the service, which makes it outsourcing. RBI's Direction on IT outsourcing sets the expectations:
+
+- <Fact id="outsourcing-accountability" show="claim" />
+- <Fact id="outsourcing-grievance" show="claim" />
+- <Fact id="outsourcing-due-diligence" show="claim" />
+- <Fact id="outsourcing-concentration" show="claim" />
+- <Fact id="outsourcing-exit" show="claim" />
+- <Fact id="outsourcing-cloud-scope" show="claim" />
+
+## How lock-in happens
+
+Lock-in is rarely one decision. It accumulates through customisations that only the vendor can maintain, proprietary data formats, integrations built against vendor-specific interfaces, contracts without data-export clauses, and skills that exist only at the vendor. Each of these is manageable on its own; together they can make leaving impractical. The defences are configuration over customisation, owning data in documented formats, putting your own APIs in front of bought systems, contract clauses for exit, and keeping enough in-house knowledge to run a transition.
+
+## A worked example
+
+This example is illustrative. A mid-sized bank wants better fraud detection for UPI payments. It rates the six factors:
+- **Differentiation: high.** Fraud losses and false declines both affect customers.
+- **Regulatory complexity: medium.**
+- **Scale: high.**
+- **Urgency: high.** Losses are rising.
+- **Talent: medium.** It has data scientists but no real-time engineering team.
+- **Control: high.** The models use sensitive customer data.
+
+The factors pull in both directions, which points to a hybrid. The bank buys a proven real-time scoring engine to deploy quickly. It then builds its own features and models on its data, and keeps the right to export rules and models. It also plans, from the start, what it would take to replace the engine.
+
+## Questions for a decision
+
+- Would a customer notice, or care, if this capability were the same as every competitor's?
+- What will it cost over ten years, including people, upgrades and exit, for both options?
+- If we buy, which parts will we still build, and who owns them?
+- How would we leave this vendor, how long would it take, and what would we lose?
+- Which RBI outsourcing requirements does this arrangement trigger, and who will evidence them?

@@ -1,0 +1,229 @@
+# RBI ecosystem institutions. Groupings verified in Stage 3 (see research/notes.md). status: draft = a field is still unconfirmed.
+- id: rbi
+  short: RBI
+  full: Reserve Bank of India
+  group: central-bank
+  category: Central bank and regulator of banks and payment systems
+  headquarters: Mumbai
+  employeesNote: not yet sourced
+  roles:
+  - Regulates and supervises banks and payment systems
+  - Runs RTGS and NEFT
+  - Holds the accounts in which banks settle with one another
+  relations: []
+  officialUrl: https://www.rbi.org.in
+  sources:
+  - npci-nfs-takeover-2009
+  - rbi-neft-24x7-2019
+  status: draft
+- id: dicgc
+  short: DICGC
+  full: Deposit Insurance and Credit Guarantee Corporation
+  group: rbi-subsidiary
+  category: Wholly owned subsidiary of RBI, established under the DICGC Act, 1961
+  headquarters: Mumbai
+  established: 1978
+  establishedNote: Formed in 1978 by merging the Deposit Insurance Corporation (operating since 1 January 1962) with the Credit Guarantee Corporation of India.
+  employeesNote: not yet sourced
+  roles:
+  - Insures bank deposits up to ₹5 lakh per depositor per bank
+  - Pays depositors when an insured bank fails or is placed under restrictions
+  - Collects deposit insurance premiums from banks (risk-based from 2026)
+  relations:
+  - rbi
+  officialUrl: https://www.dicgc.org.in
+  sources:
+  - dicgc-leaflet
+  - dicgc-history
+  - dicgc-guide
+  - icra-dicgc-rbp-2026
+  status: verified
+- id: brbnmpl
+  short: BRBNMPL
+  full: Bharatiya Reserve Bank Note Mudran Private Limited
+  group: rbi-subsidiary
+  category: Wholly owned subsidiary of RBI (private limited company)
+  headquarters: Bengaluru
+  established: 1995
+  employeesNote: not yet sourced
+  roles:
+  - Prints banknotes for RBI at presses in Mysuru and Salboni
+  - Runs a security ink unit and a banknote paper joint venture
+  relations:
+  - rbi
+  officialUrl: https://www.brbnmpl.co.in
+  sources:
+  - brbnmpl-profile
+  status: verified
+- id: rebit
+  short: ReBIT
+  full: Reserve Bank Information Technology Private Limited
+  group: rbi-subsidiary
+  category: Wholly owned subsidiary of RBI (private limited company)
+  establishedNote: Reported as 2016; not yet confirmed from an official source. RBI was recruiting for ReBIT by January 2017.
+  employeesNote: not yet sourced
+  roles:
+  - Delivers and manages RBI's IT projects
+  - Supports RBI's risk-based supervision through security audits and incident analysis
+  - Works to improve the cyber resilience of the banking sector
+  relations:
+  - rbi
+  officialUrl: https://rebit.org.in
+  sources:
+  - rbi-rebit-ceo-2022
+  status: draft
+- id: iftas
+  short: IFTAS
+  full: Indian Financial Technology and Allied Services
+  group: rbi-subsidiary
+  category: Wholly owned subsidiary of RBI (company under the Companies Act, 2013)
+  establishedNote: Took over INFINET, SFMS, the RTGS and NEFT systems and IBCC from IDRBT in February 2015; transferred to RBI in 2019.
+  employeesNote: not yet sourced
+  roles:
+  - Runs INFINET, the closed network of the banking sector
+  - Runs SFMS, the messaging system behind RTGS and NEFT
+  - Runs the Indian Banking Community Cloud and the GIFT payment system
+  relations:
+  - rbi
+  - idrbt
+  officialUrl: https://www.iftas.in
+  sources:
+  - rbi-iftas-ceo-2022
+  - idrbt-about
+  status: draft
+- id: rbih
+  short: RBIH
+  full: Reserve Bank Innovation Hub
+  group: rbi-subsidiary
+  category: Wholly owned subsidiary of RBI (Section 8 not-for-profit company)
+  headquarters: Bengaluru
+  established: 2022
+  establishedNote: Inaugurated on 24 March 2022; its company registration number indicates incorporation in 2021.
+  employeesNote: not yet sourced
+  roles:
+  - Promotes innovation in financial services, with a focus on low-income users
+  - Builds the Unified Lending Interface (ULI)
+  - Built MuleHunter.ai for detecting mule accounts
+  relations:
+  - rbi
+  officialUrl: https://rbihub.in
+  sources:
+  - rbi-rbih-2022
+  - rbih-home
+  status: verified
+- id: idrbt
+  short: IDRBT
+  full: Institute for Development and Research in Banking Technology
+  group: rbi-established
+  category: Society established by RBI (not a company and not RBI-owned)
+  headquarters: Hyderabad
+  established: 1996
+  employeesNote: not yet sourced
+  roles:
+  - Research, training and advisory work on banking technology
+  - Certifying authority for digital certificates in banking
+  - Built INFINET, SFMS and the National Financial Switch before handing them on
+  relations:
+  - rbi
+  - iftas
+  - npci
+  officialUrl: https://www.idrbt.ac.in
+  sources:
+  - idrbt-about
+  - idrbt-milestones
+  status: verified
+- id: npci
+  short: NPCI
+  full: National Payments Corporation of India
+  group: rbi-established
+  category: Not-for-profit company promoted by RBI and the Indian Banks' Association, owned by banks
+  headquarters: Mumbai
+  established: 2008
+  employeesNote: not yet sourced
+  roles:
+  - Runs retail payment systems, including UPI and the National Financial Switch
+  - Operates under authorisation from RBI under the PSS Act, 2007
+  relations:
+  - rbi
+  - idrbt
+  officialUrl: https://www.npci.org.in
+  sources:
+  - icra-npci-2025
+  - npci-nfs-takeover-2009
+  status: verified
+- id: ccil
+  short: CCIL
+  full: The Clearing Corporation of India Limited
+  group: rbi-established
+  category: Financial market infrastructure set up at RBI's instance, owned by banks and financial institutions
+  headquarters: Mumbai
+  established: 2001
+  employeesNote: not yet sourced
+  roles:
+  - Central counterparty for government securities, money market, forex and rupee derivative trades
+  - Trade repository for over-the-counter derivatives
+  relations:
+  - rbi
+  officialUrl: https://www.ccilindia.com
+  sources:
+  - ccil-promoters
+  - care-ccil-2025
+  status: verified
+- id: nabard
+  short: NABARD
+  full: National Bank for Agriculture and Rural Development
+  group: government
+  category: Statutory development bank wholly owned by the Government of India; RBI's stake was sold in 2010 and 2019
+  headquarters: Mumbai
+  employees:
+    value: 3134
+    asOf: '2024-03-31'
+    source: nabard-ar-2024-people
+  roles:
+  - Refinances and develops rural credit, including cooperative banks and regional rural banks
+  - Supervises regional rural banks and state and district cooperative banks
+  relations:
+  - rbi
+  officialUrl: https://www.nabard.org
+  sources:
+  - rbi-nabard-nhb-divest-2019
+  - nabard-ar-2024-people
+  - nabard-results-2025
+  - nabard-charter
+  status: verified
+  established: 1982
+- id: nhb
+  short: NHB
+  full: National Housing Bank
+  group: government
+  category: Statutory body wholly owned by the Government of India; RBI's stake was sold in 2019
+  headquarters: New Delhi
+  established: 1988
+  employeesNote: not yet sourced
+  roles:
+  - Finances and promotes housing finance institutions
+  - Supervises housing finance companies (regulation moved to RBI in 2019)
+  relations:
+  - rbi
+  officialUrl: https://nhb.org.in
+  sources:
+  - nhb-about
+  - rbi-nabard-nhb-divest-2019
+  status: verified
+- id: cersai
+  short: CERSAI
+  full: Central Registry of Securitisation Asset Reconstruction and Security Interest of India
+  group: government
+  category: Government company set up by the Ministry of Finance (not RBI-promoted)
+  established: 2011
+  employeesNote: not yet sourced
+  roles:
+  - Runs the central registry of security interests under the SARFAESI Act, to stop multiple loans against the same property
+  - Acts as the Central KYC Records Registry (since 2016)
+  relations:
+  - rbi
+  officialUrl: https://www.cersai.org.in
+  sources:
+  - rbi-cersai-2011
+  - rbi-ckycr-2016
+  status: draft

@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RailMap from '../components/diagrams/RailMap.astro';
+import Fact from '../components/Fact.astro';
+import SourceList from '../components/SourceList.astro';
+import { getNav, BUILT_IN_SUMMARY } from '../lib/nav';
+import { citationsFor } from '../lib/facts';
+import { SITE } from '../lib/site';
+Astro.locals.citations = await citationsFor(['upi-volume-2026-08', 'upi-daily-2026-08', 'payment-volumes-live'].map((id) => ({ collection: 'facts' as const, id })));
+Astro.locals.where = '/';
+const nav = await getNav();
+const path = [['core-systems', 'Core systems'], ['payment-rails', 'Payment rails'], ['architecture', 'Architecture'], ['regulators', 'Regulators'], ['limitations', 'Limitations']];
+const exists = new Set(nav.flatMap((g) => g.items.map((i) => i.slug)));
+const summaries = Object.fromEntries((await getCollection('pages')).map((p) => [p.id, p.data.summary]));
+---
+<BaseLayout title={SITE.name} description={`${SITE.pitch} An independent, sourced reference to India's banking and payments technology.`} type="website" jsonld={[{ "@context": "https://schema.org", "@type": "WebSite", name: SITE.name, url: new URL("/", Astro.site).href, inLanguage: "en-IN", publisher: { "@type": "Organization", name: SITE.publisher } }]}>
+  <div class="container">
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="hero-top">
+        <div>
+          <h1 id="hero-h">{SITE.short}<span class="sub">{SITE.sub}</span></h1>
+          <p class="promise">{SITE.pitch} Follow a payment across the map, then open any stop to go deeper. Every figure links to its source.</p>
+        </div>
+        <div class="key-fact key-facts">
+          <p>In August 2026, UPI handled <strong><Fact id="upi-volume-2026-08" /></strong>, the most in any month so far: about <strong><Fact id="upi-daily-2026-08" /></strong>.</p>
+          <small>Reported from NPCI data, as of 31 August 2026. Latest figures: <Fact id="payment-volumes-live" label="RBI payment system indicators" />.</small>
+        </div>
+      </div>
+    </section>
+    <RailMap />
+    <section aria-labelledby="path-h">
+      <h2 id="path-h" class="visually-hidden">Suggested reading path</h2>
+      <ol class="path-list" aria-label="Suggested reading path">
+        {path.map(([slug, t]) => <li>{exists.has(slug) ? <a href={`/${slug}/`}>{t}</a> : <span class="off">{t} <small>(coming soon)</small></span>}</li>)}
+      </ol>
+    </section>
+    <section class="directory" aria-labelledby="dir-h">
+      <h2 id="dir-h">Everything on the site</h2>
+      <div class="related">
+        <ul>
+          {nav.flatMap((g) => g.items.map((i) => (
+            <li data-domain={g.domain}><a href={i.href}><span class="t">{i.title}</span><span class="s">{summaries[i.slug] ?? BUILT_IN_SUMMARY[i.slug]}</span></a></li>
+          )))}
+        </ul>
+      </div>
+    </section>
+    <section class="directory" aria-labelledby="how-h">
+      <h2 id="how-h">How to use this site</h2>
+      <div class="how-grid">
+        <div><h3>Follow the map</h3><p>Select a rail on the map above to see which institutions a payment passes through, then open a stop to read about it.</p></div>
+        <div><h3>Search</h3><p>Press the slash key, or use Search in the header, to find any topic or short name.</p></div>
+        <div><h3>Short names</h3><p>Hover, focus or tap an underlined term such as <a href="/glossary/#upi">UPI</a> to see what it stands for. Every term is in the <a href="/glossary/">glossary</a>.</p></div>
+        <div><h3>Sources</h3><p>Every figure carries a numbered source and the date it was true. <a href="/sources/">How facts are checked</a>.</p></div>
+      </div>
+      <p class="independence">This is an independent reference. It is not official documentation of RBI, NPCI or any bank, and it is not legal, compliance or investment advice. Rules and figures change; each page shows when its facts were last checked.</p>
+    </section>
+    <div class="page-foot"><SourceList /></div>
+  </div>
+</BaseLayout>

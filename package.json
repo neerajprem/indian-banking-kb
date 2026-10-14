@@ -1,0 +1,44 @@
+{
+  "name": "indian-banking-ecosystem-kb",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check-facts": "tsx scripts/check-facts.ts",
+    "build": "npm run check-facts && astro check && astro build && pagefind --site dist && tsx scripts/check-dist.ts && node scripts/write-headers.mjs",
+    "preview": "node scripts/serve.mjs",
+    "test:responsive": "node tests/responsive.mjs",
+    "test:a11y": "node tests/a11y.mjs",
+    "test": "npm run test:responsive && npm run test:a11y && node tests/contrast.mjs && node tests/behaviour.mjs && node tests/budgets.mjs && node tests/csp.mjs",
+    "test:lighthouse": "node tests/lighthouse.mjs",
+    "test:budgets": "node tests/budgets.mjs",
+    "test:csp": "node tests/csp.mjs",
+    "test:search": "node tests/search.mjs",
+    "book": "node scripts/book/compose.mjs && node scripts/book/print.mjs && node -e \"require('fs').rmSync('dist/__book',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/literata": "^5.3.0",
+    "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "astro": "^5.18.2",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@types/hast": "^3.0.5",
+    "@types/js-yaml": "^4.0.9",
+    "js-yaml": "^5.4.2",
+    "lighthouse": "^13.5.0",
+    "lucide-static": "^1.48.0",
+    "pagefind": "^1.5.2",
+    "playwright": "^1.56.0",
+    "tsx": "^4.23.15",
+    "unist-util-visit": "^5.1.0"
+  }
+}

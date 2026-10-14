@@ -1,0 +1,37 @@
+---
+// Side-by-side rails. Without JavaScript every rail is shown; with it, two selected rails.
+import { getCollection } from 'astro:content';
+const rails = await getCollection('rails');
+const rows: [string, 'full' | 'operator' | 'settlement' | 'use'][] = [['Full name', 'full'], ['Run by', 'operator'], ['How it settles', 'settlement'], ['Typical use', 'use']];
+const [a, b] = [rails[0]?.id, rails[1]?.id];
+---
+<div class="compare" data-compare>
+  <div class="compare-controls js-only">
+    <label>First rail<select data-col="0">{rails.map((r) => <option value={r.id} selected={r.id === a}>{r.data.short}</option>)}</select></label>
+    <label>Second rail<select data-col="1">{rails.map((r) => <option value={r.id} selected={r.id === b}>{r.data.short}</option>)}</select></label>
+  </div>
+  <div class="table-wrap" tabindex="0" role="region" aria-labelledby="cmp-cap">
+    <table>
+      <caption id="cmp-cap">Compare payment rails</caption>
+      <thead><tr><th scope="col">Attribute</th>{rails.map((r) => <th scope="col" data-rail={r.id} data-line={r.data.line}><span class="rail-key">{r.data.short}</span></th>)}</tr></thead>
+      <tbody>
+        {rows.map(([label, key]) => <tr><th scope="row">{label}</th>{rails.map((r) => <td data-rail={r.id}>{r.data[key]}</td>)}</tr>)}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  import { ready } from '../scripts/ready';
+  ready(() => {
+    document.querySelectorAll<HTMLElement>('[data-compare]').forEach((root) => {
+      if (root.dataset.bound) return; root.dataset.bound = '1';
+      const sels = [...root.querySelectorAll<HTMLSelectElement>('select')];
+      const apply = () => {
+        const keep = new Set(sels.map((s) => s.value));
+        root.querySelectorAll<HTMLElement>('[data-rail]').forEach((c) => c.classList.toggle('col-off', !keep.has(c.dataset.rail!)));
+      };
+      sels.forEach((s) => s.addEventListener('change', apply));
+      apply();
+    });
+  });
+</script>

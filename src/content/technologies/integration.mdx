@@ -1,0 +1,75 @@
+---
+title: Middleware and integration
+topicId: integration
+summary: "Integration technology connects a bank's systems and translates between their formats. Service buses, API gateways and service meshes overlap. Using each where it fits avoids a tangle."
+blurb: "ESB versus API gateway versus service mesh, the main products, and translating between SOAP, REST, gRPC and ISO messages."
+domain: design
+depth: intermediate
+order: 4
+updated: 2026-09-29
+tags: [integration, api, middleware, technology]
+related: [/architecture/api-first/, messaging, containers]
+facts: [rebit-aa-specs]
+---
+
+## Why it matters
+
+A bank runs a core, card systems, loan systems, payment hubs, channels, fraud engines, data platforms and dozens of third-party connections. Each speaks its own language: fixed-width files, SOAP web services, REST APIs, ISO payment messages. Integration technology is what lets them work together. Done well, it hides that variety. Done badly, it becomes the least-understood and most fragile part of the estate.
+
+## Three families
+
+An **enterprise service bus (ESB)** is central middleware that routes, transforms and orchestrates messages between applications. Many banks introduced one to replace point-to-point links with a hub. Its risk is that business logic accumulates inside it.
+
+An **API gateway** is a front door for APIs. It handles identity, rate limits, validation and logging, and passes requests to the services behind it. It should route and protect, not hold business logic. See [API-first and open banking](/architecture/api-first/).
+
+A **service mesh** manages traffic between services inside a platform, usually containers. It adds mutual TLS, retries, time-outs and telemetry to every service-to-service call without changing the services' code.
+
+## The landscape
+
+<div class="wide"><DataTable caption="Integration technologies" head={['Technology', 'Family', 'Typical use in Indian banking', 'Notes']} rows={[
+  ['IBM App Connect, TIBCO, Oracle SOA Suite', 'Enterprise service bus and integration suites', 'Connecting cores, card systems and older applications', 'Mature; often the oldest integration layer in a bank'],
+  ['MuleSoft Anypoint', 'API-led integration platform', 'Exposing core functions as APIs; partner integration', 'Commercial licensing'],
+  ['WSO2', 'Open-source API management and integration', 'API gateways and integration, on-premises or cloud', 'Open-source core with commercial support'],
+  ['Kong, Apigee, cloud API gateways', 'API gateway', 'Channel and partner APIs', 'Choose by where APIs run and how they are governed'],
+  ['Envoy, Istio, Linkerd', 'Proxy and service mesh', 'Traffic between microservices on container platforms', 'Operational complexity; best on mature platforms'],
+  ['File transfer (managed SFTP and similar)', 'Batch integration', 'Bulk files such as NACH, statements and regulatory extracts', 'Still essential; secure and monitor it like any interface'],
+]} note="Typical uses are general industry patterns, not claims about named banks. Product names are for reference only." /></div>
+
+## Protocols and formats
+
+- **SOAP and XML** are common in older enterprise systems, with strict contracts.
+- **REST and JSON** are the default for new APIs: simple, widely understood, easy to test.
+- **gRPC** uses compact binary messages and suits fast internal service-to-service calls.
+- **ISO payment messages**, ISO 8583 for cards and ISO 20022 for richer payment data, need specialist parsers and validation.
+- **Flat files** remain the backbone of batch processing.
+
+Much of an integration layer's work is **protocol translation**: accepting a REST call from an app and turning it into the SOAP call or file the core understands, then translating the answer back. Shared specifications reduce this work. For example, in the Account Aggregator framework <Fact id="rebit-aa-specs" show="claim" />
+
+## How to choose
+
+Use a gateway for anything exposed to channels or partners. Use a service mesh only when many services on one platform need consistent security and traffic control, and the team can run it. Keep an ESB or integration suite for connecting systems that cannot speak modern APIs, and resist adding new business logic to it. For every interface, decide whether it must be synchronous (the caller waits) or can be asynchronous (a message on a queue or log); many can be asynchronous, which makes them more resilient.
+
+## Trade-offs
+
+<div class="wide"><DataTable caption="Integration choices" head={['Choice', 'You gain', 'You give up']} rows={[
+  ['Central ESB', 'One place to connect and monitor', 'A bottleneck and a single point of failure; logic hides inside it'],
+  ['API gateway plus services', 'Clear contracts; logic stays in services', 'More services to build and run'],
+  ['Service mesh', 'Uniform security and telemetry between services', 'A complex platform component to operate'],
+  ['Point-to-point links', 'Quick for one connection', 'Unmanageable as connections multiply'],
+]} /></div>
+
+## Pitfalls
+
+- **The smart pipe.** Business rules added to the ESB or gateway, where nobody can test them properly.
+- **Chained synchronous calls,** where one request waits on five others and fails if any of them is slow.
+- **No time-outs,** so a slow downstream system ties up every thread upstream.
+- **Unmonitored file transfers** that fail quietly at night.
+- **Undocumented transformations,** so nobody knows how a field in one system maps to another.
+
+## Questions for a design review
+
+- Where does each business rule live, and is any of it in the integration layer?
+- Which calls could be asynchronous instead of waiting for an answer?
+- What are the time-out and retry settings for each downstream call?
+- How is a failed file transfer detected, and by whom?
+- Is every field mapping documented and tested?

@@ -1,0 +1,413 @@
+# Source registry. Every entry here was opened and read during research (Stage 3, 28-29 September 2026),
+# except where a comment says otherwise. type: primary | reputable-press | vendor | analyst
+- id: rbi-home
+  title: "Reserve Bank of India"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/
+  type: primary
+  accessed: 2026-09-29
+- id: npci-home
+  title: "National Payments Corporation of India"
+  publisher: National Payments Corporation of India
+  url: https://www.npci.org.in/
+  type: primary
+  accessed: 2026-09-29
+  # Site renders blank to automated browsers; used only as a link-out, never as support for a claim.
+- id: rbi-payment-indicators
+  title: "Payment System Indicators (monthly)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/scripts/TrendsPSIUserView.aspx?Id=56
+  type: primary
+  accessed: 2026-09-29
+
+# Cheque Truncation System
+- id: rbi-cts-circular-2025
+  title: "Introduction of Continuous Clearing and Settlement on Realisation in Cheque Truncation System (RBI/2025-26/73)"
+  publisher: Reserve Bank of India
+  url: https://website.rbi.org.in/documents/d/rbi/circulardatedaugust132025cts
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-cts-phase2-2025
+  title: "Continuous Clearing and Settlement on Realisation in Cheque Truncation System: Phase 2 (RBI/2025-26/156)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=13232&Mode=0
+  type: primary
+  accessed: 2026-09-29
+
+# Payment volumes and limits
+- id: bs-upi-aug-2026
+  title: "UPI sets new record at 24.51 bn transactions in Aug, value at ₹29.82 trn"
+  publisher: Business Standard
+  url: https://www.business-standard.com/finance/news/upi-transactions-august-2026-record-volume-npci-126090100506_1.html
+  type: reputable-press
+  accessed: 2026-09-29
+- id: ddnews-upi-limits-2025
+  title: "NPCI raises daily UPI payment limit on P2M transactions to ₹10 lakh"
+  publisher: DD News (Prasar Bharati)
+  url: https://ddnews.gov.in/en/npci-raises-daily-upi-payment-limit-on-p2m-transactions-to-%E2%82%B910-lakh/
+  type: reputable-press
+  accessed: 2026-09-29
+- id: air-upi-limits-2025
+  title: "UPI raises daily P2M payment limit to Rs 10 lakh"
+  publisher: All India Radio News (Prasar Bharati)
+  url: https://www.newsonair.gov.in/npci-raises-upi-person-to-merchant-transaction-limit-to-%E2%82%B95-lakh
+  type: reputable-press
+  accessed: 2026-09-29
+- id: rbi-neft-24x7-2019
+  title: "Availability of National Electronic Funds Transfer (NEFT) System on 24x7 basis (RBI/2019-20/111)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11750
+  type: primary
+  accessed: 2026-09-29
+
+# Institutions
+- id: idrbt-about
+  title: "About IDRBT"
+  publisher: Institute for Development and Research in Banking Technology
+  url: https://www.idrbt.ac.in/about-idrbt
+  type: primary
+  accessed: 2026-09-29
+- id: idrbt-milestones
+  title: "Milestones 1994-1998"
+  publisher: Institute for Development and Research in Banking Technology
+  url: https://www.idrbt.ac.in/?p=34318
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-iftas-ceo-2022
+  title: "Chief Executive Officer (CEO) for Indian Financial Technology and Allied Services (IFTAS)"
+  publisher: Reserve Bank of India
+  url: https://website.rbi.org.in/web/rbi/-/chief-executive-officer-ceo-for-indian-financial-technology-and-allied-services-iftas-1
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-rebit-ceo-2022
+  title: "Chief Executive Officer (CEO) for Reserve Bank Information Technology Pvt. Ltd. (ReBIT)"
+  publisher: Reserve Bank of India
+  url: https://opportunities.rbi.org.in/Scripts/bs_viewcontent.aspx?Id=4187
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-rbih-2022
+  title: "Inauguration of the Reserve Bank Innovation Hub (Press Release 2021-2022/1903)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53458
+  type: primary
+  accessed: 2026-09-29
+- id: rbih-home
+  title: "Reserve Bank Innovation Hub"
+  publisher: Reserve Bank Innovation Hub
+  url: https://rbihub.in/
+  type: primary
+  accessed: 2026-09-29
+- id: brbnmpl-profile
+  title: "Company Profile"
+  publisher: Bharatiya Reserve Bank Note Mudran Private Limited
+  url: https://www.brbnmpl.co.in/company-profile/
+  type: primary
+  accessed: 2026-09-29
+- id: dicgc-guide
+  title: "A Guide to Deposit Insurance"
+  publisher: Deposit Insurance and Credit Guarantee Corporation
+  url: https://www.dicgc.org.in/guide-to-deposit-insurance
+  type: primary
+  accessed: 2026-09-29
+- id: dicgc-history
+  title: "History of DICGC"
+  publisher: Deposit Insurance and Credit Guarantee Corporation
+  url: https://www.dicgc.org.in/node/17
+  type: primary
+  accessed: 2026-09-29
+- id: dicgc-leaflet
+  title: "DICGC Information Leaflet"
+  publisher: Deposit Insurance and Credit Guarantee Corporation
+  url: https://dicgc.org.in/sites/default/files/2024-10/DICGC_Information_Leaflet.pdf
+  type: primary
+  accessed: 2026-09-29
+- id: icra-dicgc-rbp-2026
+  title: "RBI's risk-based premium framework for deposit insurance to enhance profitability of stronger banks"
+  publisher: ICRA
+  url: https://www.icra.in/Research/ViewResearchReport/rbi-s-risk-based-premium-framework-for-deposit-insurance-to-enhance-profitability-of-stronger-banks/6780
+  type: analyst
+  accessed: 2026-09-29
+- id: rbi-nabard-nhb-divest-2019
+  title: "Reserve Bank of India divests its share in NABARD and NHB (Press Release 2018-2019/2528)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=46885
+  type: primary
+  accessed: 2026-09-29
+- id: nabard-ar-2024-people
+  title: "Annual Report 2023-24, chapter 9: People, Processes and Policies"
+  publisher: National Bank for Agriculture and Rural Development
+  url: https://www.nabard.org/annual-report/people-processes-and-policies.html
+  type: primary
+  accessed: 2026-09-29
+- id: nabard-results-2025
+  title: "Standalone Financial Results for the quarter ended June 30, 2025"
+  publisher: National Bank for Agriculture and Rural Development
+  url: https://www.nabard.org/pdf/Financial%20Results_June-2025.pdf
+  type: primary
+  accessed: 2026-09-29
+- id: nhb-about
+  title: "About Us: Genesis"
+  publisher: National Housing Bank
+  url: https://nhb.org.in/about-us/
+  type: primary
+  accessed: 2026-09-29
+- id: icra-npci-2025
+  title: "National Payments Corporation of India: rating rationale"
+  publisher: ICRA
+  url: https://www.icra.in/Rating/GetRationalReportFilePdf?id=135865
+  type: analyst
+  accessed: 2026-09-29
+- id: npci-nfs-takeover-2009
+  title: "Takeover of NFS by NPCI from IDRBT (NPCI/NFS/OC No.1)"
+  publisher: National Payments Corporation of India
+  url: https://www.npci.org.in/PDF/nfs/circular/2009-10/NFS-OC-1-Takeover-of-NFS-by-NPCI-from-IDRBT.pdf
+  type: primary
+  accessed: 2026-09-29
+- id: ccil-promoters
+  title: "Promoters / Shareholders"
+  publisher: The Clearing Corporation of India Limited
+  url: https://www.ccilindia.com/web/ccil/promoters-stakeholders
+  type: primary
+  accessed: 2026-09-29
+- id: care-ccil-2025
+  title: "The Clearing Corporation of India Limited (Revised): rating press release"
+  publisher: CARE Ratings
+  url: https://www.careratings.com/upload/CompanyFiles/PR/202503120310_The_Clearing_Corporation_of_India_Limited.pdf
+  type: analyst
+  accessed: 2026-09-29
+- id: rbi-cersai-2011
+  title: "Setting up of Central Electronic Registry under the SARFAESI Act 2002 (RBI/2010-2011/545)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/scripts/BS_NBFCNotificationView.aspx?Id=6435
+  type: primary
+  accessed: 2026-09-29
+
+# Enforcement and vendors
+- id: bs-mastercard-2021
+  title: "RBI restricts Mastercard from onboarding new domestic customers"
+  publisher: Business Standard
+  url: https://www.business-standard.com/article/finance/rbi-restricts-mastercard-from-onboarding-new-domestic-customers-121071400974_1.html
+  type: reputable-press
+  accessed: 2026-09-29
+- id: rbi-mastercard-lifted-2022
+  title: "Restrictions on Mastercard lifted (press release)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=53877
+  type: primary
+  accessed: 2026-09-29
+- id: tcs-sbi-2021
+  title: "SBI deepens partnership with TCS to drive innovation and enhance customer experience"
+  publisher: Tata Consultancy Services
+  url: https://tcs.com/who-we-are/newsroom/press-release/sbi-deepens-partnership-with-tcs-drive-innovation-enhance-customer-experience
+  type: vendor
+  accessed: 2026-09-29
+- id: tribune-mastercard-2021
+  title: "RBI bars Mastercard from adding new clients in India"
+  publisher: The Tribune
+  url: https://www.tribuneindia.com/news/business/rbi-bars-mastercard-from-adding-new-clients-in-india-283510
+  type: reputable-press
+  accessed: 2026-09-29
+
+# Second research pass (29 September 2026)
+- id: nabard-charter
+  title: "Citizen's Charter"
+  publisher: National Bank for Agriculture and Rural Development
+  url: https://www.nabard.org/ftrcontent.aspx?id=492
+  type: primary
+  accessed: 2026-09-29
+- id: edgeverve-finacle-2020
+  title: "EdgeVerve Systems Positioned a Leader by Gartner for the Finacle Core Banking Solution"
+  publisher: EdgeVerve Systems
+  url: https://www.edgeverve.com/finacle/news/edgeverve-positioned-gartner-for-finacle-solution/
+  type: vendor
+  accessed: 2026-09-29
+- id: rbi-md-itgrc-2023
+  title: "Master Direction on Information Technology Governance, Risk, Controls and Assurance Practices (RBI/2023-24/107)"
+  publisher: Reserve Bank of India
+  url: https://website.rbi.org.in/web/rbi/-/notifications/master-direction-on-information-technology-governance-risk-controls-and-assurance-practices
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-md-it-outsourcing-2023
+  title: "Master Direction on Outsourcing of Information Technology Services (RBI/2023-24/102)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12486
+  type: primary
+  accessed: 2026-09-29
+- id: trilegal-certin-2022
+  title: "2022 CERT-In Directions on Reporting Cyber Incidents"
+  publisher: Trilegal
+  url: https://trilegal.com/knowledge-repository/2022-cert-in-directions-on-reporting-cyber-incidents/
+  type: analyst
+  accessed: 2026-09-29
+- id: rbi-positive-pay-2020
+  title: "Positive Pay System for Cheque Truncation System (RBI/2020-21/41)"
+  publisher: Reserve Bank of India
+  url: https://website.rbi.org.in/web/rbi/-/notifications/positive-pay-system-for-cheque-truncation-system-11969
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-ckycr-2016
+  title: "Amendment to Master Direction on KYC: Operationalisation of Central KYC Registry (RBI/2016-17/11)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=10498
+  type: primary
+  accessed: 2026-09-29
+
+# Stage 4a research (29 September 2026)
+- id: rbi-tat-2019
+  title: "Harmonisation of Turn Around Time (TAT) and customer compensation for failed transactions using authorised Payment Systems (RBI/2019-20/67)"
+  publisher: Reserve Bank of India
+  url: https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=11693
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-cof-2022
+  title: "Restriction on Storage of Actual Card Data [i.e. Card-on-File (CoF)] (RBI/2022-2023/95)"
+  publisher: Reserve Bank of India
+  url: https://website.rbi.org.in/web/rbi/-/notifications/restriction-on-storage-of-actual-card-data-i.e.-card-on-file-cof-12363
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-rtgs-faq
+  title: "Real Time Gross Settlement (RTGS) System: FAQs"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/Scripts/FAQView.aspx?Id=65
+  type: primary
+  accessed: 2026-09-29
+- id: rbi-aa-md-2016
+  title: "Master Direction - Non-Banking Financial Company - Account Aggregator (Reserve Bank) Directions, 2016 (updated 6 September 2024)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=10598
+  type: primary
+  accessed: 2026-09-29
+- id: dfs-aa
+  title: "Account Aggregator Framework"
+  publisher: Department of Financial Services, Ministry of Finance
+  url: https://financialservices.gov.in/account-aggregator-framework
+  type: primary
+  accessed: 2026-09-29
+- id: sebi-aa-2023
+  title: "Consultation paper on Financial Information Users in the securities markets under the Account Aggregator framework"
+  publisher: Securities and Exchange Board of India
+  url: https://www.sebi.gov.in/sebi_data/attachdocs/aug-2023/1690887848711.pdf
+  type: primary
+  accessed: 2026-09-29
+- id: khaitan-upi-credit-2023
+  title: "Credit lines on UPI: the next step towards digital financial inclusion"
+  publisher: Khaitan & Co
+  url: https://khaitanco.com/thought-leaderships/Credit_lines_on_UPI_the_next_step_towards_Digital_Financial_Inclusion
+  type: analyst
+  accessed: 2026-09-29
+- id: bt-rupay-upi-2022
+  title: "Credit cards, starting with RuPay, can now be linked to UPI: RBI"
+  publisher: Business Today
+  url: https://businesstoday.in/amp/latest/economy/story/credit-cards-starting-with-rupay-can-now-be-linked-to-upi-rbi-336757-2022-06-08
+  type: reputable-press
+  accessed: 2026-09-29
+
+# Stage 4b research (29 September 2026): full texts read
+- id: rbi-md-itgrc-text
+  title: "Reserve Bank of India (Information Technology Governance, Risk, Controls and Assurance Practices) Directions, 2023 (full text)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/Scripts/NotificationUser.aspx?Id=12562&Mode=0
+  type: primary
+  accessed: 2026-09-29
+
+# Stage 4c research (29 September 2026)
+- id: rbi-freeai-pr-2025
+  title: "Report of the Committee to develop a Framework for Responsible and Ethical Enablement of Artificial Intelligence (FREE-AI) in the Financial Sector (press release)"
+  publisher: Reserve Bank of India
+  url: https://rbidocs.rbi.org.in/rdocs/PressRelease/PDFs/PR902F828551DA4B54AFDA44180762D51FFCD.PDF
+  type: primary
+  accessed: 2026-09-29
+- id: lexology-mrm-2024
+  title: "RBI releases draft circular on model risk management in credit for lenders"
+  publisher: Lexology
+  url: https://www.lexology.com/library/detail.aspx?g=2e3e5197-a3ec-4b08-9048-8c70dfd82be4
+  type: analyst
+  accessed: 2026-09-29
+- id: bs-mrm-2026
+  title: "Reserve Bank issues draft Regulatory Principles for Management of Model Risks"
+  publisher: Business Standard
+  url: https://www.business-standard.com/markets/capital-market-news/reserve-bank-issues-draft-regulatory-principles-for-management-of-model-risks-in-credit-126062500401_1.html
+  type: reputable-press
+  accessed: 2026-09-29
+- id: tribune-auth-2025
+  title: "RBI unveils new directions to strengthen digital payment security"
+  publisher: The Tribune
+  url: https://www.tribuneindia.com/news/business/rbi-unveils-new-directions-to-strengthen-digital-payment-security
+  type: reputable-press
+  accessed: 2026-09-29
+- id: bs-auth-2025
+  title: "RBI issues Directions on Framework on Authentication Mechanisms for Digital Payment Transactions"
+  publisher: Business Standard
+  url: https://www.business-standard.com/markets/capital-market-news/rbi-issues-directions-on-framework-on-authentication-mechanisms-for-digital-payment-transactions-125092501090_1.html
+  type: reputable-press
+  accessed: 2026-09-29
+- id: kpmg-auth-2025
+  title: "RBI Authentication Mechanisms for Digital Payment Transactions Directions, 2025"
+  publisher: KPMG in India
+  url: https://kpmg.com/in/en/insights/2025/12/reserve-bank-of-india-rbi-authentication-mechanisms-for-digital-payment-transactions-directions-2025.html
+  type: analyst
+  accessed: 2026-09-29
+- id: cim-cloud-regions
+  title: "Cloud Infrastructure Map"
+  publisher: Cloud Infrastructure Map
+  url: https://www.cloudinfrastructuremap.com/
+  type: analyst
+  accessed: 2026-09-29
+- id: edb-finacle-2019
+  title: "Infosys Finacle Names EnterpriseDB Open Source DB Partner of the Year"
+  publisher: EDB
+  url: https://www.enterprisedb.com/blog/infosys-finacle-names-enterprisedb-open-source-db-partner-year
+  type: vendor
+  accessed: 2026-09-29
+
+# Stage 4d research (29 September 2026)
+- id: air-kotak-2024
+  title: "RBI directs Kotak Mahindra Bank to cease issue of fresh credit cards, bars onboarding of new online customers"
+  publisher: All India Radio News (Prasar Bharati)
+  url: https://newsonair.gov.in/rbi-directs-kotak-mahindra-bank-to-cease-issue-of-fresh-credit-cards-bars-onboarding-of-new-online-customers
+  type: reputable-press
+  accessed: 2026-09-29
+- id: federal-kotak-2024
+  title: "RBI finds Kotak Mahindra Bank deficient in IT risk management, bars online customer onboarding (PTI)"
+  publisher: The Federal
+  url: https://thefederal.com/category/business/rbi-finds-kotak-mahindra-bank-deficient-in-it-risk-management-bars-online-customer-onboarding-119336
+  type: reputable-press
+  accessed: 2026-09-29
+- id: inc42-kotak-2024
+  title: "RBI bars Kotak Mahindra Bank from onboarding new customers via online, mobile banking channels"
+  publisher: Inc42
+  url: https://inc42.com/buzz/rbi-bars-kotak-mahindra-bank-from-onboarding-new-customers-via-online-mobile-banking-channels/
+  type: reputable-press
+  accessed: 2026-09-29
+- id: air-kotak-lifted-2025
+  title: "RBI lifts business restrictions on Kotak Mahindra Bank"
+  publisher: All India Radio News (Prasar Bharati)
+  url: https://www.newsonair.gov.in/rbi-lifts-business-restrictions-on-kotak-mahindra-bank/
+  type: reputable-press
+  accessed: 2026-09-29
+- id: rbi-md-it-outsourcing-text
+  title: "Master Direction on Outsourcing of Information Technology Services (full text)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12486
+  type: primary
+  accessed: 2026-09-29
+
+# Stage 4e research (29 September 2026)
+- id: rbi-storage-2018
+  title: "Storage of Payment System Data (RBI/2017-18/153)"
+  publisher: Reserve Bank of India
+  url: https://rbi.org.in/scripts/NotificationUser.aspx?Id=11244
+  type: primary
+  accessed: 2026-09-29
+- id: certin-directions-2022
+  title: "Directions under sub-section (6) of section 70B of the IT Act, 2000 (28 April 2022)"
+  publisher: CERT-In, Ministry of Electronics and Information Technology
+  url: https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf
+  type: primary
+  accessed: 2026-09-29
+- id: ssrana-dpdp-2025
+  title: "MeitY notifies final Digital Personal Data Protection Rules 2025"
+  publisher: S.S. Rana & Co.
+  url: https://ssrana.in/articles/meity-notifies-final-digital-personal-data-protection-rules-2025/
+  type: analyst
+  accessed: 2026-09-29

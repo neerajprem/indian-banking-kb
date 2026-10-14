@@ -1,0 +1,87 @@
+---
+// General architecture diagram: boxes, zones and arrows, rendered at build time as SVG.
+// Positions are SVG attributes (never inline styles, for the CSP). Arrows are routed between box edges.
+// A text alternative listing every zone and connection is generated from the same data.
+interface Node { id: string; x: number; y: number; w: number; h: number; label: string; tone?: 'core' | 'accent' | 'muted' | 'plain' }
+interface Zone { x: number; y: number; w: number; h: number; label: string; tone?: 'trust' | 'plain' }
+interface Edge { from: string; to: string; label?: string; dashed?: boolean; both?: boolean; lx?: number; ly?: number }
+interface Props { title: string; desc: string; width: number; height: number; nodes: Node[]; zones?: Zone[]; edges?: Edge[]; alt?: boolean }
+const { title, desc, width, height, nodes, zones = [], edges = [], alt = true } = Astro.props;
+const uid = 'bx-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+const EM = 0.56, BASE = 15;
+const N = Object.fromEntries(nodes.map((n) => [n.id, n]));
+const name = (id: string) => N[id].label.replace(/\n/g, ' ');
+const paths = edges.map((e) => {
+  const a = N[e.from], b = N[e.to];
+  const ax = a.x + a.w / 2, ay = a.y + a.h / 2, bx = b.x + b.w / 2, by = b.y + b.h / 2;
+  const dx = bx - ax, dy = by - ay;
+  let x1, y1, x2, y2;
+  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+  // Route vertically whenever one box sits wholly above the other; otherwise horizontally.
+  const stacked = b.y >= a.y + a.h - 2 || a.y >= b.y + b.h - 2;
+  if (stacked) {
+    // Vertical: leave the bottom/top edge at the point nearest the other box, so arrows run close to straight.
+    x1 = clamp(bx, a.x + 14, a.x + a.w - 14); x2 = clamp(ax, b.x + 14, b.x + b.w - 14);
+    const ox = Math.max(a.x, b.x) + 14, oxe = Math.min(a.x + a.w, b.x + b.w) - 14;
+    y1 = dy > 0 ? a.y + a.h : a.y; y2 = dy > 0 ? b.y - 4 : b.y + b.h + 4;
+    if (oxe >= ox) {
+      let m = clamp((ax + bx) / 2, ox, oxe);
+      // Keep clear of zone labels the arrow passes through: shift right past the label if the overlap allows.
+      const lo = Math.min(y1, y2), hi = Math.max(y1, y2);
+      for (const z of zones) {
+        const bandTop = z.y + 4, bandBottom = z.y + 26;
+        if (bandBottom < lo || bandTop > hi) continue;
+        const bandEnd = z.x + 12 + z.label.length * EM * 13 + 8;
+        if (m >= z.x && m <= bandEnd && bandEnd + 6 <= oxe) m = bandEnd + 6;
+      }
+      x1 = m; x2 = m;
+    }
+  } else {
+    y1 = clamp(by, a.y + 10, a.y + a.h - 10); y2 = clamp(ay, b.y + 10, b.y + b.h - 10);
+    const oy = Math.max(a.y, b.y) + 10, oye = Math.min(a.y + a.h, b.y + b.h) - 10;
+    if (oye >= oy) { const m = clamp((ay + by) / 2, oy, oye); y1 = m; y2 = m; }
+    x1 = dx > 0 ? a.x + a.w : a.x; x2 = dx > 0 ? b.x - 4 : b.x + b.w + 4;
+  }
+  return { ...e, d: `M${x1} ${y1}L${x2} ${y2}`, mx: (x1 + x2) / 2 + (e.lx ?? 0), my: (y1 + y2) / 2 + (e.ly ?? 0) };
+});
+const lines = (label: string) => label.split('\n');
+// Build-time text fit. Average glyph width of Schibsted Grotesk at weight 600 is about 0.56 em.
+// On phones every label in the diagram is enlarged by the same amount: the largest size (15-18 px) at which all labels fit.
+const fits = (n: Node, px: number) => n.w - 14 >= Math.max(...lines(n.label).map((l) => l.length)) * EM * px;
+const phonePx = [18, 17, 16, 15].find((px) => nodes.every((n) => fits(n, px))) ?? 15;
+for (const n of nodes) if (!fits(n, BASE)) console.warn(`[BoxDiagram] "${title}": label "${n.label.replace(/\n/g, ' / ')}" may overflow its box`);
+---
+<svg class={`dg-svg bx bx-p${phonePx}`} viewBox={`0 0 ${width} ${height}`} width={width} height={height} role="img" aria-labelledby={`${uid}-t ${uid}-d`}>
+  <title id={`${uid}-t`}>{title}</title><desc id={`${uid}-d`}>{desc}</desc>
+  <defs><marker id={`${uid}-h`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="bx-head" d="M0 0L10 5L0 10z" /></marker></defs>
+  {zones.map((z) => (
+    <g class:list={['bx-zone', `bx-zone--${z.tone ?? 'plain'}`]}>
+      <rect x={z.x} y={z.y} width={z.w} height={z.h} rx="10" />
+    </g>
+  ))}
+  {paths.map((p) => (
+    <g class="bx-edge">
+      <path class:list={['bx-line', { 'bx-line--dash': p.dashed }]} d={p.d} marker-end={`url(#${uid}-h)`} marker-start={p.both ? `url(#${uid}-h)` : undefined} />
+      {p.label && <text class="bx-elab" x={p.mx} y={p.my - 6} text-anchor="middle">{p.label}</text>}
+    </g>
+  ))}
+  {nodes.map((n) => {
+    const ls = lines(n.label); const cy = n.y + n.h / 2 - ((ls.length - 1) * 18) / 2 + 5;
+    return (
+      <g class:list={['bx-node', `bx-node--${n.tone ?? 'plain'}`]}>
+        <rect x={n.x} y={n.y} width={n.w} height={n.h} rx="8" />
+        <text x={n.x + n.w / 2} y={cy} text-anchor="middle">{ls.map((l, i) => <tspan x={n.x + n.w / 2} dy={i ? 18 : 0}>{l}</tspan>)}</text>
+      </g>
+    );
+  })}
+  {zones.map((z) => <text class="bx-zlab" x={z.x + 12} y={z.y + 20}>{z.label}</text>)}
+</svg>
+{alt && (
+  <details class="alt-text"><summary>Text description</summary>
+    <div>
+      <p>{desc}</p>
+      {zones.length > 0 && <ul>{zones.map((z) => <li>{z.label}: {nodes.filter((n) => n.x >= z.x && n.x + n.w <= z.x + z.w && n.y >= z.y && n.y + n.h <= z.y + z.h).map((n) => name(n.id)).join(', ') || 'no boxes'}</li>)}</ul>}
+      {paths.length > 0 && <ul>{paths.map((p) => <li>{name(p.from)} {p.both ? 'and' : 'to'} {name(p.to)}{p.label ? `: ${p.label}` : ''}{p.dashed ? ' (optional or asynchronous)' : ''}</li>)}</ul>}
+    </div>
+  </details>
+)}

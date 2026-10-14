@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch(); const c=await b.newContext({viewport:{width:1440,height:900}}); const p=await c.newPage();
+await p.goto('file://'+process.cwd()+'/b-rail-map.html');
+await p.focus('.map-d .st[data-st=npci]'); await p.keyboard.press('Enter');
+console.log('B keyboard station ->', await p.textContent('#panel h3'));
+await p.click('.chip[data-line=rtgs]'); console.log('B isolate RTGS on-lines:', await p.$$eval('.map-d .ln.on',e=>e.map(x=>x.dataset.line)));
+await p.goto('file://'+process.cwd()+'/c-field-guide.html'); await p.click('#xp-next'); await p.click('#xp-next');
+console.log('C next x2 ->', await p.textContent('#xp-out'), '| active:', await p.textContent('.steps li.on button'));
+const nojs=await b.newContext({javaScriptEnabled:false}); const q=await nojs.newPage();
+await q.goto('file://'+process.cwd()+'/c-field-guide.html'); console.log('C no-JS visible step bodies:', await q.$$eval('.steps .body',e=>e.filter(x=>x.offsetParent).length));
+await q.goto('file://'+process.cwd()+'/b-rail-map.html'); console.log('B no-JS map stations drawn:', await q.$$eval('.map-d .st',e=>e.length), '(text version present:', !!(await q.$('.map-foot details')),')');
+await b.close();

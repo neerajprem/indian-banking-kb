@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+---
+<button class="btn theme-btn js-only" type="button" aria-pressed="false" data-theme-toggle>
+  <span class="t-dark"><Icon name="moon" /></span><span class="t-light" hidden><Icon name="sun" /></span>
+  <span class="btn-label">Dark theme</span>
+</button>
+<script>
+  import { ready } from '../scripts/ready';
+  ready(() => {
+    const root = document.documentElement;
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      if (btn.dataset.bound) return; btn.dataset.bound = '1';
+      const sync = () => {
+        const dark = root.dataset.theme === 'dark';
+        btn.setAttribute('aria-pressed', String(dark));
+        btn.querySelector('.btn-label')!.textContent = dark ? 'Light theme' : 'Dark theme';
+        btn.querySelector<HTMLElement>('.t-dark')!.hidden = dark;
+        btn.querySelector<HTMLElement>('.t-light')!.hidden = !dark;
+      };
+      sync();
+      btn.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+        sync();
+      });
+    });
+  });
+</script>
