@@ -1,3 +1,6 @@
+import authorData from '../data/author.json';
+export const AUTHOR = authorData;
+
 export const SITE = {
   name: 'Indian Banking Ecosystem: Complete Knowledge Base',
   short: 'Indian Banking Ecosystem',

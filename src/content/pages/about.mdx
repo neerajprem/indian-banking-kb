@@ -1,0 +1,36 @@
+---
+title: About the author
+navTitle: About the author
+summary: "Neeraj Prem leads infrastructure engineering in Indian banking. He wrote this guide to explain how money moves in India, and the technology underneath it, with every fact sourced and dated."
+domain: reference
+order: 4
+updated: 2026-10-15
+tags: [about]
+facts: []
+---
+
+import author from '../../data/author.json';
+
+## Neeraj Prem
+
+<p>{author.bio}</p>
+
+## Why this guide exists
+
+The technology behind Indian banking is documented in pieces: regulators' circulars, operators' specifications, vendors' brochures and the occasional press report. Each piece is accurate about its own corner and silent about the rest. Engineers joining the industry, and many who have worked in it for years, end up assembling the whole picture from memory and hallway conversations.
+
+This guide puts that picture in one place. It starts with how a payment moves, opens up the core banking system, and works outwards through architecture, technology choices, scale, regulation and the institutions around the Reserve Bank.
+
+## How it is kept honest
+
+Every number, date, limit and named regulation on this site comes from a register of facts, each tied to a source that was opened and read, and each carrying the date it was true. Claims that could not be confirmed are left out rather than guessed, and claims that turned out to be wrong are recorded as corrections. The details are on the [sources and methodology](/sources/) page.
+
+## Independence
+
+This is a personal, independent project. The views here are the author's own and do not represent any employer. The site does not describe the internal systems of any organisation, it is not official documentation of RBI, NPCI or any bank, and nothing here is legal, compliance or investment advice.
+
+## Elsewhere
+
+<ul>{author.links.map((l) => <li><a href={l.url} rel="noopener noreferrer">{l.label}</a></li>)}</ul>
+
+Corrections are welcome. Please include the page, the claim and a source.

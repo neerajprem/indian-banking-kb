@@ -6,7 +6,7 @@ import Fact from '../components/Fact.astro';
 import SourceList from '../components/SourceList.astro';
 import { getNav, BUILT_IN_SUMMARY } from '../lib/nav';
 import { citationsFor } from '../lib/facts';
-import { SITE } from '../lib/site';
+import { SITE, AUTHOR } from '../lib/site';
 Astro.locals.citations = await citationsFor(['upi-volume-2026-08', 'upi-daily-2026-08', 'payment-volumes-live'].map((id) => ({ collection: 'facts' as const, id })));
 Astro.locals.where = '/';
 const nav = await getNav();
@@ -14,7 +14,7 @@ const path = [['core-systems', 'Core systems'], ['payment-rails', 'Payment rails
 const exists = new Set(nav.flatMap((g) => g.items.map((i) => i.slug)));
 const summaries = Object.fromEntries((await getCollection('pages')).map((p) => [p.id, p.data.summary]));
 ---
-<BaseLayout title={SITE.name} description={`${SITE.pitch} An independent, sourced reference to India's banking and payments technology.`} type="website" jsonld={[{ "@context": "https://schema.org", "@type": "WebSite", name: SITE.name, url: new URL("/", Astro.site).href, inLanguage: "en-IN", publisher: { "@type": "Organization", name: SITE.publisher } }]}>
+<BaseLayout title={SITE.name} description={`${SITE.pitch} An independent, sourced reference to India's banking and payments technology.`} type="website" jsonld={[{ "@context": "https://schema.org", "@type": "WebSite", name: SITE.name, url: new URL("/", Astro.site).href, inLanguage: "en-IN", publisher: { "@type": "Organization", name: SITE.publisher }, author: { "@type": "Person", name: AUTHOR.name, url: AUTHOR.url } }]}>
   <div class="container">
     <section class="hero" aria-labelledby="hero-h">
       <div class="hero-top">
@@ -53,7 +53,7 @@ const summaries = Object.fromEntries((await getCollection('pages')).map((p) => [
         <div><h3>Short names</h3><p>Hover, focus or tap an underlined term such as <a href="/glossary/#upi">UPI</a> to see what it stands for. Every term is in the <a href="/glossary/">glossary</a>.</p></div>
         <div><h3>Sources</h3><p>Every figure carries a numbered source and the date it was true. <a href="/sources/">How facts are checked</a>.</p></div>
       </div>
-      <p class="independence">This is an independent reference. It is not official documentation of RBI, NPCI or any bank, and it is not legal, compliance or investment advice. Rules and figures change; each page shows when its facts were last checked.</p>
+      <p class="independence">Written and maintained by <a href="/about/">{AUTHOR.name}</a>. This is an independent reference. It is not official documentation of RBI, NPCI or any bank, and it is not legal, compliance or investment advice. Rules and figures change; each page shows when its facts were last checked.</p>
     </section>
     <div class="page-foot"><SourceList /></div>
   </div>

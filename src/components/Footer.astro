@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { getNav } from '../lib/nav';
-import { SITE, fmtDate } from '../lib/site';
+import { SITE, AUTHOR, fmtDate } from '../lib/site';
 const nav = await getNav();
 const facts = await getCollection('facts');
 const sources = await getCollection('sources');
@@ -12,6 +12,7 @@ const latest = sources.length ? new Date(Math.max(...sources.map((s) => s.data.a
   <div class="container footer-inner">
     <div class="footer-about">
       <p class="footer-pub">{SITE.publisher}</p>
+      <p class="footer-byline">Written and maintained by <a href="/about/">{AUTHOR.name}</a>.</p>
       <p>{SITE.name}. An independent reference, not official documentation of RBI, NPCI or any bank. Nothing here is legal, compliance or investment advice.</p>
       <p class="footer-fresh">{verified} of {facts.length} facts verified against their sources{latest ? `, most recently on ${fmtDate(latest)}` : ''}. <a href="/sources/">How facts are checked</a></p>
     </div>

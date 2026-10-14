@@ -1,0 +1,10 @@
+{
+  "name": "Neeraj Prem",
+  "url": "https://neerajprem.in",
+  "role": "Infrastructure engineering leader in Indian banking",
+  "bio": "Neeraj Prem leads infrastructure engineering at a digital-first small finance bank in Bengaluru. His team of SREs, database engineers, DevSecOps and cloud network engineers runs a multi-cloud estate under RBI, NPCI, PCI-DSS and CERT-In requirements. He wrote this guide to explain the machinery behind Indian payments the way he wishes it had been explained to him, with every fact sourced and dated. He writes about engineering leadership and DevOps at neerajprem.in.",
+  "links": [
+    { "label": "Blog: neerajprem.in", "url": "https://neerajprem.in" },
+    { "label": "GitHub: neerajprem", "url": "https://github.com/neerajprem" }
+  ]
+}

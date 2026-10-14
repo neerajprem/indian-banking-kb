@@ -12,12 +12,12 @@ interface Props {
 }
 const p = Astro.props;
 const headings = p.headings ?? [];
-import { SITE } from '../lib/site';
+import { SITE, AUTHOR } from '../lib/site';
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const crumbList = [{ title: 'Home', href: '/' }, ...(p.crumbs ?? [{ title: p.title }])];
 const jsonld = [
   { '@context': 'https://schema.org', '@type': 'TechArticle', headline: p.title, description: p.summary, url, inLanguage: 'en-IN',
-    ...(p.updated ? { dateModified: p.updated.toISOString().slice(0, 10) } : {}), publisher: { '@type': 'Organization', name: SITE.publisher } },
+    ...(p.updated ? { dateModified: p.updated.toISOString().slice(0, 10) } : {}), publisher: { '@type': 'Organization', name: SITE.publisher }, author: { '@type': 'Person', name: AUTHOR.name, url: AUTHOR.url } },
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbList.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.title, ...(c.href || i === crumbList.length - 1 ? { item: new URL(c.href ?? Astro.url.pathname, Astro.site).href } : {}) })) },
 ];
 ---

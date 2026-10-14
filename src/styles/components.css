@@ -398,3 +398,17 @@
     .rails-table caption { padding-inline: 0; }
   }
 }
+
+@layer components { .footer-byline { font-size: 0.9375rem; margin-block-start: var(--s-1) !important; } }
+@layer components {
+  /* Header fit: five menu groups plus search and theme need slightly more than the 1240px container.
+     On desktop the search button drops its fixed width and the theme toggle shows its icon only
+     (its label stays available to screen readers). Below 1180px the menu button replaces the menus. */
+  @media (min-width: 1081px) {
+    .search-btn { min-inline-size: 0; }
+    .theme-btn .btn-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .theme-btn { padding-inline: 10px; }
+    .nav-group > summary { padding-inline: 10px; }
+  }
+  @media (max-width: 1180px) { .site-nav { display: none; } .menu-btn { display: inline-flex; } }
+}

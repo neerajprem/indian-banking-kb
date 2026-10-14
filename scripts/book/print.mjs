@@ -53,10 +53,19 @@ await page.evaluate(({ pages, ix }) => {
   document.querySelector('[data-index]').innerHTML = ix;
 }, { pages, ix });
 fs.mkdirSync(OUT.replace(/\/[^/]+$/, ''), { recursive: true });
-await pdf('/tmp/book-pass2.pdf');
-const p2 = info('/tmp/book-pass2.pdf');
-// Pass 2 must not move any chapter: the contents numbers were taken from pass 1.
-const moved = plan.toc.filter((t) => { const h = p2.outline.find((o) => o.title === titles[t.id] && o.page >= (pages[t.id] ?? 0) - 1); return pages[t.id] && h && h.page !== pages[t.id]; }).map((t) => t.id);
+// Re-render until no contents entry moves: content after the index (which only fills in on the second pass)
+// can shift, so the numbers are taken from the latest pass and checked against the next one.
+const locate = (outline) => { const out = {}; let cur = 1; for (const t of plan.toc) { const h = outline.find((o) => o.title === titles[t.id] && o.page >= cur); if (h) { out[t.id] = h.page; cur = h.page; } } return out; };
+let p2, moved = [], passes = 1;
+for (let i = 0; i < 3; i++) {
+  await pdf('/tmp/book-pass2.pdf'); passes++;
+  p2 = info('/tmp/book-pass2.pdf');
+  const now = locate(p2.outline);
+  moved = plan.toc.filter((t) => now[t.id] && now[t.id] !== pages[t.id]).map((t) => t.id);
+  if (!moved.length) break;
+  Object.assign(pages, now);
+  await page.evaluate((pages) => document.querySelectorAll('.toc-pg').forEach((e) => { e.textContent = pages[e.dataset.for] ?? ''; }), pages);
+}
 execFileSync('python3', ['-c', `
 from pypdf import PdfReader, PdfWriter
 r = PdfReader('/tmp/book-pass2.pdf'); w = PdfWriter(clone_from=r)
@@ -64,4 +73,4 @@ w.add_metadata({'/Title': 'Indian Banking Ecosystem: A Complete Guide to the Tec
 w.write('${OUT}')`]);
 await browser.close(); srv.kill();
 fs.writeFileSync('/tmp/book-report.json', JSON.stringify({ pages1: p1.pages, pages2: p2.pages, toc: pages, missing, moved, indexTerms: entries.length }, null, 2));
-console.log(`book: ${p2.pages} pages; contents entries matched ${plan.toc.length - missing.length}/${plan.toc.length}${missing.length ? ' (missing: ' + missing.join(', ') + ')' : ''}; moved in pass 2: ${moved.length}; index terms: ${entries.length}`);
+console.log(`book: ${p2.pages} pages; contents entries matched ${plan.toc.length - missing.length}/${plan.toc.length}${missing.length ? ' (missing: ' + missing.join(', ') + ')' : ''}; render passes: ${passes}; entries still moving: ${moved.length}; index terms: ${entries.length}`);

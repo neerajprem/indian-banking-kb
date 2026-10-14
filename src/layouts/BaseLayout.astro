@@ -3,7 +3,7 @@ import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import Footer from '../components/Footer.astro';
 import Sprite from '../components/Sprite.astro';
-import { SITE } from '../lib/site';
+import { SITE, AUTHOR } from '../lib/site';
 import literata from '../assets/fonts/literata-latin.woff2?url';
 import schibsted from '../assets/fonts/schibsted-latin.woff2?url';
 
@@ -25,6 +25,7 @@ const themeBoot = `(function(){var d=document.documentElement;d.classList.replac
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={AUTHOR.name} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta name="color-scheme" content="light dark" />

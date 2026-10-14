@@ -4,7 +4,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import { load as yamlLoad } from 'js-yaml';
-import { PARTS, FRONT, CH1_INTRO, LEDES, BOOK } from './text.mjs';
+import { PARTS, FRONT, CH1_INTRO, LEDES, BOOK, AUTHOR } from './text.mjs';
 
 const port = 4420, base = `http://localhost:${port}`;
 const srv = spawn('node', ['scripts/serve.mjs', '--port', String(port)], { stdio: 'ignore' });
@@ -170,7 +170,7 @@ const appD = `<section class="appendix" id="app-d"><p class="chapter-num">Append
   </tbody></table></div></section>`;
 
 toc.push({ kind: 'back', id: 'app-a', label: 'A', title: 'Glossary of short names' }, { kind: 'back', id: 'app-b', label: 'B', title: 'Register of facts' },
-  { kind: 'back', id: 'app-c', label: 'C', title: 'Bibliography' }, { kind: 'back', id: 'app-d', label: 'D', title: 'Corrections to earlier drafts' }, { kind: 'back', id: 'index', label: '', title: 'Index' });
+  { kind: 'back', id: 'app-c', label: 'C', title: 'Bibliography' }, { kind: 'back', id: 'app-d', label: 'D', title: 'Corrections to earlier drafts' }, { kind: 'back', id: 'index', label: '', title: 'Index' }, { kind: 'back', id: 'about-author', label: '', title: 'About the author' });
 
 // ---------- page ----------
 const cssHref = (fs.readFileSync('dist/index.html', 'utf8').match(/<link rel="stylesheet" href="(\/_astro\/[^"]+\.css)"/) || [])[1];
@@ -189,6 +189,11 @@ ${FRONT.howto}
 ${sections.join('\n')}
 ${appA}${appB}${appC}${appD}
 <section class="appendix" id="index"><h1 class="chapter-title">Index</h1><div class="index-body" data-index></div></section>
+<section class="appendix about-author" id="about-author"><h1 class="chapter-title">About the author</h1>
+  <p class="chapter-lede">${esc(AUTHOR.role)}</p>
+  <div class="prose"><p>${esc(AUTHOR.bio)}</p>
+  <p>The companion website, with the latest version of every chapter, is at ibs.neerajprem.in.</p>
+  <ul>${AUTHOR.links.map((l) => `<li>${esc(l.label)}: <a href="${esc(l.url)}">${esc(l.url)}</a></li>`).join('')}</ul></div></section>
 </body></html>`;
 fs.mkdirSync('dist/__book', { recursive: true });
 fs.writeFileSync('dist/__book/index.html', html);

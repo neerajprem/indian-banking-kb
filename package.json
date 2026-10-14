@@ -13,7 +13,7 @@
     "preview": "node scripts/serve.mjs",
     "test:responsive": "node tests/responsive.mjs",
     "test:a11y": "node tests/a11y.mjs",
-    "test": "npm run test:responsive && npm run test:a11y && node tests/contrast.mjs && node tests/behaviour.mjs && node tests/budgets.mjs && node tests/csp.mjs",
+    "test": "npm run test:responsive && npm run test:a11y && node tests/contrast.mjs && node tests/behaviour.mjs && node tests/budgets.mjs && node tests/csp.mjs && node tests/header-overlap.mjs",
     "test:lighthouse": "node tests/lighthouse.mjs",
     "test:budgets": "node tests/budgets.mjs",
     "test:csp": "node tests/csp.mjs",

@@ -39,6 +39,10 @@ Every build writes `dist/_headers` with the security headers (CSP, HSTS and othe
 
 `npm run build && npm run book` produces `indian-banking-ecosystem-book.pdf`: a 6 × 9 inch book of about 150 pages, generated from the same content and fact register as the site. Chapters come from the built pages, notes from each page's sources, and the appendices (glossary, fact register, bibliography, corrections) from the data files. Contents page numbers and the index are filled in by a second print pass. The book's own prose (preface, part openers, chapter bridges) lives in `scripts/book/text.mjs` and states no facts of its own.
 
+## Author details
+
+The author's name, bio and links live in `src/data/author.json`. The About page, the byline in every footer, the structured data for search engines and the book's title page and closing page all read from it.
+
 ## Content maintenance
 
 - **Adding content:** see `CONTRIBUTING.md`. A new topic, fact, glossary term or institution is a data or MDX change only.

@@ -1,6 +1,9 @@
 // New prose written for the book edition. It states no numbers, dates or named regulations:
 // every figure in the book comes from the verified fact ledger through the chapters themselves.
 
+import fs from 'node:fs';
+export const AUTHOR = JSON.parse(fs.readFileSync('src/data/author.json', 'utf8'));
+
 export const BOOK = {
   title: 'Indian Banking Ecosystem: A Complete Guide to the Technology Behind Indian Banking',
   short: 'Indian Banking Ecosystem',
@@ -18,14 +21,15 @@ export const FRONT = {
     <h1 class="cover-title">Indian Banking Ecosystem</h1>
     <p class="cover-sub">A complete guide to the technology behind Indian banking</p>
     <div class="cover-lines" aria-hidden="true">${stripes}</div>
+    <p class="cover-author">${AUTHOR.name}</p>
     <p class="cover-pub">${BOOK.publisher}</p>
   </section>`,
   imprint: `<section class="front imprint" id="imprint">
     <p><strong>${BOOK.title}</strong></p>
-    <p>${BOOK.edition}. Facts current as of ${BOOK.date}.</p>
+    <p>Written by ${AUTHOR.name}. ${BOOK.edition}. Facts current as of ${BOOK.date}.</p>
     <p>Published by ${BOOK.publisher}. All rights reserved until a licence is chosen.</p>
     <h2>Independence</h2>
-    <p>This is an independent reference. It is not official documentation of the Reserve Bank of India, the National Payments Corporation of India or any bank or vendor, and it is not legal, compliance or investment advice. Product names appear for reference only; nothing here is a recommendation.</p>
+    <p>This is an independent reference. It is a personal project; the views in it are the author’s own and do not represent any employer. It is not official documentation of the Reserve Bank of India, the National Payments Corporation of India or any bank or vendor, and it is not legal, compliance or investment advice. Product names appear for reference only; nothing here is a recommendation.</p>
     <h2>How the facts were checked</h2>
     <p>Every number, date, limit, named customer and named regulation in this book is drawn from a register of facts, reproduced in Appendix B. Each fact names the source it came from and the date it was true, and each source was opened and read before the fact was recorded. Patterns that describe no particular organisation are labelled illustrative. Figures that change often, such as monthly payment volumes, are dated so that readers can tell how current they are.</p>
     <p>The same register drives the companion website, so the book and the site cannot disagree. Where this book and a later edition of the site differ, the site is more recent.</p>
